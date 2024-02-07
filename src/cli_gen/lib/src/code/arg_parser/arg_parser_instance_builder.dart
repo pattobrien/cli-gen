@@ -13,9 +13,6 @@ class ArgParserInstanceExp {
     List<CommandParameterModel> parameters,
   ) {
     final argParserRef = Identifiers.args.argParser;
-    // final argParserAddOptionRef = Identifiers.args.argParserAddOption;
-    // final argParserAddFlagRef = Identifiers.args.argParserAddFlag;
-
     var argParserExp = argParserRef.newInstance([]);
 
     for (final parameter in parameters) {
@@ -61,8 +58,4 @@ class ArgParserInstanceExp {
         'help': literalString(removeDocSlashes(docComment)!),
     });
   }
-}
-
-extension RefCascade on Expression {
-  // Expression cascade(Reference property) {}
 }

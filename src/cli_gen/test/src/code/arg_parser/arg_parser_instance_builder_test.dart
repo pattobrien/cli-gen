@@ -25,6 +25,7 @@ void main() {
         "help: 'The message to display.'",
       ]);
   });
+
   group('ArgParser - Option names', () {
     test('Simple option name', () {
       final arguments = generateOptionArguments(paramName: 'message');
@@ -40,12 +41,43 @@ void main() {
     test('Multi-word option names', () {
       final arguments = generateOptionArguments(paramName: 'authorDateOrder');
 
-      check(arguments).any((p0) {
-        p0
+      check(arguments).any(
+        (argument) => argument
             .isA<SimpleStringLiteral>()
             .has((p0) => p0.value, 'value')
-            .equals('author-date-order');
-      });
+            .equals('author-date-order'),
+      );
     });
+  });
+
+  group('ArgParser - Mandatory options', () {
+    //
+  });
+
+  group('ArgParser - doc comments', () {
+    // with doc comments
+    // without doc comments
+  });
+
+  group('ArgParser - default values', () {
+    // without a default value
+    // with a default value (literal, e.g. string or int)
+    // with a default enum value
+  });
+
+  group('ArgParser - Option vs Flag', () {
+    //
+  });
+
+  group('ArgParser - different types', () {
+    // String
+    // int
+    // User-defined Enum
+    // extension type (e.g. of a String)
+  });
+
+  group('ArgParser - multiple options', () {
+    // enum with multiple values
+    // string with explicit multiple values from Option annotation
   });
 }
