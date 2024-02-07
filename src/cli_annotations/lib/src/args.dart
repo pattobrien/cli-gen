@@ -58,6 +58,7 @@ class Option<T> {
   final Map<T, String>? allowedHelp;
   final List<String>? aliases;
   final T Function(String)? parser;
+  final bool? splitCommas; // TODO: this should only apply for MultiOption
 
   const Option({
     this.abbr,
@@ -70,5 +71,6 @@ class Option<T> {
     this.allowedHelp,
     this.aliases,
     this.parser,
+    this.splitCommas,
   });
 }

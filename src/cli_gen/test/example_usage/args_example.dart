@@ -78,3 +78,5 @@ void multiSelect({
   Set<int> multiInt = const {},
   Iterable<MyFooEnum> multiEnum = const [],
 }) {}
+
+final String x = MyFooEnum.value1.name;

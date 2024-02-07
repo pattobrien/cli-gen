@@ -6,24 +6,26 @@ import '../utils/analyzer_parsers.dart';
 import '../utils/types.dart';
 
 void main() {
-  final expression = generateArgParserOption(
-    paramName: 'message',
-    type: TestTypes.string,
-  );
-  test('Create an ArgParser instance with one option', () async {
-    check(expression)
-        .isA<CascadeExpression>()
-        .has((p0) => p0.cascadeSections.first, 'cascade section')
-        .isA<MethodInvocation>()
-      ..has((p0) => p0.methodName.name, 'method name').equals('addOption')
-      ..has((p0) => p0.argumentList.arguments.map((e) => e.toSource()),
-              'arguments')
-          .unorderedEquals([
-        "'message'",
-        "mandatory: true",
-        "valueHelp: 'property'",
-        "help: 'The message to display.'",
-      ]);
+  group('ArgParser - end-to-end test', () {
+    final exp = generateArgParserOption(
+      paramName: 'msg',
+      type: TestTypes.string,
+    );
+    test('Create an ArgParser instance with one option', () async {
+      check(exp)
+          .isA<CascadeExpression>()
+          .has((p0) => p0.cascadeSections.first, 'cascade section')
+          .isA<MethodInvocation>()
+        ..has((p0) => p0.methodName.name, 'method name').equals('addOption')
+        ..has((p0) => p0.argumentList.arguments.map((e) => e.toSource()),
+                'arguments')
+            .unorderedEquals([
+          "'msg'",
+          "mandatory: true",
+          "valueHelp: 'property'",
+          "help: 'The message to display.'",
+        ]);
+    });
   });
 
   group('ArgParser - Option names', () {
@@ -75,37 +77,58 @@ void main() {
   group('ArgParser - doc comments', () {
     // with doc comments
     test('With doc comments', () {
-      final arguments = generateOptionArguments(
-        docComment: 'The message to display.',
-      );
+      final args = generateOptionArguments(docComment: 'Foo message.');
 
-      check(arguments).any(
+      check(args).any(
         (argument) => argument.isA<NamedExpression>()
           ..has((p0) => p0.name.label.name, 'name').equals('help')
           ..has((p0) => p0.expression.toSource(), 'value')
-              .equals("'The message to display.'"),
+              .equals("'Foo message.'"),
       );
     });
 
     test('Without doc comments', () {
-      final arguments = generateOptionArguments(
-        docComment: null,
-      );
+      final args = generateOptionArguments(docComment: null);
 
-      check(arguments).not((p0) {
-        p0.any((p0) {
-          p0
-              .isA<NamedExpression>()
-              .has((p0) => p0.name.label.name, 'name')
-              .equals('help');
-        });
-      });
+      check(args).not((p0) => p0.any(
+            (p0) => p0
+                .isA<NamedExpression>()
+                .has((p0) => p0.name.label.name, 'name')
+                .equals('help'),
+          ));
     });
   });
 
   group('ArgParser - default values', () {
     // without a default value
+    test('No default value', () {
+      final arguments = generateOptionArguments(defaultValue: null);
+
+      check(arguments).not((p0) => p0.any(
+            (p0) => p0
+                .isA<NamedExpression>()
+                .has((p0) => p0.name.label.name, 'name')
+                .equals('defaultsTo'),
+          ));
+    });
+
     // with a default value (literal, e.g. string or int)
+
+    test('With a string default value', () {
+      final arguments = generateOptionArguments(
+        computedDefaultValue: "'value1'",
+        defaultValue: 'MyFooEnum.value1',
+      );
+
+      check(arguments).any(
+        (argument) => argument.isA<NamedExpression>()
+          ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
+          ..has((p0) => p0.expression, 'value')
+              .isA<SimpleStringLiteral>()
+              .has((p0) => p0.value, 'string value')
+              .equals('value1'),
+      );
+    });
     // with a default enum value
   });
 
@@ -126,6 +149,7 @@ void main() {
         type: TestTypes.bool,
         docComment: 'A boolean value.',
         defaultValue: 'true',
+        computedDefaultValue: 'true',
       );
       // note: this is the only case where the defaultsTo is not a string value
       check(arguments).any(

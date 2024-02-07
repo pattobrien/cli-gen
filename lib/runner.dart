@@ -34,6 +34,11 @@ class ExampleCommand extends Command {
       mandatory: false,
       defaultsTo: 'default',
     )
+    ..addMultiOption(
+      'bar',
+      abbr: 'b',
+      splitCommas: true,
+    )
     ..addFlag(
       'bar',
       abbr: 'b',
