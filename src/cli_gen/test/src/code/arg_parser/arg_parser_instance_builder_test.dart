@@ -1,34 +1,16 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:checks/checks.dart';
-import 'package:cli_gen/src/code/arg_parser/arg_parser_instance_builder.dart';
-import 'package:cli_gen/src/code/models/command_parameter_model.dart';
-import 'package:code_builder/code_builder.dart'
-    show CodeExpression, Code, Reference, TypeReference, DartEmitter;
 import 'package:test/test.dart';
 
+import '../utils/analyzer_parsers.dart';
+import '../utils/types.dart';
+
 void main() {
-  test('arg parser instance builder ...', () async {
-    final builder = ArgParserInstanceExp();
-
-    final argParserExp = CodeExpression(Code('final x = ArgParser()'));
-    final parameter = CommandParameterModel(
-      name: Reference('message'),
-      docComments: 'The message to display.',
-      type: Reference('String', 'dart:core').type as TypeReference,
-      isRequired: true,
-      isNamed: false,
-    );
-    final codeExpression = builder.generateArgOption(argParserExp, parameter);
-
-    final analyzedResult = parseString(
-      content: codeExpression.statement.accept(DartEmitter()).toString(),
-    );
-    final variable =
-        analyzedResult.unit.declarations.single as TopLevelVariableDeclaration;
-
-    final expression = variable.variables.variables.single.initializer;
-
+  final expression = generateArgParserOption(
+    paramName: 'message',
+    type: TestTypes.string,
+  );
+  test('Create an ArgParser instance with one option', () async {
     check(expression)
         .isA<CascadeExpression>()
         .has((p0) => p0.cascadeSections.first, 'cascade section')
@@ -42,5 +24,28 @@ void main() {
         "valueHelp: 'property'",
         "help: 'The message to display.'",
       ]);
+  });
+  group('ArgParser - Option names', () {
+    test('Simple option name', () {
+      final arguments = generateOptionArguments(paramName: 'message');
+
+      check(arguments).any((p0) {
+        p0
+            .isA<SimpleStringLiteral>()
+            .has((p0) => p0.value, 'value')
+            .equals('message');
+      });
+    });
+
+    test('Multi-word option names', () {
+      final arguments = generateOptionArguments(paramName: 'authorDateOrder');
+
+      check(arguments).any((p0) {
+        p0
+            .isA<SimpleStringLiteral>()
+            .has((p0) => p0.value, 'value')
+            .equals('author-date-order');
+      });
+    });
   });
 }

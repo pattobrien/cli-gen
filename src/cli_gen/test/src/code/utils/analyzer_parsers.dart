@@ -1,0 +1,66 @@
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:cli_gen/src/code/arg_parser/arg_parser_instance_builder.dart';
+import 'package:cli_gen/src/code/models/command_parameter_model.dart';
+import 'package:code_builder/code_builder.dart' hide Expression;
+
+import 'types.dart';
+
+ParseStringResult parseCode(Code code) {
+  return parseString(
+    content: code.accept(DartEmitter()).toString(),
+  );
+}
+
+CascadeExpression generateArgParserOption({
+  String paramName = 'message',
+  String docComments = 'The message to display.',
+  TypeReference? type,
+  isRequired = true,
+  isNamed = false,
+}) {
+  type ??= TestTypes.string;
+  final builder = ArgParserInstanceExp();
+
+  final argParserExp = CodeExpression(Code('final x = ArgParser()'));
+
+  final parameter = CommandParameterModel(
+    name: Reference(paramName),
+    docComments: docComments,
+    type: type,
+    isRequired: isRequired,
+    isNamed: isNamed,
+  );
+  final codeExpression = builder.generateArgOption(argParserExp, parameter);
+
+  final analyzedResult = parseCode(codeExpression.statement);
+  final variable =
+      analyzedResult.unit.declarations.single as TopLevelVariableDeclaration;
+  return variable.variables.variables.single.initializer as CascadeExpression;
+}
+
+List<Expression> getOptionArguments(CascadeExpression expression) {
+  final singleCascadeExp = expression.cascadeSections.single;
+  singleCascadeExp as MethodInvocation;
+  return singleCascadeExp.argumentList.arguments;
+}
+
+List<Expression> generateOptionArguments({
+  required String paramName,
+  TypeReference? type,
+  bool isRequired = true,
+  bool isNamed = false,
+  String? defaultValue,
+  String docComment = 'The message to display.',
+}) {
+  final cascadeExp = generateArgParserOption(
+    paramName: paramName,
+    type: type,
+    isRequired: isRequired,
+    docComments: docComment,
+    isNamed: isNamed,
+  );
+
+  return getOptionArguments(cascadeExp);
+}

@@ -1,4 +1,5 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../models/command_parameter_model.dart';
@@ -42,8 +43,12 @@ class ArgParserInstanceExp {
 
     final property = isFlag ? 'addFlag' : 'addOption';
 
+    // we change the option name from camelCase to param-case, for example:
+    // `authorDateOrder` to `author-date-order`.
+    final optionName = name.symbol!.paramCase;
+
     return argParserExp.cascade(property).call([
-      literalString(name.symbol!),
+      literalString(optionName),
     ], {
       // 'abbr': literalString('p'),
       if (!isFlag) 'mandatory': literalBool(isRequired),
