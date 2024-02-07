@@ -4,6 +4,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:checks/checks.dart';
 import 'package:cli_gen/src/analysis/cli_parameter_analyzer.dart';
+import 'package:cli_gen/src/code/models/command_parameter_model.dart';
 import 'package:test/test.dart';
 
 import '../../example_usage/args_example.dart' as test_file;
@@ -66,24 +67,11 @@ void main() async {
         ..has((p0) => p0.symbol, 'type').equals('bool')
         ..has((p0) => p0.url, 'type url').equals('dart:core');
     });
-
-    // // TODO: extension type (of primative)
-
-    // test('Extension type (of a primative)', () {
-    //   final parameters = paramAnalyzer.fromExecutableElement(executable);
-    //   final parameter =
-    //       parameters.firstWhere((p) => p.name.symbol == 'emailValue');
-    //   check(parameter)
-    //     ..has((p0) => p0.type.symbol, 'type').equals('Email')
-    //     ..has((p0) => p0.type.url, 'type url').equals('args_example.dart');
-    // });
   });
 
   group('Command parameters - User-defined types', () {
     final executable = functions.firstWhere((e) => e.name == 'userTypes');
     final parameters = paramAnalyzer.fromExecutableElement(executable);
-    // TODO: define scope
-    // SEE: @FromString annotation
 
     test('Implicit available options from Enum constants', () {
       final param = parameters.firstWhere((p) => p.ref.symbol == 'enumValue');
@@ -117,7 +105,23 @@ void main() async {
   });
 
   group('Command parameters - Multi-select', () {
-    // TODO
+    final executable = functions.firstWhere((e) => e.name == 'multiSelect');
+    final parameters = paramAnalyzer.fromExecutableElement(executable);
+
+    test('List<String> supports multiple values', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'multiString');
+      check(param.optionType).equals(OptionType.multiOption);
+    });
+
+    test('Set<int> supports multiple values', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'multiInt');
+      check(param.optionType).equals(OptionType.multiOption);
+    });
+
+    test('Iterable<String> supports multiple values', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'multiEnum');
+      check(param.optionType).equals(OptionType.multiOption);
+    });
   });
 
   group('Command parameters - Doc comments:', () {
@@ -159,8 +163,14 @@ void main() async {
       check(param.defaultValueCode).equals('42');
     });
 
-    test('Enum', () {
-      // TODO: handle enum default values
+    test('List<String>', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'listVal');
+      check(param.defaultValueCode).equals("const ['a', 'b', 'c']");
+    });
+
+    test('Set<int>', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'setVal');
+      check(param.defaultValueCode).equals('const {}');
     });
   });
 

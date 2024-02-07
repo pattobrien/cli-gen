@@ -52,10 +52,7 @@ class CliParameterAnalyzer {
     final enumType = typeProvider.enumElement!.thisType;
 
     if (thisType.allSupertypes.contains(enumType)) {
-      // print('found an enum');
       final value = reader.read('_name').stringValue;
-      print('enum value is: $value');
-
       return value;
     }
     if (thisType.isDartCoreString) {
@@ -92,7 +89,9 @@ class CliParameterAnalyzer {
   // for a parameter to be multi-optional, it must have the following properties:
   // - be a list type
   bool isMultiOptional(ParameterElement element) {
-    return element.type.isDartCoreList;
+    return element.type.isDartCoreList ||
+        element.type.isDartCoreSet ||
+        element.type.isDartCoreIterable;
   }
 
   // for a parameter to have options to select from, it must:

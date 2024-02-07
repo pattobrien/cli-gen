@@ -17,16 +17,16 @@ void primativeTypes(
 
 @CliCommand()
 void userTypes(
-  EnumType enumValue,
+  MyFooEnum enumValue,
   Email emailValue, {
-  EnumType enumValue2 = EnumType.value1,
+  MyFooEnum enumValue2 = MyFooEnum.value1,
   Email emailValue2 = const Email('foo'),
   int constVar = someConstant,
 }) {}
 
 extension type const Email(String value) {}
 
-enum EnumType { value1, value2 }
+enum MyFooEnum { value1, value2 }
 
 const someConstant = 42;
 
@@ -54,6 +54,8 @@ void defaultValues({
   String stringVal = 'default',
   int integerVal = 42,
   bool booleanVal = true,
+  List<String> listVal = const ['a', 'b', 'c'],
+  Set<int> setVal = const {},
 }) {}
 
 // -- DOC COMMENTS --
@@ -67,3 +69,12 @@ class DocComments {
   /// The message to display.
   final String message;
 }
+
+// -- MULTI-SELECT TESTS --
+
+@CliCommand()
+void multiSelect({
+  List<String> multiString = const [],
+  Set<int> multiInt = const {},
+  Iterable<MyFooEnum> multiEnum = const [],
+}) {}
