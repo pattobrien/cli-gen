@@ -17,6 +17,7 @@ CascadeExpression generateArgParserOption({
   String paramName = 'message',
   String? docComments = 'The message to display.',
   TypeReference? type,
+  String? defaultValue,
   bool isRequired = true,
   bool isNamed = false,
 }) {
@@ -28,6 +29,7 @@ CascadeExpression generateArgParserOption({
   final parameter = CommandParameterModel(
     name: Reference(paramName),
     docComments: docComments,
+    defaultValueCode: defaultValue,
     type: type,
     isRequired: isRequired,
     isNamed: isNamed,
@@ -57,6 +59,7 @@ List<Expression> generateOptionArguments({
   final cascadeExp = generateArgParserOption(
     paramName: paramName,
     type: type,
+    defaultValue: defaultValue,
     isRequired: isRequired,
     docComments: docComment,
     isNamed: isNamed,

@@ -109,11 +109,10 @@ void main() {
     // with a default enum value
   });
 
-  group('ArgParser - Flag vs. Option', () {
-    // use flag if the type is a boolean
-    test('Use flag when parameter type is a boolean', () {
-      final expression = generateArgParserOption(type: TestTypes.bool);
+  group('ArgParser - Flag specifics (vs. Options)', () {
+    final expression = generateArgParserOption(type: TestTypes.bool);
 
+    test('Use `addFlag` method when parameter type is a boolean', () {
       check(expression)
           .isA<CascadeExpression>()
           .has((p0) => p0.cascadeSections.first, 'cascade section')
@@ -121,7 +120,23 @@ void main() {
           .has((p0) => p0.methodName.name, 'method name')
           .equals('addFlag');
     });
-    // use option if the type is not a boolean
+
+    test('`defaultsTo` should be a boolean literal, not a string', () {
+      final arguments = generateOptionArguments(
+        type: TestTypes.bool,
+        docComment: 'A boolean value.',
+        defaultValue: 'true',
+      );
+      // note: this is the only case where the defaultsTo is not a string value
+      check(arguments).any(
+        (argument) => argument.isA<NamedExpression>()
+          ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
+          ..has((p0) => p0.expression, 'defaultsTo')
+              .isA<BooleanLiteral>()
+              .has((p0) => p0.value, 'value')
+              .equals(true),
+      );
+    });
   });
 
   group('ArgParser - different types', () {

@@ -51,7 +51,7 @@ class Option<T> {
   final String? abbr;
   final String? help;
   final T? valueHelp;
-  final bool? negatable;
+  final bool? negatable; // TODO: only useful for bool options
   final bool? hide;
   final T? defaultsTo; // TODO: this could be a list, if this is a MultiOption
   final List<T>? allowed;
