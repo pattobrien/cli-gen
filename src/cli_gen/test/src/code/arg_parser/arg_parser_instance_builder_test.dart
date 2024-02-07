@@ -150,4 +150,8 @@ void main() {
     // enum with multiple values
     // string with explicit multiple values from Option annotation
   });
+
+  // TODO: misc other use cases
+  // - generate a `abbr` value based on the first letter of the option name
+  //   - if the first letter is already used, then what?
 }

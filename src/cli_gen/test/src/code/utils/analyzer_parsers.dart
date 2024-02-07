@@ -20,6 +20,8 @@ CascadeExpression generateArgParserOption({
   String? defaultValue,
   bool isRequired = true,
   bool isNamed = false,
+  OptionType optionType = OptionType.single,
+  List<String>? availableOptions,
 }) {
   type ??= TestTypes.string;
   final builder = ArgParserInstanceExp();
@@ -33,6 +35,8 @@ CascadeExpression generateArgParserOption({
     type: type,
     isRequired: isRequired,
     isNamed: isNamed,
+    optionType: optionType,
+    availableOptions: availableOptions,
   );
   final codeExpression = builder.generateArgOption(argParserExp, parameter);
 

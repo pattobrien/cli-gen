@@ -93,9 +93,20 @@ void main() async {
   });
 
   group('Command parameters - User-defined types', () {
+    final executable =
+        functions.firstWhere((e) => e.name == 'userDefinedTypes');
+    final parameters = paramAnalyzer.fromExecutableElement(executable);
     // TODO: define scope
     // SEE: @FromString annotation
-    // user-defined enum
+
+    test('Implicit available options from Enum constants', () {
+      final parameter =
+          parameters.firstWhere((p) => p.name.symbol == 'enumValue');
+      check(parameter.availableOptions)
+          .isNotNull()
+          .unorderedEquals(['value1', 'value2']);
+    });
+
     // user-defined extension type (of a primative)
     // user-defined interface type
   });

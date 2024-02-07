@@ -8,11 +8,14 @@ class CommandParameterModel {
     required this.type,
     required this.isNamed,
     required this.isRequired,
+    required this.optionType,
     this.docComments,
     this.defaultValueCode,
     this.annotations = const [],
+    this.availableOptions,
   });
 
+  final OptionType optionType;
   final Reference name;
 
   final TypeReference type;
@@ -26,5 +29,14 @@ class CommandParameterModel {
   // TODO: should defaultValueCode be a Code or a String?
   final String? defaultValueCode;
 
+  final List<String>? availableOptions;
+
   final List<AnnotationModel> annotations;
+}
+
+enum OptionType {
+  single,
+
+  /// Option where user can select more than one value
+  multiOption,
 }
