@@ -29,7 +29,7 @@ CascadeExpression generateArgParserOption({
   final argParserExp = CodeExpression(Code('final x = ArgParser()'));
 
   final parameter = CommandParameterModel(
-    name: Reference(paramName),
+    ref: Reference(paramName),
     docComments: docComments,
     defaultValueCode: defaultValue,
     type: type,

@@ -30,7 +30,7 @@ void main() async {
 
       final parameter = parameters.single;
 
-      check(parameter).has((p0) => p0.name.symbol, 'name').equals('message');
+      check(parameter).has((p0) => p0.ref.symbol, 'name').equals('message');
 
       check(parameter).has((p0) => p0.type.symbol, 'type').equals('String');
       check(parameter).has((p0) => p0.isRequired, 'isRequired').equals(true);
@@ -38,13 +38,6 @@ void main() async {
       check(parameter)
           .has((p0) => p0.defaultValueCode, 'defaultValueCode')
           .isNull();
-      //TODO: handle docComments (waiting for response from Dart team on
-      // how doc comments will be handled with macros)
-
-      // check(parameter)
-      //     .has((p0) => p0.docComments, 'docComments')
-      //     .equals('The message to display.');
-      // check(parameter).has((p0) => p0.annotations, 'annotations').isEmpty();
     });
   });
 
@@ -55,7 +48,7 @@ void main() async {
     test('String Literal', () {
       final parameters = paramAnalyzer.fromExecutableElement(executable);
       final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'stringValue');
+          parameters.firstWhere((p) => p.ref.symbol == 'stringValue');
       check(parameter)
         ..has((p0) => p0.type.symbol, 'type').equals('String')
         ..has((p0) => p0.type.url, 'type url').equals('dart:core');
@@ -64,7 +57,7 @@ void main() async {
     test('Integer Literal', () {
       final parameters = paramAnalyzer.fromExecutableElement(executable);
       final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'intValue');
+          parameters.firstWhere((p) => p.ref.symbol == 'intValue');
       check(parameter)
         ..has((p0) => p0.type.symbol, 'type').equals('int')
         ..has((p0) => p0.type.url, 'type url').equals('dart:core');
@@ -74,7 +67,7 @@ void main() async {
     test('Boolean Literal', () {
       final parameters = paramAnalyzer.fromExecutableElement(executable);
       final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'boolValue');
+          parameters.firstWhere((p) => p.ref.symbol == 'boolValue');
       check(parameter)
         ..has((p0) => p0.type.symbol, 'type').equals('bool')
         ..has((p0) => p0.type.url, 'type url').equals('dart:core');
@@ -101,7 +94,7 @@ void main() async {
 
     test('Implicit available options from Enum constants', () {
       final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'enumValue');
+          parameters.firstWhere((p) => p.ref.symbol == 'enumValue');
       check(parameter.availableOptions)
           .isNotNull()
           .unorderedEquals(['value1', 'value2']);
@@ -142,63 +135,50 @@ void main() async {
     });
   });
 
-  group('Command parameters - Default values', () {
+  group('Command parameters - Default values:', () {
     final executable = functions.firstWhere((e) => e.name == 'defaultValues');
     final parameters = paramAnalyzer.fromExecutableElement(executable);
 
-    test('String Default Value', () {
-      final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'defaultValue');
-      check(parameter)
-          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
-          .equals("'default'");
+    test('String', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'stringVal');
+      check(param.defaultValueCode).equals("'default'");
     });
 
-    test('Boolean Default Value', () {
-      final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'defaultBool');
-      check(parameter)
-          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
-          .equals('true');
+    test('Boolean', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'booleanVal');
+      check(param.defaultValueCode).equals('true');
     });
 
-    test('Integer Default Value', () {
-      final parameter =
-          parameters.firstWhere((p) => p.name.symbol == 'defaultInt');
-      check(parameter)
-          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
-          .equals('42');
+    test('Integer', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'integerVal');
+      check(param.defaultValueCode).equals('42');
     });
 
-    test('Enum Default Value', () {
+    test('Enum', () {
       // TODO: handle enum default values
     });
   });
 
-  group('Command parameters - Required/Optional + Named/Positional', () {
+  group('Command parameters - Named parameters:', () {
     final namedFunction = functions.firstWhere((e) => e.name == 'named');
     final namedParams = paramAnalyzer.fromExecutableElement(namedFunction);
 
-    test('Named parameters', () {
+    test('All 3 parameters are named', () {
       check(namedParams)
         ..has((p0) => p0.length, 'length').equals(3)
         ..every((p0) => p0.has((p0) => p0.isNamed, 'isNamed').equals(true));
     });
 
-    test('Required + Named + No Default Value', () {
-      final requiredParam = namedParams.firstWhere(
-        (p) => p.name.symbol == 'requiredValue',
-      );
-      check(requiredParam)
+    test('Required + No Default Value', () {
+      final param = namedParams.firstWhere((p) => p.ref.symbol == 'reqValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(true)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
 
-    test('Optional + Named', () {
-      final optionalParam = namedParams.firstWhere(
-        (p) => p.name.symbol == 'optionalValue',
-      );
-      check(optionalParam)
+    test('Nullable + No Default Value', () {
+      final param = namedParams.firstWhere((p) => p.ref.symbol == 'optValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
@@ -206,51 +186,40 @@ void main() async {
     // NOTE: `package:args` throws an exception if an option is set with both
     // a) mandatory=true and b) has a default value. Therefore, we should
     // follow suit: if a parameter has a default value, mandatory should be false.
-    test('Named + Default Value', () {
-      final parameter = namedParams.firstWhere(
-        (p) => p.name.symbol == 'defaultValue',
-      );
-      check(parameter)
+    test('Non-Nullable + Default Value', () {
+      final param = namedParams.firstWhere((p) => p.ref.symbol == 'defValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNotNull();
     });
+  });
+  group('Command parameters - Positional parameters:', () {
+    final positionalFunc = functions.firstWhere((e) => e.name == 'positional');
+    final parameters = paramAnalyzer.fromExecutableElement(positionalFunc);
 
-    final positionalFunction =
-        functions.firstWhere((e) => e.name == 'positional');
-    final positionalParams =
-        paramAnalyzer.fromExecutableElement(positionalFunction);
-
-    test('Positional paramters', () {
-      check(positionalParams)
+    test('All 3 parameters are positional', () {
+      check(parameters)
         ..has((p0) => p0.length, 'length').equals(3)
-        ..every((p0) {
-          p0.has((p0) => p0.isNamed, 'isNamed').equals(false);
-        });
+        ..every((p0) => p0.has((p0) => p0.isNamed, 'isNamed').equals(false));
     });
 
     test('Required + Positional', () {
-      final parameter = positionalParams.firstWhere(
-        (p) => p.name.symbol == 'requiredValue',
-      );
-      check(parameter)
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'reqValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(true)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
 
     test('Optional + Positional', () {
-      final parameter = positionalParams.firstWhere(
-        (p) => p.name.symbol == 'optionalValue',
-      );
-      check(parameter)
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'optValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
 
     test('Positional + Default Value', () {
-      final parameter = positionalParams.firstWhere(
-        (p) => p.name.symbol == 'defaultValue',
-      );
-      check(parameter)
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'defValue');
+      check(param)
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNotNull();
     });

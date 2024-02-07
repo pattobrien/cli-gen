@@ -26,7 +26,7 @@ class ArgParserInstanceExp {
     Expression argParserExp,
     CommandParameterModel parameter,
   ) {
-    final name = parameter.name;
+    final name = parameter.ref;
 
     final docComment = parameter.docComments;
 

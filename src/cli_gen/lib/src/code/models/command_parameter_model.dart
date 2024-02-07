@@ -4,7 +4,7 @@ import 'annotation_model.dart';
 
 class CommandParameterModel {
   const CommandParameterModel({
-    required this.name,
+    required this.ref,
     required this.type,
     required this.isNamed,
     required this.isRequired,
@@ -16,7 +16,7 @@ class CommandParameterModel {
   });
 
   final OptionType optionType;
-  final Reference name;
+  final Reference ref;
 
   final TypeReference type;
 

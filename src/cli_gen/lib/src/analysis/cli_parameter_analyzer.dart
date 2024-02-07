@@ -18,7 +18,7 @@ class CliParameterAnalyzer {
     final cleanedUpComments = removeDocSlashes(docComments);
     final availableOptions = getImplicitAvailableOptions(element);
     return CommandParameterModel(
-      name: element.toRef(),
+      ref: element.toRef(),
       type: element.type.toRef().toTypeRef(),
       isRequired: element.isRequired,
       isNamed: element.isNamed,

@@ -57,6 +57,7 @@ class Option<T> {
   final List<T>? allowed;
   final Map<T, String>? allowedHelp;
   final List<String>? aliases;
+  final T Function(String)? parser;
 
   const Option({
     this.abbr,
@@ -68,5 +69,6 @@ class Option<T> {
     this.allowed,
     this.allowedHelp,
     this.aliases,
+    this.parser,
   });
 }

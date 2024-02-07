@@ -32,26 +32,26 @@ enum EnumType { value1, value2 }
 
 @CliCommand()
 void named({
-  required String requiredValue,
-  String? optionalValue,
-  String defaultValue = 'default',
+  required String reqValue,
+  String? optValue,
+  String defValue = 'default',
 }) {}
 
 // note: default values arent permitted with positional parameters
 @CliCommand()
 void positional(
-  String requiredValue, [
-  String? optionalValue,
-  String defaultValue = 'default',
+  String reqValue, [
+  String? optValue,
+  String defValue = 'default',
 ]) {}
 
 // -- DEFAULT VALUE TESTS --
 
 @CliCommand()
 void defaultValues({
-  String defaultValue = 'default',
-  int defaultInt = 42,
-  bool defaultBool = true,
+  String stringVal = 'default',
+  int integerVal = 42,
+  bool booleanVal = true,
 }) {}
 
 // -- DOC COMMENTS --
