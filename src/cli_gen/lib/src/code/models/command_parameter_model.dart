@@ -8,9 +8,9 @@ class CommandParameterModel {
     required this.type,
     required this.isNamed,
     required this.isRequired,
-    required this.docComments,
-    required this.defaultValueCode,
-    required this.annotations,
+    this.docComments,
+    this.defaultValueCode,
+    this.annotations = const [],
   });
 
   final Reference name;

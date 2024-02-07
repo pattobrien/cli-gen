@@ -1,0 +1,63 @@
+import 'package:code_builder/code_builder.dart';
+
+import '../../types/identifiers.dart';
+import '../models/command_parameter_model.dart';
+import '../utils/remove_doc_slashes.dart';
+
+/// Responsible for generating the `ArgParser` and adding flags/options to it.
+class ArgParserInstanceExp {
+  const ArgParserInstanceExp();
+
+  Expression buildArgParserInstance(
+    List<CommandParameterModel> parameters,
+  ) {
+    final argParserRef = Identifiers.args.argParser;
+    // final argParserAddOptionRef = Identifiers.args.argParserAddOption;
+    // final argParserAddFlagRef = Identifiers.args.argParserAddFlag;
+
+    var argParserExp = argParserRef.newInstance([]);
+
+    for (final parameter in parameters) {
+      argParserExp = generateArgOption(argParserExp, parameter);
+    }
+
+    return argParserExp;
+  }
+
+  Expression generateArgOption(
+    Expression argParserExp,
+    CommandParameterModel parameter,
+  ) {
+    final name = parameter.name;
+
+    final docComment = parameter.docComments;
+
+    final type = parameter.type;
+    final isRequired = parameter.isRequired;
+
+    final boolRef = Identifiers.dart.bool;
+    final isFlag = type == boolRef;
+    final defaultValue = parameter.defaultValueCode;
+    final isNegatable = false;
+
+    final property = isFlag ? 'addFlag' : 'addOption';
+
+    return argParserExp.cascade(property).call([
+      literalString(name.symbol!),
+    ], {
+      // 'abbr': literalString('p'),
+      if (!isFlag) 'mandatory': literalBool(isRequired),
+      if (!isFlag) 'valueHelp': literalString('property'),
+      // if (!isFlag) 'allowed': literalList([]),
+      if (isFlag) 'negatable': literalBool(isNegatable),
+      if (defaultValue != null)
+        'defaultsTo': CodeExpression(Code(defaultValue)),
+      if (docComment != null)
+        'help': literalString(removeDocSlashes(docComment)!),
+    });
+  }
+}
+
+extension RefCascade on Expression {
+  // Expression cascade(Reference property) {}
+}

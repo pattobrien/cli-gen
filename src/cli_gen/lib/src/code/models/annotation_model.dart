@@ -12,4 +12,10 @@ class AnnotationModel {
     required this.unNamedArgs,
     required this.namedArgs,
   });
+
+  bool get isOptionType => type.symbol == 'Option';
+
+  bool get isFlagType => type.symbol == 'Flag';
+
+  bool get isCommandType => type.symbol == 'CliCommand';
 }
