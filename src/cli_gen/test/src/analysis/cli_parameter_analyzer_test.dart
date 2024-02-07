@@ -43,34 +43,28 @@ void main() async {
 
   group('Command parameters - Supported primative types:', () {
     final executable = functions.firstWhere((e) => e.name == 'primativeTypes');
-    // literal String
+    final parameters = paramAnalyzer.fromExecutableElement(executable);
 
     test('String Literal', () {
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
-      final parameter =
-          parameters.firstWhere((p) => p.ref.symbol == 'stringValue');
-      check(parameter)
-        ..has((p0) => p0.type.symbol, 'type').equals('String')
-        ..has((p0) => p0.type.url, 'type url').equals('dart:core');
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'stringValue');
+      check(param.type)
+        ..has((p0) => p0.symbol, 'type').equals('String')
+        ..has((p0) => p0.url, 'type url').equals('dart:core');
     });
     // literal int
     test('Integer Literal', () {
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
-      final parameter =
-          parameters.firstWhere((p) => p.ref.symbol == 'intValue');
-      check(parameter)
-        ..has((p0) => p0.type.symbol, 'type').equals('int')
-        ..has((p0) => p0.type.url, 'type url').equals('dart:core');
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'intValue');
+      check(param.type)
+        ..has((p0) => p0.symbol, 'type').equals('int')
+        ..has((p0) => p0.url, 'type url').equals('dart:core');
     });
     // literal boolean
 
     test('Boolean Literal', () {
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
-      final parameter =
-          parameters.firstWhere((p) => p.ref.symbol == 'boolValue');
-      check(parameter)
-        ..has((p0) => p0.type.symbol, 'type').equals('bool')
-        ..has((p0) => p0.type.url, 'type url').equals('dart:core');
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'boolValue');
+      check(param.type)
+        ..has((p0) => p0.symbol, 'type').equals('bool')
+        ..has((p0) => p0.url, 'type url').equals('dart:core');
     });
 
     // // TODO: extension type (of primative)
@@ -86,16 +80,14 @@ void main() async {
   });
 
   group('Command parameters - User-defined types', () {
-    final executable =
-        functions.firstWhere((e) => e.name == 'userDefinedTypes');
+    final executable = functions.firstWhere((e) => e.name == 'userTypes');
     final parameters = paramAnalyzer.fromExecutableElement(executable);
     // TODO: define scope
     // SEE: @FromString annotation
 
     test('Implicit available options from Enum constants', () {
-      final parameter =
-          parameters.firstWhere((p) => p.ref.symbol == 'enumValue');
-      check(parameter.availableOptions)
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'enumValue');
+      check(param.availableOptions)
           .isNotNull()
           .unorderedEquals(['value1', 'value2']);
     });
@@ -112,7 +104,7 @@ void main() async {
     // TODO
   });
 
-  group('Command parameters - Doc comments', () {
+  group('Command parameters - Doc comments:', () {
     /// NOTE: doc comments currently don't work with parameters at all. However,
     /// on class/constructor-based commands (see [DocComments] class in args_example),
     /// doc comments are pulled from the field element that the parameter
@@ -122,16 +114,13 @@ void main() async {
     // TODO: with doc comment + functions/methods
     // TODO: doc comment using annotations
 
-    test('Constructor parameters', () {
+    test('Constructors', () {
       final classes = unit.unit.declaredElement!.classes;
       final classElement = classes.firstWhere((e) => e.name == 'DocComments');
       final constructor = classElement.constructors.first;
       final parameters = paramAnalyzer.fromExecutableElement(constructor);
 
-      check(parameters).has((p0) => p0.length, 'length').equals(1);
-      check(parameters.first)
-          .has((p0) => p0.docComments, 'docComments')
-          .equals('The message to display.');
+      check(parameters.single.docComments).equals('The message to display.');
     });
   });
 
