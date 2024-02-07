@@ -31,18 +31,25 @@ enum EnumType { value1, value2 }
 // -- REQUIRED/OPTIONAL + NAMED/POSITIONAL TESTS --
 
 @CliCommand()
-Future<void> named({
+void named({
   required String requiredValue,
   String? optionalValue,
   String defaultValue = 'default',
-}) async =>
-    throw UnimplementedError();
+}) {}
 
 // note: default values arent permitted with positional parameters
 @CliCommand()
-Future<void> positional(
+void positional(
   String requiredValue, [
   String? optionalValue,
   String defaultValue = 'default',
-]) async =>
-    throw UnimplementedError();
+]) {}
+
+// -- DEFAULT VALUE TESTS --
+
+@CliCommand()
+void defaultValues({
+  String defaultValue = 'default',
+  int defaultInt = 42,
+  bool defaultBool = true,
+}) {}

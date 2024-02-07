@@ -38,8 +38,9 @@ void main() async {
         .has((p0) => p0.defaultValueCode, 'defaultValueCode')
         .isNull();
 
-    // TODO: handle docComments (waiting for response from Dart team on
+    //TODO: handle docComments (waiting for response from Dart team on
     // how doc comments will be handled with macros)
+
     // check(parameter)
     //     .has((p0) => p0.docComments, 'docComments')
     //     .equals('The message to display.');
@@ -98,19 +99,46 @@ void main() async {
     // user-defined interface type
   });
 
-  group('Command parameters - Annotations', () {});
+  group('Command parameters - Annotations', () {
+    // TODO: handle configuring the parser with annotations (e.g. @Option)
+  });
 
   group('Command parameters - Doc comments', () {
-    // without doc comment
-    // with doc comment
+    // TODO: without doc comment
+    // TODO: with doc comment
   });
 
   group('Command parameters - Default values', () {
-    // without a default value
-    // with a string default value
-    // with a boolean default value
-    // with a int default value
-    // with a enum default value
+    final executable = functions.firstWhere((e) => e.name == 'defaultValues');
+    final parameters = paramAnalyzer.fromExecutableElement(executable);
+
+    test('String Default Value', () {
+      final parameter =
+          parameters.firstWhere((p) => p.name.symbol == 'defaultValue');
+      check(parameter)
+          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
+          .equals("'default'");
+    });
+
+    test('Boolean Default Value', () {
+      final parameter =
+          parameters.firstWhere((p) => p.name.symbol == 'defaultBool');
+      check(parameter)
+          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
+          .equals('true');
+    });
+
+    test('Integer Default Value', () {
+      final parameter =
+          parameters.firstWhere((p) => p.name.symbol == 'defaultInt');
+      check(parameter)
+          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
+          .equals('42');
+    });
+
+    test('Enum Default Value', () {
+      // TODO: handle enum default values
+    });
   });
 
   group('Command parameters - Required/Optional + Named/Positional', () {
@@ -120,12 +148,9 @@ void main() async {
     test('Named parameters', () {
       check(namedParams)
         ..has((p0) => p0.length, 'length').equals(3)
-        ..every((p0) {
-          p0.has((p0) => p0.isNamed, 'isNamed').equals(true);
-        });
+        ..every((p0) => p0.has((p0) => p0.isNamed, 'isNamed').equals(true));
     });
 
-    // required + named + no default value
     test('Required + Named + No Default Value', () {
       final requiredParam = namedParams.firstWhere(
         (p) => p.name.symbol == 'requiredValue',
@@ -135,7 +160,6 @@ void main() async {
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
 
-    // optional + named
     test('Optional + Named', () {
       final optionalParam = namedParams.firstWhere(
         (p) => p.name.symbol == 'optionalValue',
@@ -144,7 +168,7 @@ void main() async {
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
-    // named + default value
+
     // NOTE: `package:args` throws an exception if an option is set with both
     // a) mandatory=true and b) has a default value. Therefore, we should
     // follow suit: if a parameter has a default value, mandatory should be false.
@@ -156,11 +180,12 @@ void main() async {
         ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNotNull();
     });
-    // required + positional
+
     final positionalFunction =
         functions.firstWhere((e) => e.name == 'positional');
     final positionalParams =
         paramAnalyzer.fromExecutableElement(positionalFunction);
+
     test('Positional paramters', () {
       check(positionalParams)
         ..has((p0) => p0.length, 'length').equals(3)
@@ -168,6 +193,7 @@ void main() async {
           p0.has((p0) => p0.isNamed, 'isNamed').equals(false);
         });
     });
+
     test('Required + Positional', () {
       final parameter = positionalParams.firstWhere(
         (p) => p.name.symbol == 'requiredValue',
@@ -176,7 +202,7 @@ void main() async {
         ..has((p0) => p0.isRequired, 'isRequired').equals(true)
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
-    // optional + positional
+
     test('Optional + Positional', () {
       final parameter = positionalParams.firstWhere(
         (p) => p.name.symbol == 'optionalValue',
@@ -186,7 +212,6 @@ void main() async {
         ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
     });
 
-    // positional + default value
     test('Positional + Default Value', () {
       final parameter = positionalParams.firstWhere(
         (p) => p.name.symbol == 'defaultValue',
