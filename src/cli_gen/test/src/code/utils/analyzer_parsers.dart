@@ -17,8 +17,8 @@ CascadeExpression generateArgParserOption({
   String paramName = 'message',
   String? docComments = 'The message to display.',
   TypeReference? type,
-  isRequired = true,
-  isNamed = false,
+  bool isRequired = true,
+  bool isNamed = false,
 }) {
   type ??= TestTypes.string;
   final builder = ArgParserInstanceExp();

@@ -1,5 +1,8 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'runner.g.dart';
 
 void main() async {
   final runner = ExampleRunner();
@@ -30,10 +33,30 @@ class ExampleCommand extends Command {
       abbr: 'f',
       mandatory: false,
       defaultsTo: 'default',
+    )
+    ..addFlag(
+      'bar',
+      abbr: 'b',
+      negatable: false,
     );
 
   @override
   run() {
     print('Example command executed.');
   }
+}
+
+@JsonSerializable()
+class Foo {
+  final String stringValue;
+  final bool boolValue;
+  final int intValue;
+
+  const Foo({
+    this.stringValue = 'default',
+    this.boolValue = true,
+    this.intValue = 42,
+  });
+
+  factory Foo.fromJson(Map<String, dynamic> json) => _$FooFromJson(json);
 }

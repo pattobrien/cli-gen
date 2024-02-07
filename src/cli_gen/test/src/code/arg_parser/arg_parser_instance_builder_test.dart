@@ -109,8 +109,19 @@ void main() {
     // with a default enum value
   });
 
-  group('ArgParser - Option vs Flag', () {
-    //
+  group('ArgParser - Flag vs. Option', () {
+    // use flag if the type is a boolean
+    test('Use flag when parameter type is a boolean', () {
+      final expression = generateArgParserOption(type: TestTypes.bool);
+
+      check(expression)
+          .isA<CascadeExpression>()
+          .has((p0) => p0.cascadeSections.first, 'cascade section')
+          .isA<MethodInvocation>()
+          .has((p0) => p0.methodName.name, 'method name')
+          .equals('addFlag');
+    });
+    // use option if the type is not a boolean
   });
 
   group('ArgParser - different types', () {

@@ -34,7 +34,7 @@ class ArgParserInstanceExp {
     final isRequired = parameter.isRequired;
 
     final boolRef = Identifiers.dart.bool;
-    final isFlag = type == boolRef;
+    final isFlag = type.symbol == boolRef.symbol && type.url == boolRef.url;
     final defaultValue = parameter.defaultValueCode;
     final isNegatable = false;
 
