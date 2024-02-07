@@ -11,6 +11,7 @@ class CommandParameterModel {
     required this.optionType,
     this.docComments,
     this.defaultValueCode,
+    this.computedDefaultValue,
     this.annotations = const [],
     this.availableOptions,
   });
@@ -28,6 +29,8 @@ class CommandParameterModel {
 
   // TODO: should defaultValueCode be a Code or a String?
   final String? defaultValueCode;
+
+  final String? computedDefaultValue;
 
   final List<String>? availableOptions;
 

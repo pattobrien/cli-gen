@@ -92,8 +92,24 @@ void main() async {
           .unorderedEquals(['value1', 'value2']);
     });
 
-    // user-defined extension type (of a primative)
-    // user-defined interface type
+    test('Enum default', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'enumValue2');
+      check(param.computedDefaultValue).isNotNull().equals('value1');
+    });
+
+    test('Extension type default', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'emailValue2');
+      check(param.computedDefaultValue).isNotNull().equals('foo');
+    });
+
+    test('Constant variable default', () {
+      final param = parameters.firstWhere((p) => p.ref.symbol == 'constVar');
+      check(param.computedDefaultValue).isNotNull().equals('42');
+    });
+  });
+
+  group('Command parameters - Complex class types', () {
+    // TODO: user-defined classes
   });
 
   group('Command parameters - Annotations', () {

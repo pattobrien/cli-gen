@@ -18,12 +18,17 @@ void primativeTypes(
 @CliCommand()
 void userTypes(
   EnumType enumValue,
-  Email emailValue,
-) {}
+  Email emailValue, {
+  EnumType enumValue2 = EnumType.value1,
+  Email emailValue2 = const Email('foo'),
+  int constVar = someConstant,
+}) {}
 
-extension type Email(String value) {}
+extension type const Email(String value) {}
 
 enum EnumType { value1, value2 }
+
+const someConstant = 42;
 
 // -- REQUIRED/OPTIONAL + NAMED/POSITIONAL TESTS --
 
