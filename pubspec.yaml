@@ -1,0 +1,12 @@
+name: cli_gen
+description: The workspace for the cli_gen package.
+
+environment:
+  sdk: ^3.4.0-82.0.dev
+
+dependencies:
+  args: ^2.4.2
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
