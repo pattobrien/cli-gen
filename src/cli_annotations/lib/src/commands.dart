@@ -1,6 +1,6 @@
 import 'package:meta/meta_meta.dart';
 
-@Target({TargetKind.method, TargetKind.function})
+@Target({TargetKind.method, TargetKind.function, TargetKind.classType})
 class CliCommand {
   final String? name;
   final String? description;

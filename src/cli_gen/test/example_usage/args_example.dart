@@ -53,3 +53,15 @@ void defaultValues({
   int defaultInt = 42,
   bool defaultBool = true,
 }) {}
+
+// -- DOC COMMENTS --
+
+@CliCommand()
+class DocComments {
+  const DocComments({
+    required this.message,
+  });
+
+  /// The message to display.
+  final String message;
+}

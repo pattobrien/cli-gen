@@ -15,7 +15,7 @@ ParseStringResult parseCode(Code code) {
 
 CascadeExpression generateArgParserOption({
   String paramName = 'message',
-  String docComments = 'The message to display.',
+  String? docComments = 'The message to display.',
   TypeReference? type,
   isRequired = true,
   isNamed = false,
@@ -47,12 +47,12 @@ List<Expression> getOptionArguments(CascadeExpression expression) {
 }
 
 List<Expression> generateOptionArguments({
-  required String paramName,
+  String paramName = 'message',
   TypeReference? type,
   bool isRequired = true,
   bool isNamed = false,
   String? defaultValue,
-  String docComment = 'The message to display.',
+  String? docComment = 'The message to display.',
 }) {
   final cascadeExp = generateArgParserOption(
     paramName: paramName,

@@ -1,2 +1,7 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+# cli-gen
+
+A package for building cli applications using code-gen.
+
+## Features
+
+### ArgParser generation from Parameters

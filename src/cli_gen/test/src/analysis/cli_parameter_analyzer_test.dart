@@ -21,30 +21,31 @@ void main() async {
 
   final paramAnalyzer = CliParameterAnalyzer();
 
-  test('End to end parameter analyzer validation', () async {
-    final executable = functions.first;
-    final parameters = paramAnalyzer.fromExecutableElement(executable);
+  group('End to end parameter analyzer validation', () {
+    test('e2e test', () {
+      final executable = functions.first;
+      final parameters = paramAnalyzer.fromExecutableElement(executable);
 
-    check(parameters).has((p0) => p0.length, 'length').equals(1);
+      check(parameters).has((p0) => p0.length, 'length').equals(1);
 
-    final parameter = parameters.single;
+      final parameter = parameters.single;
 
-    check(parameter).has((p0) => p0.name.symbol, 'name').equals('message');
+      check(parameter).has((p0) => p0.name.symbol, 'name').equals('message');
 
-    check(parameter).has((p0) => p0.type.symbol, 'type').equals('String');
-    check(parameter).has((p0) => p0.isRequired, 'isRequired').equals(true);
-    check(parameter).has((p0) => p0.isNamed, 'isNamed').equals(false);
-    check(parameter)
-        .has((p0) => p0.defaultValueCode, 'defaultValueCode')
-        .isNull();
+      check(parameter).has((p0) => p0.type.symbol, 'type').equals('String');
+      check(parameter).has((p0) => p0.isRequired, 'isRequired').equals(true);
+      check(parameter).has((p0) => p0.isNamed, 'isNamed').equals(false);
+      check(parameter)
+          .has((p0) => p0.defaultValueCode, 'defaultValueCode')
+          .isNull();
+      //TODO: handle docComments (waiting for response from Dart team on
+      // how doc comments will be handled with macros)
 
-    //TODO: handle docComments (waiting for response from Dart team on
-    // how doc comments will be handled with macros)
-
-    // check(parameter)
-    //     .has((p0) => p0.docComments, 'docComments')
-    //     .equals('The message to display.');
-    // check(parameter).has((p0) => p0.annotations, 'annotations').isEmpty();
+      // check(parameter)
+      //     .has((p0) => p0.docComments, 'docComments')
+      //     .equals('The message to display.');
+      // check(parameter).has((p0) => p0.annotations, 'annotations').isEmpty();
+    });
   });
 
   group('Command parameters - Supported primative types:', () {
@@ -103,9 +104,31 @@ void main() async {
     // TODO: handle configuring the parser with annotations (e.g. @Option)
   });
 
+  group('Command parameters - Multi-select', () {
+    // TODO
+  });
+
   group('Command parameters - Doc comments', () {
+    /// NOTE: doc comments currently don't work with parameters at all. However,
+    /// on class/constructor-based commands (see [DocComments] class in args_example),
+    /// doc comments are pulled from the field element that the parameter
+    /// represents. i.e. doc comments only work with Constructor fields.
+
     // TODO: without doc comment
-    // TODO: with doc comment
+    // TODO: with doc comment + functions/methods
+    // TODO: doc comment using annotations
+
+    test('Constructor parameters', () {
+      final classes = unit.unit.declaredElement!.classes;
+      final classElement = classes.firstWhere((e) => e.name == 'DocComments');
+      final constructor = classElement.constructors.first;
+      final parameters = paramAnalyzer.fromExecutableElement(constructor);
+
+      check(parameters).has((p0) => p0.length, 'length').equals(1);
+      check(parameters.first)
+          .has((p0) => p0.docComments, 'docComments')
+          .equals('The message to display.');
+    });
   });
 
   group('Command parameters - Default values', () {

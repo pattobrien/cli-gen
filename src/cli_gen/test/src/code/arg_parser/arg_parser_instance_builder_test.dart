@@ -50,13 +50,57 @@ void main() {
     });
   });
 
-  group('ArgParser - Mandatory options', () {
-    //
+  group('ArgParser - Required/Optional:', () {
+    test('Mandatory = true', () {
+      final arguments = generateOptionArguments(isRequired: true);
+
+      check(arguments).any(
+        (argument) => argument.isA<NamedExpression>()
+          ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+          ..has((p0) => p0.expression.toSource(), 'value').equals('true'),
+      );
+    });
+
+    test('Mandatory = false', () {
+      final arguments = generateOptionArguments(isRequired: false);
+
+      check(arguments).any(
+        (argument) => argument.isA<NamedExpression>()
+          ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+          ..has((p0) => p0.expression.toSource(), 'value').equals('false'),
+      );
+    });
   });
 
   group('ArgParser - doc comments', () {
     // with doc comments
-    // without doc comments
+    test('With doc comments', () {
+      final arguments = generateOptionArguments(
+        docComment: 'The message to display.',
+      );
+
+      check(arguments).any(
+        (argument) => argument.isA<NamedExpression>()
+          ..has((p0) => p0.name.label.name, 'name').equals('help')
+          ..has((p0) => p0.expression.toSource(), 'value')
+              .equals("'The message to display.'"),
+      );
+    });
+
+    test('Without doc comments', () {
+      final arguments = generateOptionArguments(
+        docComment: null,
+      );
+
+      check(arguments).not((p0) {
+        p0.any((p0) {
+          p0
+              .isA<NamedExpression>()
+              .has((p0) => p0.name.label.name, 'name')
+              .equals('help');
+        });
+      });
+    });
   });
 
   group('ArgParser - default values', () {
