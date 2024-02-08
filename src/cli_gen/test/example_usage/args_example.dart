@@ -24,7 +24,16 @@ void userTypes(
   int constVar = someConstant,
 }) {}
 
-extension type const Email(String value) {}
+extension type const Email(String value) {
+  factory Email.parse(String value) {
+    // check if value is valid
+    final regexp = RegExp(r'^\S+@\S+\.\S+$');
+    if (!regexp.hasMatch(value)) {
+      throw ArgumentError('Invalid email address');
+    }
+    return Email(value);
+  }
+}
 
 enum MyFooEnum { value1, value2 }
 

@@ -47,7 +47,37 @@ class ExampleCommand extends Command {
 
   @override
   run() {
-    print('Example command executed.');
+    final results = argResults!;
+
+    userFunction(
+      results['bar'] as List<String>,
+      foo: results['foo'] as String,
+      baz: results['baz'] != null ? int.parse(results['baz']) : null,
+      email: results.wasParsed(
+              'email') // conditional to check if option was supplied (only necessary for `canBeNull` parameters)
+          ? Email.parse(results['email']) // the `parse` method
+          : const Email('default'), // copied from `defaultValueCode`
+    );
+  }
+}
+
+void userFunction(
+  List<String> bar, {
+  required String foo,
+  int? baz = 42,
+  Email email = const Email('default'),
+}) {
+  throw UnimplementedError();
+}
+
+extension type const Email(String value) {
+  factory Email.parse(String value) {
+    // check if value is valid
+    final regexp = RegExp(r'^\S+@\S+\.\S+$');
+    if (!regexp.hasMatch(value)) {
+      throw ArgumentError('Invalid email address');
+    }
+    return Email(value);
   }
 }
 
@@ -56,12 +86,20 @@ class Foo {
   final String stringValue;
   final bool boolValue;
   final int intValue;
+  final Bar bar;
 
   const Foo({
     this.stringValue = 'default',
     this.boolValue = true,
     this.intValue = 42,
+    this.bar = const Bar('default'),
   });
 
   factory Foo.fromJson(Map<String, dynamic> json) => _$FooFromJson(json);
+}
+
+extension type const Bar(String val) {
+  factory Bar.fromJson(Map<String, dynamic> json) {
+    return Bar(json['val'] as String);
+  }
 }

@@ -171,7 +171,7 @@ void main() {
   });
 
   group('ArgParser - multiple options', () {
-    // enum with multiple values
+    // list of integers
     // string with explicit multiple values from Option annotation
   });
 
