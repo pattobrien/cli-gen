@@ -41,19 +41,23 @@ class CliMethodCallBuilder {
     // imagine a parser value on param model that probides us with a method
     // reference (e.g. int.parse, UserId.fromString, etc.)
     final resultsRef = refer('results');
-    final parser = refer('int.parse');
+    // final parser = refer('int.parse');
+    final parser = param.parser;
     // NOTE: i think its safe to assume that a required value wont be null,
     // as ArgParser takes care of erroring to the user in those cases (presumably).
 
     final resultKeyValue = resultsRef.index(literalString(param.ref.symbol!));
 
-    final isNullable = param.type.isNullable!;
+    // TODO: not sure if assuming `null` is the right approach here
+    // but we never require passing a null or non-null value anywhere in the
+    // creating of references, so this is probably a safe move.
+    final isNullable = param.type.isNullable ?? false;
     final hasDefault = param.defaultValueCode != null;
 
     switch ((isNullable, hasDefault)) {
       case (true, _):
         return resultKeyValue.notEqualTo(literalNull).conditional(
-              parser.call([resultKeyValue]),
+              parser?.call([resultKeyValue]) ?? resultKeyValue,
               literalNull,
             );
       case (false, true):
@@ -61,11 +65,11 @@ class CliMethodCallBuilder {
         // expression of the conditional, because otherwise we're passing a null
         // value into a non-nullable parameter.
         return resultKeyValue.notEqualTo(literalNull).conditional(
-              parser.call([resultKeyValue]),
+              parser?.call([resultKeyValue]) ?? resultKeyValue,
               CodeExpression(Code(param.defaultValueCode!)),
             );
       case (false, false):
-        return parser.call([resultKeyValue]);
+        return parser?.call([resultKeyValue]) ?? resultKeyValue;
     }
   }
 

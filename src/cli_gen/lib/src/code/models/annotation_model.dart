@@ -3,9 +3,9 @@ import 'package:code_builder/code_builder.dart';
 class AnnotationModel {
   final TypeReference type;
 
-  final List<Code> unNamedArgs;
+  final List<Object> unNamedArgs;
 
-  final Map<String, Code> namedArgs;
+  final Map<String, Object> namedArgs;
 
   const AnnotationModel({
     required this.type,

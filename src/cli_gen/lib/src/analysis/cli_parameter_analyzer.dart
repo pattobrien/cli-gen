@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../code/models/command_parameter_model.dart';
@@ -21,6 +22,7 @@ class CliParameterAnalyzer {
     // final defaultValue = getDefaultValueCode(element);
     final computedDefaultValue = getDefaultConstantValue(element);
     return CommandParameterModel(
+      parser: getParserForParameter(element, element.type),
       ref: element.toRef(),
       type: element.type.toRef().toTypeRef(),
       isRequired: element.isRequired,
@@ -34,6 +36,55 @@ class CliParameterAnalyzer {
       annotations: [
         // TODO: add support for annotations
       ],
+    );
+  }
+
+  Reference? getParserForParameter(
+    ParameterElement element,
+    DartType type,
+  ) {
+    // if type is one of the following, use a built in parser:
+    // - int -> int.parse
+    // - double -> double.parse
+    // - bool -> bool.parse
+    // - String -> null
+    // - Uri -> Uri.parse
+    // - DateTime -> DateTime.parse
+    if (type.isDartCoreInt) {
+      return refer('int.parse');
+    }
+    if (type.isDartCoreDouble) {
+      return refer('double.parse');
+    }
+    if (type.isDartCoreBool) {
+      return refer('bool.parse');
+    }
+    if (type.isDartCoreString) {
+      return null;
+    }
+    if (type.element!.name == 'Uri' &&
+        type.element!.librarySource!.uri.path == 'dart:core') {
+      return refer('Uri.parse');
+    }
+    if (type.element!.name == 'DateTime' &&
+        type.element!.librarySource!.uri.path == 'dart:core') {
+      return refer('DateTime.parse');
+    }
+
+    // if the element is an iterable, check if the type argument is one of the
+    // above types, and use the corresponding parser + .split(',')
+    final isIterable = type.isDartCoreIterable;
+    if (isIterable) {
+      final typeArg = type as ParameterizedType;
+      final argType = typeArg.typeArguments.single;
+      return getParserForParameter(element, argType);
+    }
+
+    // else, throw an error
+    throw InvalidGenerationSource(
+      'Could not find a parser for parameter',
+      element: element,
+      todo: 'Add a parser for this type',
     );
   }
 

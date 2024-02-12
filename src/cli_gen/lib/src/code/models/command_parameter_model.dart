@@ -14,10 +14,12 @@ class CommandParameterModel {
     this.computedDefaultValue,
     this.annotations = const [],
     this.availableOptions,
+    required this.parser,
   });
 
   final OptionType optionType;
   final Reference ref;
+  final Reference? parser;
 
   final TypeReference type;
 

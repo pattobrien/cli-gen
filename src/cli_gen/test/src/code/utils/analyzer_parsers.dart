@@ -26,6 +26,7 @@ InvocationExpression generateArgResultHandlerExp({
   String? computedDefaultValue,
   bool isRequired = true,
   bool isNamed = false,
+  String? parser,
 }) {
   final builder = CliMethodCallBuilder();
   final callStatement = builder.buildInlineCallStatement(
@@ -36,6 +37,7 @@ InvocationExpression generateArgResultHandlerExp({
       returnType: TestTypes.void_,
       parameters: [
         CommandParameterModel(
+          parser: parser != null ? refer(parser) : null,
           ref: Reference(paramName),
           type: paramType ?? TestTypes.string,
           isRequired: isRequired,
@@ -90,6 +92,7 @@ CascadeExpression generateArgParserOption({
   OptionType optionType = OptionType.single,
   List<String>? availableOptions,
   String? computedDefaultValue,
+  String? parser,
 }) {
   type ??= TestTypes.string;
   final builder = ArgParserInstanceExp();
@@ -97,6 +100,7 @@ CascadeExpression generateArgParserOption({
   final argParserExp = CodeExpression(Code('final x = ArgParser()'));
 
   final parameter = CommandParameterModel(
+    parser: Reference(parser),
     ref: Reference(paramName),
     docComments: docComments,
     defaultValueCode: defaultValueCode,
