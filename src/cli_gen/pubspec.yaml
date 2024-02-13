@@ -10,6 +10,7 @@ dependencies:
   build: ^2.4.1
   code_builder: ^4.10.0
   dart_style: ^2.3.4
+  meta: ^1.12.0
   recase: ^4.1.0
   source_gen: ^1.5.0
 

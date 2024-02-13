@@ -5,177 +5,192 @@ import 'package:test/test.dart';
 import '../utils/analyzer_parsers.dart';
 import '../utils/types.dart';
 
+// Tests the code-generation portion of the `ArgParser` instance builder
+// (i.e. taking a `CommandParameterModel` as input and generating the
+// Spec instances that contain the generated code).
+
 void main() {
-  group('ArgParser - end-to-end test', () {
-    final exp = generateArgParserOption(
-      paramName: 'msg',
-      type: TestTypes.string,
-    );
-    test('Create an ArgParser instance with one option', () async {
-      check(exp)
-          .isA<CascadeExpression>()
-          .has((p0) => p0.cascadeSections.first, 'cascade section')
-          .isA<MethodInvocation>()
-        ..has((p0) => p0.methodName.name, 'method name').equals('addOption')
-        ..has((p0) => p0.argumentList.arguments.map((e) => e.toSource()),
-                'arguments')
-            .unorderedEquals([
-          "'msg'",
-          "mandatory: true",
-          "valueHelp: 'property'",
-          "help: 'The message to display.'",
-        ]);
-    });
-  });
-
-  group('ArgParser - Option names', () {
-    test('Simple option name', () {
-      final arguments = generateOptionArguments(paramName: 'message');
-
-      check(arguments).any((p0) {
-        p0
-            .isA<SimpleStringLiteral>()
-            .has((p0) => p0.value, 'value')
-            .equals('message');
+  group('ArgParser Code Generation -', () {
+    group('end-to-end test -', () {
+      final exp = generateArgParserOption(
+        paramName: 'msg',
+        type: TestTypes.string,
+      );
+      test('Create an ArgParser instance with one option', () async {
+        check(exp)
+            .isA<CascadeExpression>()
+            .has((p0) => p0.cascadeSections.first, 'cascade section')
+            .isA<MethodInvocation>()
+          ..has((p0) => p0.methodName.name, 'method name').equals('addOption')
+          ..has((p0) => p0.argumentList.arguments.map((e) => e.toSource()),
+                  'arguments')
+              .unorderedEquals([
+            "'msg'",
+            "mandatory: true",
+            "valueHelp: 'property'",
+            "help: 'The message to display.'",
+          ]);
       });
     });
 
-    test('Multi-word option names', () {
-      final arguments = generateOptionArguments(paramName: 'authorDateOrder');
+    group('Option names (camelCase to hyphen-case):', () {
+      test('single-word parameter name', () {
+        final arguments = generateOptionArguments(paramName: 'message');
 
-      check(arguments).any(
-        (argument) => argument
-            .isA<SimpleStringLiteral>()
-            .has((p0) => p0.value, 'value')
-            .equals('author-date-order'),
-      );
-    });
-  });
-
-  group('ArgParser - Required/Optional:', () {
-    test('Mandatory = true', () {
-      final arguments = generateOptionArguments(isRequired: true);
-
-      check(arguments).any(
-        (argument) => argument.isA<NamedExpression>()
-          ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
-          ..has((p0) => p0.expression.toSource(), 'value').equals('true'),
-      );
-    });
-
-    test('Mandatory = false', () {
-      final arguments = generateOptionArguments(isRequired: false);
-
-      check(arguments).any(
-        (argument) => argument.isA<NamedExpression>()
-          ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
-          ..has((p0) => p0.expression.toSource(), 'value').equals('false'),
-      );
-    });
-  });
-
-  group('ArgParser - doc comments', () {
-    // with doc comments
-    test('With doc comments', () {
-      final args = generateOptionArguments(docComment: 'Foo message.');
-
-      check(args).any(
-        (argument) => argument.isA<NamedExpression>()
-          ..has((p0) => p0.name.label.name, 'name').equals('help')
-          ..has((p0) => p0.expression.toSource(), 'value')
-              .equals("'Foo message.'"),
-      );
-    });
-
-    test('Without doc comments', () {
-      final args = generateOptionArguments(docComment: null);
-
-      check(args).not((p0) => p0.any(
-            (p0) => p0
-                .isA<NamedExpression>()
-                .has((p0) => p0.name.label.name, 'name')
-                .equals('help'),
-          ));
-    });
-  });
-
-  group('ArgParser - default values', () {
-    // without a default value
-    test('No default value', () {
-      final arguments = generateOptionArguments(defaultValue: null);
-
-      check(arguments).not((p0) => p0.any(
-            (p0) => p0
-                .isA<NamedExpression>()
-                .has((p0) => p0.name.label.name, 'name')
-                .equals('defaultsTo'),
-          ));
-    });
-
-    // with a default value (literal, e.g. string or int)
-
-    test('With a string default value', () {
-      final arguments = generateOptionArguments(
-        computedDefaultValue: "'value1'",
-        defaultValue: 'MyFooEnum.value1',
-      );
-
-      check(arguments).any(
-        (argument) => argument.isA<NamedExpression>()
-          ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
-          ..has((p0) => p0.expression, 'value')
+        check(arguments).any((p0) {
+          p0
               .isA<SimpleStringLiteral>()
-              .has((p0) => p0.value, 'string value')
-              .equals('value1'),
-      );
-    });
-    // with a default enum value
-  });
-
-  group('ArgParser - Flag specifics (vs. Options)', () {
-    final expression = generateArgParserOption(type: TestTypes.bool);
-
-    test('Use `addFlag` method when parameter type is a boolean', () {
-      check(expression)
-          .isA<CascadeExpression>()
-          .has((p0) => p0.cascadeSections.first, 'cascade section')
-          .isA<MethodInvocation>()
-          .has((p0) => p0.methodName.name, 'method name')
-          .equals('addFlag');
-    });
-
-    test('`defaultsTo` should be a boolean literal, not a string', () {
-      final arguments = generateOptionArguments(
-        type: TestTypes.bool,
-        docComment: 'A boolean value.',
-        defaultValue: 'true',
-        computedDefaultValue: 'true',
-      );
-      // note: this is the only case where the defaultsTo is not a string value
-      check(arguments).any(
-        (argument) => argument.isA<NamedExpression>()
-          ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
-          ..has((p0) => p0.expression, 'defaultsTo')
-              .isA<BooleanLiteral>()
               .has((p0) => p0.value, 'value')
-              .equals(true),
-      );
+              .equals('message');
+        });
+      });
+
+      test('multi-word parameter name', () {
+        final arguments = generateOptionArguments(paramName: 'authorDateOrder');
+
+        check(arguments).any(
+          (argument) => argument
+              .isA<SimpleStringLiteral>()
+              .has((p0) => p0.value, 'value')
+              .equals('author-date-order'),
+        );
+      });
     });
-  });
 
-  group('ArgParser - different types', () {
-    // String
-    // int
-    // User-defined Enum
-    // extension type (e.g. of a String)
-  });
+    // Tests whether a required or optional parameter is properly set to
+    // `mandatory: true` or `mandatory: false`, respectively.
+    group('Required vs Optional flags/options:', () {
+      test('Required parameter', () {
+        final arguments = generateOptionArguments(isRequired: true);
 
-  group('ArgParser - multiple options', () {
-    // list of integers
-    // string with explicit multiple values from Option annotation
-  });
+        check(arguments).any(
+          (argument) => argument.isA<NamedExpression>()
+            ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+            ..has((p0) => p0.expression.toSource(), 'value').equals('true'),
+        );
+      });
 
-  // TODO: misc other use cases
-  // - generate a `abbr` value based on the first letter of the option name
-  //   - if the first letter is already used, then what?
+      test('Optional parameter', () {
+        final arguments = generateOptionArguments(isRequired: false);
+
+        check(arguments).any(
+          (argument) => argument.isA<NamedExpression>()
+            ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+            ..has((p0) => p0.expression.toSource(), 'value').equals('false'),
+        );
+      });
+    });
+
+    /// Tests whether the parameter's doc comment is copied to the
+    /// `help` argument of the `addOption` method.
+    group('Doc comments:', () {
+      test('Parameter WITH doc comments', () {
+        final args = generateOptionArguments(docComment: 'Foo message.');
+
+        check(args).any(
+          (argument) => argument.isA<NamedExpression>()
+            ..has((p0) => p0.name.label.name, 'name').equals('help')
+            ..has((p0) => p0.expression.toSource(), 'value')
+                .equals("'Foo message.'"),
+        );
+      });
+
+      test('Parameter WITHOUT doc comment', () {
+        final args = generateOptionArguments(docComment: null);
+
+        check(args).not((p0) => p0.any(
+              (p0) => p0
+                  .isA<NamedExpression>()
+                  .has((p0) => p0.name.label.name, 'name')
+                  .equals('help'),
+            ));
+      });
+    });
+
+    /// Tests whether the parameter's default value is copied to the
+    /// `defaultsTo` argument of the `ArgParser.addOption` method.
+    ///
+    /// The generated expression should always be of either type BooleanLiteral
+    /// or StringLiteral.
+    group('Default values:', () {
+      test('Parameter WITHOUT default value', () {
+        final arguments = generateOptionArguments(defaultValue: null);
+
+        check(arguments).not((p0) => p0.any(
+              (p0) => p0
+                  .isA<NamedExpression>()
+                  .has((p0) => p0.name.label.name, 'name')
+                  .equals('defaultsTo'),
+            ));
+      });
+
+      test('Parameter WITH a STRING default value', () {
+        final arguments = generateOptionArguments(
+          computedDefaultValue: "'value1'",
+          defaultValue: 'MyFooEnum.value1',
+        );
+
+        check(arguments).any(
+          (argument) => argument.isA<NamedExpression>()
+            ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
+            ..has((p0) => p0.expression, 'value')
+                .isA<SimpleStringLiteral>()
+                .has((p0) => p0.value, 'string value')
+                .equals('value1'),
+        );
+      });
+
+      // TODO with a default int value
+      // TODO with a default enum value
+    });
+
+    group('ArgParser.addFlag specifics:', () {
+      final expression = generateArgParserOption(type: TestTypes.bool);
+
+      test('Use `addFlag` method when parameter type is a boolean', () {
+        check(expression)
+            .isA<CascadeExpression>()
+            .has((p0) => p0.cascadeSections.first, 'cascade section')
+            .isA<MethodInvocation>()
+            .has((p0) => p0.methodName.name, 'method name')
+            .equals('addFlag');
+      });
+
+      test('`defaultsTo` should be a boolean literal, not a string', () {
+        final arguments = generateOptionArguments(
+          type: TestTypes.bool,
+          docComment: 'A boolean value.',
+          defaultValue: 'true',
+          computedDefaultValue: 'true',
+        );
+        // note: this is the only case where the defaultsTo is not a string value
+        check(arguments).any(
+          (argument) => argument.isA<NamedExpression>()
+            ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
+            ..has((p0) => p0.expression, 'defaultsTo')
+                .isA<BooleanLiteral>()
+                .has((p0) => p0.value, 'value')
+                .equals(true),
+        );
+      });
+    });
+
+    group('Different types', () {
+      // String
+      // int
+      // User-defined Enum
+      // extension type (e.g. of a String)
+    });
+
+    /// If the parameter is an iterable, the `addMultiOption` method should be
+    /// used instead of `addOption` or `addFlag`.
+    group('Multiple options', () {
+      // list of integers
+      // string with explicit multiple values from `@Option` annotation
+    });
+
+    // TODO: misc other use cases
+    // - generate a `abbr` value based on the first letter of the option name
+    //   - if the first letter is already used, then what?
+  });
 }

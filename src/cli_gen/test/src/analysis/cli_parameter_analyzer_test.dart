@@ -7,9 +7,6 @@ import 'package:cli_gen/src/analysis/cli_parameter_analyzer.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
 import 'package:test/test.dart';
 
-import '../../example_usage/args_example.dart' as test_file;
-
-/// This tests the [test_file.commit] function.
 void main() async {
   final root = Directory.current;
   final testFilePath = '${root.path}/test/example_usage/args_example.dart';

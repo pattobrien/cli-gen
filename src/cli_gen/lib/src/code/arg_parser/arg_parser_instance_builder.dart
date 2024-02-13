@@ -1,14 +1,26 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:meta/meta.dart';
 import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../models/command_parameter_model.dart';
 import '../utils/remove_doc_slashes.dart';
 
-/// Responsible for generating the `ArgParser` and adding flags/options to it.
+/// Responsible for generating an instance of `ArgParser` and adding flags/options to it.
 class ArgParserInstanceExp {
   const ArgParserInstanceExp();
 
+  /// Creates a new `ArgParser` instance and adds a flag/option for each of [parameters].
+  ///
+  /// Example of generated code:
+  /// ```dart
+  /// ArgParser()
+  ///   ..addOption(
+  ///     'foo-option-name',
+  ///     mandatory: true,
+  ///     help: 'Some doc comment here.',
+  ///   );
+  /// ```
   Expression buildArgParserInstance(
     List<CommandParameterModel> parameters,
   ) {
@@ -22,6 +34,21 @@ class ArgParserInstanceExp {
     return argParserExp;
   }
 
+  /// Generates a single `addOption` or `addFlag` method call on the given
+  /// [argParserExp].
+  ///
+  /// To generate the entire `ArgParser` instance, see [buildArgParserInstance].
+  ///
+  /// Example of generated code:
+  /// ```dart
+  /// argParserExp
+  ///   ..addOption(
+  ///     'foo-option-name',
+  ///     mandatory: true,
+  ///     help: 'Some doc comment here.',
+  ///   );
+  /// ```
+  @visibleForTesting
   Expression generateArgOption(
     Expression argParserExp,
     CommandParameterModel parameter,
@@ -58,4 +85,14 @@ class ArgParserInstanceExp {
         'help': literalString(removeDocSlashes(docComment)!),
     });
   }
+}
+
+void x() {
+  ArgParserInstanceExp()
+    ..buildArgParserInstance([
+      // TODO
+    ])
+    ..buildArgParserInstance([
+      // TODO
+    ]);
 }

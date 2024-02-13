@@ -125,6 +125,8 @@ List<Expression> getOptionArguments(CascadeExpression expression) {
   return singleCascadeExp.argumentList.arguments;
 }
 
+/// A test utility to generate the call expression for `ArgParser()..addOption()`
+/// as a list of AST expressions.
 List<Expression> generateOptionArguments({
   String paramName = 'message',
   TypeReference? type,
