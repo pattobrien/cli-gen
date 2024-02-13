@@ -1,0 +1,67 @@
+name: Dart CI
+
+on:
+  push:
+    paths:
+      - "src/cli_gen/**"
+      - "src/cli_annotations/**"
+  pull_request:
+    paths:
+      - "src/cli_gen/**"
+      - "src/cli_annotations/**"
+  schedule:
+    - cron: "0 0 * * 0" # Run weekly checks
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - src/cli_gen
+          - src/cli_annotations
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "main"
+      - name: Install dependencies
+        run: dart pub get
+        working-directory: ${{ matrix.package }}
+      - name: Run static analysis
+        run: dart analyze
+        working-directory: ${{ matrix.package }}
+      - name: Run code coverage
+        run: dart test --coverage="coverage"
+        working-directory: ${{ matrix.package }}
+      - name: Code coverage
+        run: dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --report-on=lib
+        working-directory: ${{ matrix.package }}
+
+  # dependency_bot:
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'schedule'
+  #   strategy:
+  #     matrix:
+  #       package:
+  #         - src/cli_gen
+  #         - src/cli_annotations
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         ref: "dependency_bot/${{ github.run_id }}"
+  #         fetch-depth: 0
+  #     - name: Setup Dart
+  #       uses: dart-lang/setup-dart@v1
+  #     - name: Upgrade dependencies
+  #       run: cd ${{ matrix.package }} && dart pub upgrade
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v3
+  #       with:
+  #         commit-message: "Update dependencies for ${{ matrix.package }}"
+  #         branch: "dependency_bot/${{ matrix.package }}"
+  #         title: "Update dependencies for ${{ matrix.package }}"
+  #         body: "This is an auto-generated PR with dependency updates."
+  #         labels: "dependencies,auto-update"
+  #         base: "main" # Change this to your default branch if not main
+  #         signoff: false
