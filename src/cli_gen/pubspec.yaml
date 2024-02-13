@@ -8,6 +8,8 @@ environment:
 dependencies:
   analyzer: ^6.4.1
   build: ^2.4.1
+  cli_annotations:
+    path: ../cli_annotations
   code_builder: ^4.10.0
   dart_style: ^2.3.4
   meta: ^1.12.0
@@ -15,8 +17,6 @@ dependencies:
   source_gen: ^1.5.0
 
 dev_dependencies:
-  cli_annotations:
-    path: ../cli_annotations
   example_project:
     path: test/example_project
   checks: ^0.3.0

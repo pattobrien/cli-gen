@@ -84,9 +84,9 @@ extension DartTypeExt on DartType {
     if (this is InterfaceType) {
       return (this as InterfaceType).toRef();
     }
-    // if (this is FunctionType) {
-    //   return (this as FunctionType).toRef();
-    // }
+    if (this is VoidType) {
+      return refer('void');
+    }
 
     throw UnimplementedError(
       'Only InterfaceType is supported for DartType.toRef() method.',

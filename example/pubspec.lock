@@ -119,7 +119,7 @@ packages:
       path: "../src/cli_annotations"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "0.1.0-dev.1"
   cli_gen:
     dependency: "direct dev"
     description:

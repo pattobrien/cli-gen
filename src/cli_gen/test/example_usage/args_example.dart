@@ -99,8 +99,6 @@ void annotatedParams({
     defaultsTo: 123,
     parser: myCustomParser,
   )
-
-  /// Parameter comment.
   int numericValue = 234,
 }) {}
 

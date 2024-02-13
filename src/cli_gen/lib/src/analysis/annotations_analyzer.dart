@@ -123,6 +123,14 @@ extension ElementAnnotationExt on ElementAnnotation {
           enclosingElement.name,
           enclosingElement.librarySource.uri.toString(),
         ),
+      PropertyAccessorElement(:final name, :final librarySource) => refer(
+          name,
+          librarySource.uri.toString(),
+        ),
+      VariableElement(:final librarySource, :final name) => refer(
+          name,
+          librarySource!.uri.toString(),
+        ),
       _ => throw UnimplementedError(
           'Unsupported element: $element',
         ),
