@@ -94,7 +94,6 @@ class AnnotationsAnalyzer {
         if (literalValue is String) return literal(literalValue);
         if (literalValue is! String) {
           final value = literalValue.toString();
-          final nonWrappedVal = literalString(value);
           final expValue = literalString(value.toString());
           return expValue;
         }

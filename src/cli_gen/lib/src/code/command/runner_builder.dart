@@ -55,6 +55,17 @@ class RunnerBuilder {
               ).statement,
             ),
           );
+
+          // -- mounted subcommands --
+          block.statements.addAll(
+            model.mountedSubcommands.map(
+              (e) => Identifiers.args.addCommand.call(
+                [
+                  refer('upcastedType').property(e.symbol!),
+                ],
+              ).statement,
+            ),
+          );
         });
       }));
     });

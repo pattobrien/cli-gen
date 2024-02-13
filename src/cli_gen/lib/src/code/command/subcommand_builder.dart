@@ -34,23 +34,37 @@ class SubcommandBuilder {
             refer('this').asA(refer(model.name)),
           ));
           block.statements.addAll(
-              model.subcommands.map((e) => Identifiers.args.addSubcommand.call([
-                    refer('${e.methodRef.symbol!.pascalCase}Command',
-                            e.methodRef.url)
-                        .call([
-                      refer('upcastedType')
-                          .property(e.methodRef.symbol!.camelCase)
-                    ]),
-                  ]).statement));
+            model.subcommands.map((e) => Identifiers.args.addSubcommand.call([
+                  refer('${e.methodRef.symbol!.pascalCase}Command',
+                          e.methodRef.url)
+                      .call([
+                    refer('upcastedType')
+                        .property(e.methodRef.symbol!.camelCase)
+                  ]),
+                ]).statement),
+          );
+
+          // -- mounted subcommands --
+          block.statements.addAll(
+            model.mountedSubcommands.map(
+              (e) => Identifiers.args.addSubcommand.call(
+                [
+                  refer('upcastedType').property(e.symbol!),
+                ],
+              ).statement,
+            ),
+          );
         });
       }));
 
       builder.methods.addAll([
         // -- Command name getter --
         Method((builder) {
+          final calculatedName =
+              model.name.camelCase.replaceAll('Subcommand', '');
           builder.name = 'name';
           builder.returns = Identifiers.dart.string;
-          builder.body = literalString(model.name).code;
+          builder.body = literalString(calculatedName).code;
           builder.type = MethodType.getter;
           builder.annotations.add(
             Identifiers.dart.override,

@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
 
@@ -89,7 +90,9 @@ extension MethodElementToRefExt on MethodElement {
 extension DartTypeExt on DartType {
   Reference toRef() {
     if (this is InterfaceType) {
-      return (this as InterfaceType).toRef();
+      final ref = (this as InterfaceType).toRef();
+      final isNull = nullabilitySuffix == NullabilitySuffix.question;
+      return ref.rebuild((b) => b.isNullable = isNull);
     }
     if (this is VoidType) {
       return refer('void');

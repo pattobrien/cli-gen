@@ -42,3 +42,9 @@ class CliSubcommand {
 }
 
 const cliSubcommand = CliSubcommand();
+
+class SubcommandMount {
+  const SubcommandMount();
+}
+
+const mount = SubcommandMount();

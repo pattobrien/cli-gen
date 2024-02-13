@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:meta/meta.dart';
+import 'package:recase/recase.dart';
 
 import '../../analysis/utils/reference_ext.dart';
 import '../models/command_method_model.dart';
@@ -50,7 +51,8 @@ class CliMethodCallBuilder {
     // NOTE: i think its safe to assume that a required value wont be null,
     // as ArgParser takes care of erroring to the user in those cases (presumably).
 
-    final resultKeyValue = resultsRef.index(literalString(param.ref.symbol!));
+    final resultKeyValue =
+        resultsRef.index(literalString(param.ref.symbol!.paramCase));
 
     // TODO: not sure if assuming `null` is the right approach here
     // but we never require passing a null or non-null value anywhere in the

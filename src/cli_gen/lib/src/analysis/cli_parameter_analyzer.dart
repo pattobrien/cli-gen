@@ -95,7 +95,8 @@ class CliParameterAnalyzer {
       return refer('BigInt').property('parse');
     }
     if (type.isDartCoreBool) {
-      return refer('bool').property('parse');
+      // return refer('bool').property('parse');
+      return null;
     }
     if (type.isDartCoreString) {
       return null;

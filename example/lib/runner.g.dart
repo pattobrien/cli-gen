@@ -14,6 +14,7 @@ class _$GitRunner extends CommandRunner {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeCommand(upcastedType.merge));
+    addCommand(upcastedType.stash);
   }
 }
 
@@ -22,8 +23,7 @@ class MergeCommand extends Command {
 
   final Future<void> Function({
     required String branch,
-    MergeStrategy strategy,
-    bool commit,
+    bool? commit,
   }) userMethod;
 
   @override
@@ -38,11 +38,6 @@ class MergeCommand extends Command {
       'branch',
       mandatory: true,
     )
-    ..addOption(
-      'strategy',
-      mandatory: false,
-      defaultsTo: 'ort',
-    )
     ..addFlag(
       'commit',
       negatable: false,
@@ -53,10 +48,7 @@ class MergeCommand extends Command {
     final results = argResults!;
     return userMethod(
       branch: results['branch'],
-      strategy: results['strategy'] != null
-          ? EnumParser(MergeStrategy.values).parse(results['strategy'])
-          : 'ort',
-      commit: bool.parse(results['commit']),
+      commit: results['commit'] != null ? results['commit'] : null,
     );
   }
 }

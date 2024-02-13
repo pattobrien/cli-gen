@@ -21,6 +21,18 @@ class CliCommandAnalyzer {
     );
   }
 
+  bool isAnnotatedWithSubcommandMount(ExecutableElement element) {
+    return element.metadata.any(
+      (annotation) {
+        return annotation
+                .computeConstantValue()!
+                .type!
+                .getDisplayString(withNullability: false) ==
+            'SubcommandMount';
+      },
+    );
+  }
+
   CommandMethodModel fromExecutableElement(
     ExecutableElement element,
   ) {
