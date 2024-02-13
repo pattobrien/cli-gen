@@ -6,16 +6,15 @@ import 'package:source_gen/source_gen.dart';
 import '../code/models/annotation_model.dart';
 import 'utils/reference_ext.dart';
 
+/// Converts an analyzer representation of a `cli_gen` annotation into a Model representation.
 class AnnotationsAnalyzer {
   const AnnotationsAnalyzer();
 
   bool isOptionsAnnotation(ElementAnnotation annotation) {
-    final typeElement = annotation.computeConstantValue()?.type?.element;
-    if (typeElement is! InterfaceElement) {
-      return false;
-    }
-    final allSupertypes = typeElement.allSupertypes;
-    final isMatch = allSupertypes.any((e) {
+    final annotationElement = annotation.computeConstantValue()?.type?.element;
+    if (annotationElement is! InterfaceElement) return false;
+
+    final isMatch = annotationElement.allSupertypes.any((e) {
       // ignore: deprecated_member_use
       final isNamedOption = e.name == 'BaseOption';
       final isCliAnnotationUri = e.element.library.source.uri.toString() ==
@@ -71,6 +70,8 @@ class AnnotationsAnalyzer {
 
       // -- generic type args --
       parser: parserRef,
+      // valueHelp: TODO
+      // defaultsTo: TODO
     );
   }
 }
