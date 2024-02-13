@@ -15,7 +15,7 @@ void main() {
 
       test('Single positional parameter', () {
         check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('myCliMethod')
+          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
           ..has((p0) => p0.argumentList.arguments.single, 'arguments')
               .isA<NamedExpression>()
               .which(
@@ -26,7 +26,7 @@ void main() {
                       .has((p0) => p0.index, 'index')
                       .isA<SimpleStringLiteral>()
                       .has((p0) => p0.value, 'value')
-                      .equals('myParam'), // the name of the parameter);
+                      .equals('my-param'), // the name of the parameter);
               );
       });
     });
@@ -41,13 +41,13 @@ void main() {
         );
 
         check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('myCliMethod')
+          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
           ..has((p0) => p0.argumentList.arguments.single, 'arguments')
               .isA<IndexExpression>()
               .has((p0) => p0.index, 'index')
               .isA<SimpleStringLiteral>()
               .has((p0) => p0.value, 'value')
-              .equals('myParam'); // the name of the parameter);
+              .equals('my-param'); // the name of the parameter);
       });
 
       // named arg case
@@ -58,7 +58,7 @@ void main() {
         );
 
         check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('myCliMethod')
+          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
           ..has((p0) => p0.argumentList.arguments.single, 'arguments')
               .isA<NamedExpression>()
               .which(
@@ -69,7 +69,7 @@ void main() {
                       .has((p0) => p0.index, 'index')
                       .isA<SimpleStringLiteral>()
                       .has((p0) => p0.value, 'value')
-                      .equals('myParam'), // the name of the parameter);
+                      .equals('my-param'), // the name of the parameter);
               );
       });
     });

@@ -19,7 +19,7 @@ ParseStringResult parseCode(Code code) {
 }
 
 InvocationExpression generateArgResultHandlerExp({
-  String methodName = 'myCliMethod',
+  String methodName = 'userMethod',
   String paramName = 'message',
   TypeReference? paramType,
   String? defaultValueCode,
@@ -43,7 +43,7 @@ InvocationExpression generateArgResultHandlerExp({
           type: paramType ?? TestTypes.string,
           isRequired: isRequired,
           isNamed: isNamed,
-          optionType: OptionType.single,
+          optionType: isIterable ? OptionType.multiOption : OptionType.single,
           annotations: [],
           computedDefaultValue: computedDefaultValue,
           docComments: null,
