@@ -14,17 +14,77 @@ class CommandBuilder {
       builder.name = '${model.methodRef.symbol!.pascalCase}Command';
       builder.extend = Identifiers.args.command;
 
-      // builder.constructors.add(Constructor((constructor) {
-      //   constructor.body = Block((block) {
-      //     block.statements.addAll(
-      //       model.subcommands.map(
-      //         (e) => refer('addSubcommand').call(
-      //           [refer(e.methodRef.symbol!.pascalCase, e.methodRef.url)],
-      //         ).statement,
-      //       ),
-      //     );
-      //   });
-      // }));
+      builder.constructors.add(Constructor((constructor) {
+        constructor.requiredParameters.add(
+          Parameter((builder) {
+            builder.name = 'userMethod';
+            builder.toThis = true;
+          }),
+        );
+      }));
+
+      builder.fields.add(Field((builder) {
+        builder.name = 'userMethod';
+        builder.modifier = FieldModifier.final$;
+        builder.type = FunctionType((builder) {
+          builder.returnType = model.returnType;
+          final requiredNamedParams =
+              model.parameters.where((e) => e.isNamed && e.isRequired).toList();
+          final optionalNamedParams = model.parameters
+              .where((e) => e.isNamed && !e.isRequired)
+              .toList();
+          final requiredPositionalParams = model.parameters
+              .where((e) => !e.isNamed && e.isRequired)
+              .toList();
+          final optionalPositionalParams = model.parameters
+              .where((e) => !e.isNamed && !e.isRequired)
+              .toList();
+
+          builder.requiredParameters.addAll(
+            requiredPositionalParams.map(
+              (e) => TypeReference((builder) {
+                builder.symbol = e.type.symbol;
+                builder.isNullable = e.type.isNullable;
+              }),
+            ),
+          );
+
+          builder.optionalParameters.addAll(
+            optionalPositionalParams.map(
+              (e) => TypeReference((builder) {
+                builder.symbol = e.type.symbol;
+                builder.isNullable = e.type.isNullable;
+              }),
+            ),
+          );
+
+          builder.namedParameters.addAll(
+            Map.fromEntries(
+              optionalNamedParams.map(
+                (e) => MapEntry(
+                  e.ref.symbol!,
+                  TypeReference((builder) {
+                    builder.symbol = e.type.symbol;
+                    builder.isNullable = e.type.isNullable;
+                  }),
+                ),
+              ),
+            ),
+          );
+
+          builder.namedRequiredParameters.addAll(
+            Map.fromEntries(
+              requiredNamedParams.map(
+                (e) => MapEntry(e.ref.symbol!, TypeReference((builder) {
+                  builder.symbol = e.type.symbol;
+                  builder.isNullable = e.type.isNullable;
+                  builder.url = e.type.url;
+                })),
+              ),
+            ),
+          );
+        });
+      }));
 
       builder.methods.addAll([
         // -- Command name getter --
@@ -65,6 +125,7 @@ class CommandBuilder {
         // -- Command run method --
         Method((builder) {
           builder.name = 'run';
+          builder.returns = model.returnType;
           builder.annotations.add(
             Identifiers.dart.override,
           );

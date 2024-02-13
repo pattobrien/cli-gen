@@ -48,7 +48,6 @@ InvocationExpression generateArgResultHandlerExp({
           computedDefaultValue: computedDefaultValue,
           docComments: null,
           availableOptions: [],
-          isIterable: isIterable,
         ),
       ],
     ),
@@ -111,7 +110,6 @@ CascadeExpression generateArgParserOption({
     isNamed: isNamed,
     optionType: optionType,
     availableOptions: availableOptions,
-    isIterable: isIterable,
   );
   final codeExpression = builder.generateArgOption(argParserExp, parameter);
 

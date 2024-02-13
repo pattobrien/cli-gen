@@ -40,10 +40,18 @@ class RunnerBuilder {
 
         // -- add subcommands
         constructor.body = Block((block) {
+          block.addExpression(declareFinal('upcastedType').assign(
+            refer('this').asA(refer(model.name)),
+          ));
           block.statements.addAll(
             model.subcommands.map(
               (e) => Identifiers.args.addCommand.call(
-                [refer('${'${e.methodRef.symbol!.pascalCase}Command'}()')],
+                [
+                  refer('${e.methodRef.symbol!.pascalCase}Command').call([
+                    refer('upcastedType')
+                        .property(e.methodRef.symbol!.camelCase),
+                  ])
+                ],
               ).statement,
             ),
           );

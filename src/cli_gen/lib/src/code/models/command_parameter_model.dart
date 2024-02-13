@@ -14,7 +14,7 @@ class CommandParameterModel {
     this.annotations = const [],
     this.availableOptions,
     required Expression? parser,
-    required this.isIterable,
+    // required this.isIterable,
   })  : _parser = parser,
         _computedDefaultValue = computedDefaultValue,
         _docComments = docComments;
@@ -45,7 +45,7 @@ class CommandParameterModel {
   }
 
   final TypeReference type;
-  final bool isIterable;
+  // final bool isIterable;
 
   final bool isNamed;
 

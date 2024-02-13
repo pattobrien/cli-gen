@@ -10,7 +10,7 @@ class CliMethodCallBuilder {
 
   Code buildInlineCallStatement(CommandMethodModel method) {
     final methodCallArgs = buildMethodArguments(method.parameters);
-    return method.methodRef
+    return refer('userMethod')
         .call(methodCallArgs.positionalArgs, methodCallArgs.namedArgs)
         .returned
         .statement;
@@ -62,14 +62,15 @@ class CliMethodCallBuilder {
     // a) whether a parser is available (will only be null for String types)
     // b) whether the parameter is iterable and needs to call `.map` on the result
     Expression parserExpression;
-    if (param.isIterable && param.parser != null) {
+    final isIterable = param.optionType == OptionType.multiOption;
+    if (isIterable && param.parser != null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
           .property('from')
           .call([resultKeyValue])
           .property('map')
           .call([param.parser!]);
-    } else if (param.isIterable && param.parser == null) {
+    } else if (isIterable && param.parser == null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
           .property('from')

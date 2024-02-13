@@ -21,7 +21,6 @@ class CliParameterAnalyzer {
     final docComments = getDocComments(element);
     final cleanedUpComments = removeDocSlashes(docComments);
     final availableOptions = getImplicitAvailableOptions(element);
-    // final defaultValue = getDefaultValueCode(element);
     final computedDefaultValue = getDefaultConstantValue(element);
     final annotations = getAnnotations(element);
 
@@ -36,7 +35,6 @@ class CliParameterAnalyzer {
       availableOptions: availableOptions,
       computedDefaultValue: computedDefaultValue,
       docComments: cleanedUpComments,
-      isIterable: isParameterTypeAnIterable(element),
       annotations: annotations,
     );
   }

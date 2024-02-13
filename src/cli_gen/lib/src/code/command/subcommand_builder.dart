@@ -30,11 +30,17 @@ class SubcommandBuilder {
         // TODO: Add constructor parameters from user-defined @cliSubcommand class
 
         constructor.body = Block((block) {
+          block.addExpression(declareFinal('upcastedType').assign(
+            refer('this').asA(refer(model.name)),
+          ));
           block.statements.addAll(
               model.subcommands.map((e) => Identifiers.args.addSubcommand.call([
                     refer('${e.methodRef.symbol!.pascalCase}Command',
                             e.methodRef.url)
-                        .call([]),
+                        .call([
+                      refer('upcastedType')
+                          .property(e.methodRef.symbol!.camelCase)
+                    ]),
                   ]).statement));
         });
       }));

@@ -53,11 +53,18 @@ extension ParameterElementToRefExt on ParameterElement {
 }
 
 extension ExecutableElementToRefExt on ExecutableElement {
-  Reference toRef() {
-    return refer(
-      name,
-      librarySource.uri.toString(),
-    );
+  TypeReference toRef() {
+    return TypeReference((builder) {
+      builder.symbol = name;
+      builder.url = librarySource.uri.toString();
+      builder.types.addAll(
+        typeParameters.map((e) => refer(e.name, librarySource.uri.toString())),
+      );
+    });
+    // return refer(
+    //   name,
+    //   librarySource.uri.toString(),
+    // );
   }
 }
 
@@ -95,11 +102,18 @@ extension DartTypeExt on DartType {
 }
 
 extension InterfaceTypeExt on InterfaceType {
-  Reference toRef() {
-    return refer(
-      element.name,
-      element.librarySource.uri.toString(),
-    );
+  TypeReference toRef() {
+    return TypeReference((builder) {
+      builder.symbol = element.name;
+      builder.url = element.librarySource.uri.toString();
+      builder.types.addAll(
+        typeArguments.map((e) => e.toRef()),
+      );
+    });
+    // return refer(
+    //   element.name,
+    //   element.librarySource.uri.toString(),
+    // );
   }
 }
 
