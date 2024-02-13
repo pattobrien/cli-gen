@@ -24,6 +24,7 @@ class MergeCommand extends Command {
   final Future<void> Function({
     required String branch,
     bool? commit,
+    List<int>? options,
   }) userMethod;
 
   @override
@@ -41,6 +42,10 @@ class MergeCommand extends Command {
     ..addFlag(
       'commit',
       negatable: false,
+    )
+    ..addOption(
+      'options',
+      mandatory: false,
     );
 
   @override
@@ -49,6 +54,9 @@ class MergeCommand extends Command {
     return userMethod(
       branch: results['branch'],
       commit: results['commit'] != null ? results['commit'] : null,
+      options: results['options'] != null
+          ? List<String>.from(results['options']).map(int.parse).toList()
+          : null,
     );
   }
 }

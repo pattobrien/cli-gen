@@ -42,19 +42,23 @@ class CommandBuilder {
 
           builder.requiredParameters.addAll(
             requiredPositionalParams.map(
-              (e) => TypeReference((builder) {
-                builder.symbol = e.type.symbol;
-                builder.isNullable = e.type.isNullable;
-              }),
+              (e) => e.type,
+              // (e) => TypeReference((builder) {
+              //   builder.symbol = e.type.symbol;
+              //   builder.isNullable = e.type.isNullable;
+              //   builder.types.addAll(e.type.types);
+              // }),
             ),
           );
 
           builder.optionalParameters.addAll(
             optionalPositionalParams.map(
-              (e) => TypeReference((builder) {
-                builder.symbol = e.type.symbol;
-                builder.isNullable = e.type.isNullable;
-              }),
+              (e) => e.type,
+              // (e) => TypeReference((builder) {
+              //   builder.symbol = e.type.symbol;
+              //   builder.isNullable = e.type.isNullable;
+              //   builder.types.addAll(e.type.types);
+              // }),
             ),
           );
 
@@ -63,10 +67,12 @@ class CommandBuilder {
               optionalNamedParams.map(
                 (e) => MapEntry(
                   e.ref.symbol!,
-                  TypeReference((builder) {
-                    builder.symbol = e.type.symbol;
-                    builder.isNullable = e.type.isNullable;
-                  }),
+                  e.type,
+                  // TypeReference((builder) {
+                  //   builder.symbol = e.type.symbol;
+                  //   builder.isNullable = e.type.isNullable;
+                  //   builder.types.addAll(e.type.types);
+                  // }),
                 ),
               ),
             ),
@@ -75,11 +81,12 @@ class CommandBuilder {
           builder.namedRequiredParameters.addAll(
             Map.fromEntries(
               requiredNamedParams.map(
-                (e) => MapEntry(e.ref.symbol!, TypeReference((builder) {
-                  builder.symbol = e.type.symbol;
-                  builder.isNullable = e.type.isNullable;
-                  builder.url = e.type.url;
-                })),
+                (e) => MapEntry(e.ref.symbol!, e.type),
+                // (e) => MapEntry(e.ref.symbol!, TypeReference((builder) {
+                //   builder.symbol = e.type.symbol;
+                //   builder.isNullable = e.type.isNullable;
+                //   builder.url = e.type.url;
+                // })),
               ),
             ),
           );

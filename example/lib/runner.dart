@@ -1,5 +1,6 @@
 import 'package:cli_annotations/cli_annotations.dart';
-import 'package:example/stash.dart';
+
+import 'stash.dart';
 
 part 'runner.g.dart';
 
@@ -20,6 +21,7 @@ class GitRunner extends _$GitRunner {
 
     /// Perform the merge and commit the result.
     bool? commit,
+    List<int>? options,
   }) async {
     print('Merging branch $branch');
     if (commit == true) {

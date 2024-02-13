@@ -72,6 +72,11 @@ class CliMethodCallBuilder {
           .call([resultKeyValue])
           .property('map')
           .call([param.parser!]);
+      if (param.type.symbol == 'List') {
+        parserExpression = parserExpression.property('toList').call([]);
+      } else if (param.type.symbol == 'Set') {
+        parserExpression = parserExpression.property('toSet').call([]);
+      }
     } else if (isIterable && param.parser == null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
