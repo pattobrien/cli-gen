@@ -12,7 +12,6 @@ class StashSubcommand extends _$StashSubcommand {
   /// Save your local modifications to a new stash.
   @cliCommand
   Future<void> push(
-    /// The message to display.
     String message, {
     @Option(help: 'Whether to include untracked files.', abbr: 'u')
     bool includeUntracked = false,

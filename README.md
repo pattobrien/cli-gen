@@ -116,7 +116,6 @@ class GitRunner extends _$GitRunner {
 }
 
 enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
-
 ```
 
 </td>
@@ -125,7 +124,25 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
 
 ## Getting Started
 
-1. Create a `CommandRunner` by annotating a class with `@cliRunner` and extending the generated superclass (uses the typical `_$` prefix).
+1. Add `cli_annotations` to your `pubspec` dependencies and `cli_gen` and `build_runner` as dev dependencies.
+
+   Optionally, you can define an executable name and activate it using [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
+
+```yaml
+dependencies:
+  cli_annotations: ^0.0.1
+
+dev_dependencies:
+  build_runner: ^2.1.0
+  cli_gen: ^0.0.1
+
+# define an executable name (optional)
+executables:
+  dart_cli:
+    path: main # file name of `main()` in bin/ directory
+```
+
+2. Create a `CommandRunner` by annotating a class with `@cliRunner` and extending the generated superclass (uses the typical `_$` prefix).
 
 ```dart
 @cliRunner
@@ -134,7 +151,7 @@ class GitRunner extends _$GitRunner {
 }
 ```
 
-2. Create a `Command` by simply creating a method on the class. Any parameter type will be automatically parsed from string arguments.
+3. Create a `Command` by simply creating a method on the class. Any parameter type will be automatically parsed from string arguments.
 
 ```dart
 @cliRunner
@@ -150,7 +167,7 @@ class GitRunner extends _$GitRunner {
 }
 ```
 
-3. Alternatively, you can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
+4. Alternatively, you can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
 
 ```dart
 // Create a Subcommand
@@ -175,7 +192,39 @@ class GitRunner extends _$GitRunner {
 }
 ```
 
-That's all there is to it!
+5. Create a `main` function that runs the `CommandRunner`.
+
+```dart
+void main(List<String> arguments) async {
+  final runner = GitRunner();
+  await runner.run(arguments);
+}
+```
+
+You're ready to go! Run your application via the command line and see the generated help text and argument parsing in action.
+
+```bash
+# activate the executable (if defined in `pubspec.yaml`)
+$ dart pub global activate . --source=path
+
+# run the application
+$ dart_git merge --help
+```
+
+You should see the following output:
+
+```plaintext
+$ dart_git merge --help
+Join two or more development histories together.
+
+Usage: git-runner merge [arguments]
+--branch (mandatory)
+--commit
+--options
+
+Run "git-runner help" to see global options.
+
+```
 
 ## How it Works
 
@@ -228,4 +277,4 @@ Examples of the generated code can be found in the `example` project, within the
 
 ## License
 
-cli-gen is released under the MIT License. See [LICENSE](LICENSE) for details.
+`cli-gen` is released under the MIT License. See [LICENSE](LICENSE) for details.
