@@ -3,10 +3,12 @@ name: Dart CI
 on:
   push:
     paths:
+      - ".github/workflows/**"
       - "src/cli_gen/**"
       - "src/cli_annotations/**"
   pull_request:
     paths:
+      - ".github/workflows/**"
       - "src/cli_gen/**"
       - "src/cli_annotations/**"
   schedule:
