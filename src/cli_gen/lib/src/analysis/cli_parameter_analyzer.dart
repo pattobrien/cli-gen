@@ -90,6 +90,10 @@ class CliParameterAnalyzer {
       return getParserForParameter(element, argType);
     }
     // TODO: extension type is not supported yet
+    // Extension Types require the user to define a `fromString` factory
+    // on the extension type (similarly to how a user-defined class would
+    // be handled). This requires implementations of `cli_gen` annotations.
+
     // if the element is a extension type, get the extension type erasure
     // to get the underlying type, then get the corresponding parser
     // by calling `getParserForParameter` recursively.
