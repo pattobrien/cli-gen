@@ -1,5 +1,7 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:meta/meta.dart';
 
+import '../../analysis/utils/reference_ext.dart';
 import '../models/command_method_model.dart';
 import '../models/command_parameter_model.dart';
 
@@ -37,8 +39,10 @@ class CliMethodCallBuilder {
   /// - non-nullable value: `int.parse(results['intValue'])`
   /// - nullable with no default: `results['stringValue'] != null ? int.parse(results['stringValue']) : null`
   /// - nullable with default value: `results['stringValue'] != null ? int.parse(results['stringValue']) : 42`
+  /// - list of non-nullable values: `List<String>.from(results['intValue']).map(int.parse)`
+  @visibleForTesting
   Expression buildSingleArgParseExp(CommandParameterModel param) {
-    // imagine a parser value on param model that probides us with a method
+    // imagine a parser value on param model that provides us with a method
     // reference (e.g. int.parse, UserId.fromString, etc.)
     final resultsRef = refer('results');
     // final parser = refer('int.parse');
@@ -53,11 +57,41 @@ class CliMethodCallBuilder {
     // creating of references, so this is probably a safe move.
     final isNullable = param.type.isNullable ?? false;
     final hasDefault = param.defaultValueCode != null;
+    final isIterable = param.isIterable;
+    Expression parserExpression;
+    if (isIterable && param.parser != null) {
+      parserExpression = refer('List')
+          .toTypeRef(typeArguments: [refer('String')])
+          .property('from')
+          .call([resultKeyValue])
+          .property('map')
+          .call([param.parser!]);
+    } else if (isIterable && param.parser == null) {
+      parserExpression = refer('List')
+          .toTypeRef(typeArguments: [refer('String')])
+          .property('from')
+          .call([resultKeyValue]);
+    } else {
+      parserExpression = parser?.call([resultKeyValue]) ?? resultKeyValue;
+    }
+
+    // final parserExpression = isIterable
+    //     ? refer('List')
+    //         .toTypeRef(typeArguments: [refer('String')])
+    //         .property('from')
+    //         .call([
+    //           resultKeyValue,
+    //         ])
+    //         .property('map')
+    //         .call([
+    //           parser?.call([refer('it')])
+    //         ])
+    //     : parser?.call([resultKeyValue]);
 
     switch ((isNullable, hasDefault)) {
       case (true, _):
         return resultKeyValue.notEqualTo(literalNull).conditional(
-              parser?.call([resultKeyValue]) ?? resultKeyValue,
+              parserExpression,
               literalNull,
             );
       case (false, true):
@@ -65,11 +99,11 @@ class CliMethodCallBuilder {
         // expression of the conditional, because otherwise we're passing a null
         // value into a non-nullable parameter.
         return resultKeyValue.notEqualTo(literalNull).conditional(
-              parser?.call([resultKeyValue]) ?? resultKeyValue,
+              parserExpression,
               CodeExpression(Code(param.defaultValueCode!)),
             );
       case (false, false):
-        return parser?.call([resultKeyValue]) ?? resultKeyValue;
+        return parserExpression;
     }
   }
 

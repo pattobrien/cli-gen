@@ -27,6 +27,7 @@ InvocationExpression generateArgResultHandlerExp({
   bool isRequired = true,
   bool isNamed = false,
   String? parser,
+  bool isIterable = false,
 }) {
   final builder = CliMethodCallBuilder();
   final callStatement = builder.buildInlineCallStatement(
@@ -48,6 +49,7 @@ InvocationExpression generateArgResultHandlerExp({
           computedDefaultValue: computedDefaultValue,
           docComments: null,
           availableOptions: [],
+          isIterable: isIterable,
         ),
       ],
     ),
@@ -93,6 +95,7 @@ CascadeExpression generateArgParserOption({
   List<String>? availableOptions,
   String? computedDefaultValue,
   String? parser,
+  bool isIterable = false,
 }) {
   type ??= TestTypes.string;
   final builder = ArgParserInstanceExp();
@@ -110,6 +113,7 @@ CascadeExpression generateArgParserOption({
     isNamed: isNamed,
     optionType: optionType,
     availableOptions: availableOptions,
+    isIterable: isIterable,
   );
   final codeExpression = builder.generateArgOption(argParserExp, parameter);
 

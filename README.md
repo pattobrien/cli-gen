@@ -126,13 +126,30 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
 
 ### ArgParser generation from Parameters
 
-- generate from a list of parameters from a Constructor or Method/Function
+- Generate an ArgParser from a Constructor or Method/Function
+
   - `help` comments from doc comments
-  - supported arg type parsing:
-    - primatives: [list all params here]
-    - enums for a finite list of values
-    - extension types and custom types (annotations required for custom types?)
-      - or feed a parser into the @Option() annotation?
+  - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
+    - [x] Primatives:
+      - [x] String
+      - [x] int
+      - [x] double
+      - [x] bool
+      - [x] Uri
+      - [x] DateTime
+    - [x] Collections:
+      - [x] List
+      - [x] Set
+      - [x] Iterable
+      - [ ] Map
+    - [ ] User-Defined types:
+      - [x] Enums
+      - [ ] Classes
+      - [ ] Extension Types
+  - Multi-Select arguments
+    - [ ] List of primative values
+    - [ ] enums for a finite list of values
+
 - annotations to help guide the generator
 
 ### Command generation

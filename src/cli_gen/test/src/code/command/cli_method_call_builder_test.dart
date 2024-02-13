@@ -6,7 +6,7 @@ import '../utils/analyzer_parsers.dart';
 import '../utils/types.dart';
 
 void main() {
-  group('ArgResults + User Method Invocation - int positional arg', () {
+  group('User Method Invocation - int positional arg', () {
     final invocationExp = generateArgResultHandlerExp();
     final singleArg = invocationExp.argumentList.arguments.single;
 
@@ -40,12 +40,6 @@ void main() {
     // optional + nullable     + default:     e.g. `([int? x = 42])` -> `callSite(result['message'] != null ? int.parse(result['message']) : null);`
     // optional + non-nullable + default:     e.g. `([int x = 42])` -> `callSite(result['message'] != null ? int.parse(result['message']) : 42);`
   });
-
-  void func([int x = 42]) {}
-
-  void yCaller(Map<String, dynamic> result) {
-    func(result['message'] != null ? int.parse(result['message']) : 42);
-  }
 
   group('User Method Invocation - Named arguments', () {
     // all of the following cases are named.
@@ -94,11 +88,11 @@ void main() {
       check(singleArg).isA<MethodInvocation>()
         ..hasMethodNamed('parse')
         ..hasTargetNamed('int')
-        ..hasIndexExpArgument().which((p0) => p0
+        ..hasIndexExpSingleArg().which((p0) => p0
           ..hasIdentifierNamed('results')
           ..hasKeyNamed('message'));
     });
-    // - Uri.parse
+
     test('Uri (uses Uri.parse)', () {
       final invocationExp = generateArgResultHandlerExp(
         paramType: TestTypes.uri,
@@ -110,32 +104,45 @@ void main() {
       final singleArg = invocationExp.argumentList.arguments.single;
 
       check(singleArg).isA<MethodInvocation>()
-        ..hasMethodNamed('parse')
         ..hasTargetNamed('Uri')
-        ..hasIndexExpArgument().which((p0) => p0
+        ..hasMethodNamed('parse')
+        ..hasIndexExpSingleArg().which((p0) => p0
           ..hasIdentifierNamed('results')
           ..hasKeyNamed('message'));
     });
-    // - List<int>
-    // test('List<int> (uses `map(int.parse)`)', () {
-    //   // final results = Map<String, dynamic>.from({'message': '42'});
-    //   // final parsed = (results['message'] as List<String>).map(int.parse).toList();
-    //   final invocationExp = generateArgResultHandlerExp(
-    //     paramType: TestTypes.listOf(TestTypes.int_),
-    //     parser: 'List<int>.from',
-    //     defaultValueCode: null,
-    //     computedDefaultValue: null,
-    //     isRequired: true,
-    //   );
-    //   final singleArg = invocationExp.argumentList.arguments.single;
 
-    //   check(singleArg).isA<MethodInvocation>()
-    //     ..hasMethodNamed('from')
-    //     ..hasTargetNamed('List<int>')
-    //     ..hasIndexExpArgument().which((p0) => p0
-    //       ..hasIdentifierNamed('results')
-    //       ..hasKeyNamed('message'));
-    // });
+    test('List<int> (uses `List<String>.from(result[\'foo\'].map(int.parse)`)',
+        () {
+      final invocationExp = generateArgResultHandlerExp(
+        paramType: TestTypes.listOf(TestTypes.int_),
+        parser: 'int.parse',
+        defaultValueCode: null,
+        computedDefaultValue: null,
+        isRequired: true,
+        isIterable: true,
+      );
+      final singleArg = invocationExp.argumentList.arguments.single;
+
+      check(singleArg).isA<MethodInvocation>()
+        ..isAInstanceCreationExp().which((p0) => p0
+          ..has((p0) => p0.constructorName.type, 'type name').which((p0) {
+            p0.has((p0) => p0.name2.lexeme, 'type name').equals('List');
+            p0.has((p0) => p0.typeArguments!.arguments.single, 'type arguments')
+              ..isA<NamedType>()
+              ..has((p0) => (p0 as NamedType).name2.lexeme,
+                      'type argument name')
+                  .equals('String');
+          })
+          ..has((p0) => p0.constructorName.name?.name, 'constructor name')
+              .equals('from'))
+        ..hasSingleArg().which((p0) {
+          p0.isA<PrefixedIdentifier>();
+          p0
+              .has((p0) => (p0 as PrefixedIdentifier).name, 'identifier')
+              .equals('int.parse');
+        })
+        ..has((p0) => p0.methodName.name, 'method name').equals('map');
+    });
   });
 
   group('User Method Invocation - Custom type parsing', () {
@@ -146,20 +153,29 @@ void main() {
   });
 }
 
-void callSite({int x = 42}) {}
-
-void callingMain2(dynamic value) {
-  callSite(x: value != null ? int.parse(value) : 42);
-}
-
 extension on Subject<MethodInvocation> {
-  Subject<IndexExpression> hasIndexExpArgument() {
+  Subject<IndexExpression> hasIndexExpSingleArg() {
     return has((p0) => p0.argumentList.arguments.single, 'single argument')
         .isA<IndexExpression>();
   }
 
+  Subject<Expression> hasSingleArg() {
+    return has((p0) => p0.argumentList.arguments.single, 'single argument');
+  }
+
   void hasMethodNamed(String name) {
     has((p0) => p0.methodName.name, 'method name').equals(name);
+  }
+
+  void hasInstanceCreationTypeNamed(String name) {
+    has((p0) => p0.staticType!.getDisplayString(withNullability: false),
+            'type name')
+        .equals(name);
+  }
+
+  Subject<InstanceCreationExpression> isAInstanceCreationExp() {
+    return has((p0) => p0.realTarget, 'type target')
+        .isA<InstanceCreationExpression>();
   }
 
   void hasTargetNamed(String name) {

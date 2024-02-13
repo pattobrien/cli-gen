@@ -15,6 +15,7 @@ class CommandParameterModel {
     this.annotations = const [],
     this.availableOptions,
     required this.parser,
+    required this.isIterable,
   });
 
   final OptionType optionType;
@@ -22,6 +23,7 @@ class CommandParameterModel {
   final Expression? parser;
 
   final TypeReference type;
+  final bool isIterable;
 
   final bool isNamed;
 

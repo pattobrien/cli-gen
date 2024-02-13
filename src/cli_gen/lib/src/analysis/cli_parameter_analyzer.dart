@@ -33,10 +33,17 @@ class CliParameterAnalyzer {
       defaultValueCode: element.defaultValueCode,
       computedDefaultValue: computedDefaultValue,
       docComments: cleanedUpComments,
+      isIterable: isParameterTypeAnIterable(element),
       annotations: [
         // TODO: add support for annotations
       ],
     );
+  }
+
+  bool isParameterTypeAnIterable(ParameterElement element) {
+    return element.type.isDartCoreIterable ||
+        element.type.isDartCoreList ||
+        element.type.isDartCoreSet;
   }
 
   Expression? getParserForParameter(
