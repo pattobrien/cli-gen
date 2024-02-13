@@ -27,7 +27,16 @@ void main() async {
     singleParam.metadata.first,
   );
 
+  final matchedAnnotations = singleParam.metadata
+      .where(annotationAnalyzer.isOptionsAnnotation)
+      .map(annotationAnalyzer.fromElementAnnotation)
+      .toList();
+
   group('@Options() Annotations (DartObject -> Model) -', () {
+    test('Matched annotations length', () {
+      check(matchedAnnotations.length).equals(1);
+    });
+
     test('Parser Expression', () {
       check(annotationModel)
           .has((p0) => p0.parser, 'parser expression')

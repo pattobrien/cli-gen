@@ -5,6 +5,7 @@ import 'package:source_gen/source_gen.dart';
 
 import '../code/models/command_parameter_model.dart';
 import '../code/utils/remove_doc_slashes.dart';
+import 'annotations_analyzer.dart';
 import 'utils/reference_ext.dart';
 
 class CliParameterAnalyzer {
@@ -21,6 +22,12 @@ class CliParameterAnalyzer {
     final availableOptions = getImplicitAvailableOptions(element);
     // final defaultValue = getDefaultValueCode(element);
     final computedDefaultValue = getDefaultConstantValue(element);
+    const annotationAnalyzer = AnnotationsAnalyzer();
+    final annotations = element.metadata
+        .where(annotationAnalyzer.isOptionsAnnotation)
+        .map(annotationAnalyzer.fromElementAnnotation)
+        .toList();
+
     return CommandParameterModel(
       parser: getParserForParameter(element, element.type),
       ref: element.toRef(),
@@ -34,9 +41,7 @@ class CliParameterAnalyzer {
       computedDefaultValue: computedDefaultValue,
       docComments: cleanedUpComments,
       isIterable: isParameterTypeAnIterable(element),
-      annotations: [
-        // TODO: add support for annotations
-      ],
+      annotations: annotations,
     );
   }
 

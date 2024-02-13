@@ -9,6 +9,22 @@ import 'utils/reference_ext.dart';
 class AnnotationsAnalyzer {
   const AnnotationsAnalyzer();
 
+  bool isOptionsAnnotation(ElementAnnotation annotation) {
+    final typeElement = annotation.computeConstantValue()?.type?.element;
+    if (typeElement is! InterfaceElement) {
+      return false;
+    }
+    final allSupertypes = typeElement.allSupertypes;
+    final isMatch = allSupertypes.any((e) {
+      // ignore: deprecated_member_use
+      final isNamedOption = e.name == 'BaseOption';
+      final isCliAnnotationUri = e.element.library.source.uri.toString() ==
+          'package:cli_annotations/src/args.dart';
+      return isNamedOption && isCliAnnotationUri;
+    });
+    return isMatch;
+  }
+
   AnnotationModel fromElementAnnotation(ElementAnnotation annotation) {
     final constantObject = annotation.computeConstantValue();
     if (constantObject == null) {
