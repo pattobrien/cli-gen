@@ -18,9 +18,10 @@ void primativeTypes(
 @CliCommand()
 void userTypes(
   MyFooEnum enumValue,
-  Email emailValue, {
+  // Email emailValue,
+  {
   MyFooEnum enumValue2 = MyFooEnum.value1,
-  Email emailValue2 = const Email('foo'),
+  // Email emailValue2 = const Email('foo'),
   int constVar = someConstant,
 }) {}
 

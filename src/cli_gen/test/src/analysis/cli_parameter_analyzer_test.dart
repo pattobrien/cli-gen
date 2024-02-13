@@ -82,10 +82,10 @@ void main() async {
       check(param.computedDefaultValue).isNotNull().equals('value1');
     });
 
-    test('Extension type default', () {
-      final param = parameters.firstWhere((p) => p.ref.symbol == 'emailValue2');
-      check(param.computedDefaultValue).isNotNull().equals('foo');
-    });
+    // test('Extension type default', () {
+    //   final param = parameters.firstWhere((p) => p.ref.symbol == 'emailValue2');
+    //   check(param.computedDefaultValue).isNotNull().equals('foo');
+    // });
 
     test('Constant variable default', () {
       final param = parameters.firstWhere((p) => p.ref.symbol == 'constVar');

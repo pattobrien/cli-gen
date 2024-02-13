@@ -51,24 +51,24 @@ class CliParameterAnalyzer {
     // - Uri -> Uri.parse
     // - DateTime -> DateTime.parse
     if (type.isDartCoreInt) {
-      return refer('int.parse');
+      return refer('int').property('parse');
     }
     if (type.isDartCoreDouble) {
-      return refer('double.parse');
+      return refer('double').property('parse');
     }
     if (type.isDartCoreBool) {
-      return refer('bool.parse');
+      return refer('bool').property('parse');
     }
     if (type.isDartCoreString) {
       return null;
     }
     if (type.element!.name == 'Uri' &&
         type.element!.librarySource!.uri.path == 'dart:core') {
-      return refer('Uri.parse');
+      return refer('Uri').property('parse');
     }
     if (type.element!.name == 'DateTime' &&
         type.element!.librarySource!.uri.path == 'dart:core') {
-      return refer('DateTime.parse');
+      return refer('DateTime').property('parse');
     }
 
     // if the element is an enum, create a parse function inline
@@ -80,15 +80,6 @@ class CliParameterAnalyzer {
       ]).property('parse');
     }
 
-    // if the element is a extension type, get the extension type erasure
-    // to get the underlying type, then get the corresponding parser
-    // by calling `getParserForParameter` recursively.
-    final isExtensionType = type.extensionTypeErasure != type;
-    if (isExtensionType) {
-      final erasure = type.extensionTypeErasure;
-      return getParserForParameter(element, erasure);
-    }
-
     // if the element is an iterable, check if the type argument is one of the
     // above types, and use the corresponding parser + .split(',')
     final isIterable =
@@ -97,6 +88,19 @@ class CliParameterAnalyzer {
       final typeArg = type as ParameterizedType;
       final argType = typeArg.typeArguments.single;
       return getParserForParameter(element, argType);
+    }
+    // TODO: extension type is not supported yet
+    // if the element is a extension type, get the extension type erasure
+    // to get the underlying type, then get the corresponding parser
+    // by calling `getParserForParameter` recursively.
+    final isExtensionType = type.extensionTypeErasure != type;
+    if (isExtensionType) {
+      // final erasure = type.extensionTypeErasure;
+      // return getParserForParameter(element, erasure);
+      throw InvalidGenerationSource(
+        'Extension types are not supported yet',
+        element: element,
+      );
     }
 
     // else, throw an error
