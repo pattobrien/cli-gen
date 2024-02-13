@@ -88,12 +88,21 @@ class CliParameterAnalyzer {
     if (type.isDartCoreDouble) {
       return refer('double').property('parse');
     }
+    if (type.isDartCoreNum) {
+      return refer('num').property('parse');
+    }
+    // ignore: deprecated_member_use
+    if (type.name == 'BigInt' &&
+        type.element!.librarySource!.uri.path == 'dart:core') {
+      return refer('BigInt').property('parse');
+    }
     if (type.isDartCoreBool) {
       return refer('bool').property('parse');
     }
     if (type.isDartCoreString) {
       return null;
     }
+
     if (type.element!.name == 'Uri' &&
         type.element!.librarySource!.uri.path == 'dart:core') {
       return refer('Uri').property('parse');

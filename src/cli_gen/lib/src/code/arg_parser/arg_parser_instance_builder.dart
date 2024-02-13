@@ -64,6 +64,10 @@ class ArgParserInstanceExp {
     final isFlag = type.symbol == boolRef.symbol && type.url == boolRef.url;
     final defaultValue = parameter.computedDefaultValue;
     final isNegatable = false;
+    final hide = parameter.hide;
+    final valueHelp = parameter.valueHelp;
+    final abbr = parameter.abbr;
+    final aliases = parameter.aliases;
 
     final property = isFlag ? 'addFlag' : 'addOption';
 
@@ -76,9 +80,13 @@ class ArgParserInstanceExp {
     ], {
       // 'abbr': literalString('p'),
       if (!isFlag) 'mandatory': literalBool(isRequired),
-      if (!isFlag) 'valueHelp': literalString('property'),
+      if (!isFlag && valueHelp != null) 'valueHelp': valueHelp,
       // if (!isFlag) 'allowed': literalList([]),
       if (isFlag) 'negatable': literalBool(isNegatable),
+      if (hide != null) 'hide': literalBool(hide),
+      if (abbr != null) 'abbr': literalString(abbr),
+      if (aliases != null) 'aliases': literalList(aliases),
+
       if (defaultValue != null) 'defaultsTo': defaultValue,
       if (docComment != null)
         'help': literalString(removeDocSlashes(docComment)!),

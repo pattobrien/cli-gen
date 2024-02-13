@@ -27,7 +27,6 @@ void main() {
               .unorderedEquals([
             "'msg'",
             "mandatory: true",
-            "valueHelp: 'property'",
             "help: 'The message to display.'",
           ]);
       });

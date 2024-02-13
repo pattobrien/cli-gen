@@ -124,11 +124,8 @@ void main() async {
             parameters.firstWhere((p) => p.ref.symbol == 'numericValue');
         check(param)
           ..hasDefaultValueOf(123)
-          // ..has((p0) => p0.computedDefaultValue, 'computedDefaultValue')
-          // .isA<LiteralExpression>()
-          // .has((p0) => p0.literal, 'literal value')
-          // .equals(
-          //     (literalString(123.toString()) as LiteralExpression).literal)
+          ..has((p0) => p0.docComments, 'doc comments')
+              .equals('Annotation comment.')
           ..has((p0) => p0.parser, 'parser')
               .isA<Reference>()
               .has((p0) => p0.symbol, 'symbol name')
