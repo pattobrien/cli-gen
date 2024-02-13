@@ -7,6 +7,7 @@ environment:
 dependencies:
   analyzer: ^6.4.1
   args: ^2.4.2
+  cli_annotations: ^0.1.0-dev.1
   json_annotation: ^4.8.1
 
 dev_dependencies:
