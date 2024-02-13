@@ -19,7 +19,7 @@ class CommandParameterModel {
 
   final OptionType optionType;
   final Reference ref;
-  final Reference? parser;
+  final Expression? parser;
 
   final TypeReference type;
 

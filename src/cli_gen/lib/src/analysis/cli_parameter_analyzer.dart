@@ -39,7 +39,7 @@ class CliParameterAnalyzer {
     );
   }
 
-  Reference? getParserForParameter(
+  Expression? getParserForParameter(
     ParameterElement element,
     DartType type,
   ) {
@@ -69,6 +69,16 @@ class CliParameterAnalyzer {
     if (type.element!.name == 'DateTime' &&
         type.element!.librarySource!.uri.path == 'dart:core') {
       return refer('DateTime.parse');
+    }
+
+    // if the element is an enum, create a parse function inline
+    // e.g. `EnumParser(MyEnum.values).parse`
+    // final thisType = type as InterfaceType;
+    final enumType = type.element?.library?.typeProvider.enumElement!.thisType;
+    if (type is InterfaceType && type.allSupertypes.contains(enumType)) {
+      return refer('EnumParser').newInstance([
+        refer('${type.element.name}.values'),
+      ]).property('parse');
     }
 
     // if the element is an iterable, check if the type argument is one of the
