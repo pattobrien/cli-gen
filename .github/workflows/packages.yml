@@ -23,11 +23,11 @@ jobs:
           - src/cli_gen
           - src/cli_annotations
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.x"
-          channel: "main"
+          flutter-version: "3.19.x"
+          channel: "beta"
       - name: Install dependencies
         run: dart pub get
         working-directory: ${{ matrix.package }}

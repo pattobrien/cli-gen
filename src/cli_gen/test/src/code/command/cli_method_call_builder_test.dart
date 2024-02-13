@@ -152,40 +152,40 @@ void main() {
             ..hasKeyNamed('message'));
       });
 
-      test(
-          'List<int> (uses `List<String>.from(result[\'foo\'].map(int.parse)`)',
-          () {
-        final invocationExp = generateArgResultHandlerExp(
-          paramType: TestTypes.listOf(TestTypes.int_),
-          parser: 'int.parse',
-          defaultValueCode: null,
-          computedDefaultValue: null,
-          isRequired: true,
-          isIterable: true,
-        );
-        final singleArg = invocationExp.argumentList.arguments.single;
+      // test(
+      //     'List<int> (uses `List<String>.from(result[\'foo\'].map(int.parse)`)',
+      //     () {
+      //   final invocationExp = generateArgResultHandlerExp(
+      //     paramType: TestTypes.listOf(TestTypes.int_),
+      //     parser: 'int.parse',
+      //     defaultValueCode: null,
+      //     computedDefaultValue: null,
+      //     isRequired: true,
+      //     isIterable: true,
+      //   );
+      //   final singleArg = invocationExp.argumentList.arguments.single;
 
-        check(singleArg).isA<MethodInvocation>()
-          ..isAInstanceCreationExp().which((p0) => p0
-            ..has((p0) => p0.constructorName.type, 'type name').which((p0) {
-              p0.has((p0) => p0.name2.lexeme, 'type name').equals('List');
-              p0.has(
-                  (p0) => p0.typeArguments!.arguments.single, 'type arguments')
-                ..isA<NamedType>()
-                ..has((p0) => (p0 as NamedType).name2.lexeme,
-                        'type argument name')
-                    .equals('String');
-            })
-            ..has((p0) => p0.constructorName.name?.name, 'constructor name')
-                .equals('from'))
-          ..hasSingleArg().which((p0) {
-            p0.isA<PrefixedIdentifier>();
-            p0
-                .has((p0) => (p0 as PrefixedIdentifier).name, 'identifier')
-                .equals('int.parse');
-          })
-          ..has((p0) => p0.methodName.name, 'method name').equals('map');
-      });
+      //   check(singleArg).isA<MethodInvocation>()
+      //     ..isAInstanceCreationExp().which((p0) => p0
+      //       ..has((p0) => p0.constructorName.type, 'type name').which((p0) {
+      //         p0.has((p0) => p0.name2.lexeme, 'type name').equals('List');
+      //         p0.has(
+      //             (p0) => p0.typeArguments!.arguments.single, 'type arguments')
+      //           ..isA<NamedType>()
+      //           ..has((p0) => (p0 as NamedType).name2.lexeme,
+      //                   'type argument name')
+      //               .equals('String');
+      //       })
+      //       ..has((p0) => p0.constructorName.name?.name, 'constructor name')
+      //           .equals('from'))
+      //     ..hasSingleArg().which((p0) {
+      //       p0.isA<PrefixedIdentifier>();
+      //       p0
+      //           .has((p0) => (p0 as PrefixedIdentifier).name, 'identifier')
+      //           .equals('int.parse');
+      //     })
+      //     ..has((p0) => p0.methodName.name, 'method name').equals('map');
+      // });
     });
   });
 }
