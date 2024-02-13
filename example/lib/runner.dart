@@ -6,8 +6,6 @@ part 'runner.g.dart';
 /// A command-line interface for version control.
 @cliRunner
 class GitRunner extends _$GitRunner {
-  GitRunner();
-
   @mount
   Command get stash => StashSubcommand();
 

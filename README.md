@@ -92,8 +92,13 @@ class MergeCommand extends Command<void> {
 ```dart
 /// A command-line interface for version control.
 @cliRunner
-class GitRunner {
+class GitRunner extends _$GitRunner {
+
+  @mount
+  Command get stash => StashSubcommand();
+
   /// Join two or more development histories together.
+  @cliCommand
   Future<void> merge({
     /// The name of the branch to be merged into the current branch.
     required String branch,
