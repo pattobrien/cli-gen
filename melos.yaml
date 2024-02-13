@@ -1,0 +1,20 @@
+name: cli_gen
+repository: https://github.com/pattobrien/cli-gen
+
+packages:
+  - example
+  - src/cli_annotations
+  - src/cli_gen
+  - src/cli_gen/test/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
+  publish:
+    exec: dart publish --dry-run
+  test:
+    exec: dart test
+
+ide:
+  intellij:
+    enabled: false

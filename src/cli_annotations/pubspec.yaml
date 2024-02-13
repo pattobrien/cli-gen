@@ -1,5 +1,5 @@
 name: cli_annotations
-description: A sample command-line application.
+description: Annotations for generating CLI applications using `package:cli_gen`.
 version: 0.1.0-dev.1
 homepage: https://github.com/pattobrien/cli-gen
 repository: https://github.com/pattobrien/cli-gen
