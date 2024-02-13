@@ -73,7 +73,6 @@ class CliParameterAnalyzer {
 
     // if the element is an enum, create a parse function inline
     // e.g. `EnumParser(MyEnum.values).parse`
-    // final thisType = type as InterfaceType;
     final enumType = type.element?.library?.typeProvider.enumElement!.thisType;
     if (type is InterfaceType && type.allSupertypes.contains(enumType)) {
       return refer('EnumParser').newInstance([
@@ -81,9 +80,19 @@ class CliParameterAnalyzer {
       ]).property('parse');
     }
 
+    // if the element is a extension type, get the extension type erasure
+    // to get the underlying type, then get the corresponding parser
+    // by calling `getParserForParameter` recursively.
+    final isExtensionType = type.extensionTypeErasure != type;
+    if (isExtensionType) {
+      final erasure = type.extensionTypeErasure;
+      return getParserForParameter(element, erasure);
+    }
+
     // if the element is an iterable, check if the type argument is one of the
     // above types, and use the corresponding parser + .split(',')
-    final isIterable = type.isDartCoreIterable;
+    final isIterable =
+        type.isDartCoreIterable || type.isDartCoreList || type.isDartCoreSet;
     if (isIterable) {
       final typeArg = type as ParameterizedType;
       final argType = typeArg.typeArguments.single;
