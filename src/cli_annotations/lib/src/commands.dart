@@ -28,6 +28,8 @@ class CliRunner {
   });
 }
 
+const cliRunner = CliRunner();
+
 @Target({TargetKind.classType})
 class CliSubcommand {
   final String? name;

@@ -1,6 +1,6 @@
 import 'package:cli_annotations/cli_annotations.dart';
 
-part 'stash_subcommand.g.dart';
+part 'stash.g.dart';
 
 /// Implements a subset of Git stash commands for managing a stack of stashed changes.
 ///

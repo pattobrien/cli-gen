@@ -32,7 +32,8 @@ class SubcommandBuilder {
         constructor.body = Block((block) {
           block.statements.addAll(
               model.subcommands.map((e) => Identifiers.args.addSubcommand.call([
-                    refer(e.methodRef.symbol!.pascalCase, e.methodRef.url)
+                    refer('${e.methodRef.symbol!.pascalCase}Command',
+                            e.methodRef.url)
                         .call([]),
                   ]).statement));
         });
