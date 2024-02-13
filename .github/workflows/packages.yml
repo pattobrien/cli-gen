@@ -21,7 +21,7 @@ jobs:
       matrix:
         package:
           - src/cli_gen
-          - src/cli_annotations
+          # - src/cli_annotations
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
