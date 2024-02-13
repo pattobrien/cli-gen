@@ -14,7 +14,7 @@ const cliArgs = CliArgs();
 
 /// Defines an option that takes a value.
 ///
-/// This adds an [Option] with the given properties to [options].
+/// This adds an [BaseOption] with the given properties to [options].
 ///
 /// The [abbr] argument is a single-character string that can be used as a
 /// shorthand for this option. For example, `abbr: "a"` will allow the user to
@@ -47,20 +47,20 @@ const cliArgs = CliArgs();
 /// * There is already an option with name [name].
 /// * There is already an option using abbreviation [abbr].
 @Target({TargetKind.field, TargetKind.parameter})
-class Option<T> {
+sealed class BaseOption<T> {
   final String? abbr;
   final String? help;
   final T? valueHelp;
-  final bool? negatable; // TODO: only useful for bool options
+  final bool? negatable; // only useful for bool options
   final bool? hide;
-  final T? defaultsTo; // TODO: this could be a list, if this is a MultiOption
+  final Object? defaultsTo; // this could be a list, if this is a MultiOption
   final List<T>? allowed;
   final Map<T, String>? allowedHelp;
   final List<String>? aliases;
-  final T Function(String)? parser;
-  final bool? splitCommas; // TODO: this should only apply for MultiOption
+  // final Object Function(String)? parser;
+  final bool? splitCommas; // this should only apply for MultiOption
 
-  const Option({
+  const BaseOption({
     this.abbr,
     this.help,
     this.defaultsTo,
@@ -70,7 +70,58 @@ class Option<T> {
     this.allowed,
     this.allowedHelp,
     this.aliases,
-    this.parser,
+    // this.parser,
     this.splitCommas,
   });
+}
+
+@Target({TargetKind.field, TargetKind.parameter})
+class Option<T> extends BaseOption<T> {
+  const Option({
+    super.abbr,
+    super.help,
+    super.valueHelp,
+    super.hide,
+    super.allowed,
+    super.allowedHelp,
+    super.aliases,
+    T? super.defaultsTo,
+    this.parser,
+  });
+
+  final T Function(String)? parser;
+}
+
+@Target({TargetKind.field, TargetKind.parameter})
+class MultiOption<T> extends BaseOption<T> {
+  const MultiOption({
+    super.abbr,
+    super.help,
+    super.valueHelp,
+    super.hide,
+    super.allowed,
+    super.allowedHelp,
+    super.aliases,
+    super.splitCommas,
+    List<T>? super.defaultsTo,
+    this.parser,
+  });
+
+  final List<T> Function(List<String>)? parser;
+}
+
+@Target({TargetKind.field, TargetKind.parameter})
+class Flag<T> extends BaseOption<T> {
+  const Flag({
+    super.abbr,
+    super.help,
+    super.valueHelp,
+    super.negatable,
+    super.hide,
+    super.aliases,
+    T? super.defaultsTo,
+    this.parser,
+  });
+
+  final T Function(String)? parser;
 }

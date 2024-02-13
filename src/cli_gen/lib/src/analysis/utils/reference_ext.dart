@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:code_builder/code_builder.dart';
+import 'package:code_builder/code_builder.dart' hide FunctionType;
 
 extension IdentifierToRefExt on Identifier {
   Reference toRef() {
@@ -84,6 +84,9 @@ extension DartTypeExt on DartType {
     if (this is InterfaceType) {
       return (this as InterfaceType).toRef();
     }
+    // if (this is FunctionType) {
+    //   return (this as FunctionType).toRef();
+    // }
 
     throw UnimplementedError(
       'Only InterfaceType is supported for DartType.toRef() method.',
@@ -99,6 +102,14 @@ extension InterfaceTypeExt on InterfaceType {
     );
   }
 }
+
+// extension FunctionTypeExt on FunctionType {
+//   Reference toRef() {
+//     return refer(
+//       getDisplayString(withNullability: false),
+//     );
+//   }
+// }
 
 extension InterfaceElementExt on InterfaceElement {
   Reference toRef() {

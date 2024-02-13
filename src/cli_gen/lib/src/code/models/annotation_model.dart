@@ -3,14 +3,47 @@ import 'package:code_builder/code_builder.dart';
 class AnnotationModel {
   final TypeReference type;
 
-  final List<Object> unNamedArgs;
+  // final List<Object?> unNamedArgs;
 
-  final Map<String, Object> namedArgs;
+  // final Map<String, Object?> namedArgs;
+  final String? abbr;
+  final String? help;
+  final Expression? valueHelp;
+  final bool? negatable;
+  final bool? hide;
+
+  /// The default value for the option.
+  ///
+  /// Example expressions:
+  /// ```
+  /// defaultsTo: 'ort' (single option)
+  /// defaultsTo: ['foo', 'bar', 'baz'] (multi option)
+  /// defaultsTo: true (flag)
+  /// ```
+  final Expression? defaultsTo;
+
+  final List<String>? allowed;
+  final Map<String, String>? allowedHelp;
+  final List<String>? aliases;
+  final bool? splitCommas;
+  final Expression? parser;
 
   const AnnotationModel({
     required this.type,
-    required this.unNamedArgs,
-    required this.namedArgs,
+    this.abbr,
+    this.help,
+    this.valueHelp,
+    this.negatable,
+    this.hide,
+    this.defaultsTo,
+    this.allowed,
+    this.allowedHelp,
+    this.aliases,
+    this.splitCommas,
+    this.parser,
+
+    // required this.unNamedArgs,
+    // required this.namedArgs,
   });
 
   bool get isOptionType => type.symbol == 'Option';

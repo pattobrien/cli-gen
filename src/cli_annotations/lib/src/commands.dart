@@ -13,6 +13,8 @@ class CliCommand {
   });
 }
 
+const cliCommand = CliCommand();
+
 @Target({TargetKind.classType})
 class CliRunner {
   final String? name;
@@ -26,12 +28,15 @@ class CliRunner {
   });
 }
 
-class CliSubCommand {
+@Target({TargetKind.classType})
+class CliSubcommand {
   final String? name;
   final String? description;
 
-  const CliSubCommand({
+  const CliSubcommand({
     this.name,
     this.description,
   });
 }
+
+const cliSubcommand = CliSubcommand();

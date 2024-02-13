@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
 // part 'example.g.dart';
@@ -23,6 +24,11 @@ class GitRunner {
 }
 
 enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
+
+// final exampleParser = ArgParser()..addMultiOption(
+//   '',
+//   defaultsTo: 
+// )
 
 // class MergeCommand extends Command<void> {
 //   MergeCommand() {

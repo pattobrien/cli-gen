@@ -15,14 +15,14 @@ class EnumParser<T extends Enum> {
   }
 }
 
-// -- example usage --
-enum MyEnum { a, b, c }
+// // -- example usage --
+// enum MyEnum { a, b, c }
 
-void main() {
-  final value = EnumFromString.fromString('b', MyEnum.values);
-  print(value); // MyEnum.b
+// void main() {
+//   final value = EnumFromString.fromString('b', MyEnum.values);
+//   print(value); // MyEnum.b
 
-  const parser = EnumParser(MyEnum.values);
-  final parsed = parser.parse('c');
-  print(parsed); // MyEnum.c
-}
+//   const parser = EnumParser(MyEnum.values);
+//   final parsed = parser.parse('c');
+//   print(parsed); // MyEnum.c
+// }
