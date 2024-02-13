@@ -175,6 +175,16 @@ class GitRunner extends _$GitRunner {
 
 That's all there is to it!
 
+## How it Works
+
+`cli-gen` uses `package:args` under the hood to manage argument parsing, command hierarchies, and help text generation. The annotations included with this package are roughly a 1:1 mapping to their `package:args` equivalents, for example:
+
+- `@cliRunner` generates a `CommandRunner` class
+- `@cliCommand` generates a `Command` class and overrides the `run` method with a call to your method or function
+- `@cliSubcommand` generates a `Command` class and adds all nested commands as subcommands
+
+Examples of the generated code can be found in the `example` project, within their respective `.g.dart` files.
+
 ## Features
 
 ### ArgParser generation from Parameters

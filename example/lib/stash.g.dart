@@ -46,6 +46,7 @@ class PushCommand extends Command {
       negatable: false,
       abbr: 'u',
       defaultsTo: false,
+      help: 'Whether to include untracked files.',
     );
 
   @override

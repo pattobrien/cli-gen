@@ -14,8 +14,8 @@ class StashSubcommand extends _$StashSubcommand {
   Future<void> push(
     /// The message to display.
     String message, {
-    /// Whether to include untracked files.
-    @Option(abbr: 'u') bool includeUntracked = false,
+    @Option(help: 'Whether to include untracked files.', abbr: 'u')
+    bool includeUntracked = false,
   }) async {
     print('Stashing changes with message: $message');
     await Future.delayed(const Duration(seconds: 1));
