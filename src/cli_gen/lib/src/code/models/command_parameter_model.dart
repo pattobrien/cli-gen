@@ -33,10 +33,9 @@ class CommandParameterModel {
   Expression? get computedDefaultValue {
     return annotations.map((e) => e.defaultsTo).firstOrNull ??
         (_computedDefaultValue != null
-            // ? CodeExpression(Code("'$_computedDefaultValue'"))
             ? type.symbol == 'bool'
-                ? literalBool(bool.parse(_computedDefaultValue))
-                : literalString(_computedDefaultValue)
+                ? literalBool(bool.parse(_computedDefaultValue!))
+                : literalString(_computedDefaultValue!)
             : null);
   }
 

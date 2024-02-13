@@ -2,9 +2,18 @@ name: cli_gen
 description: A sample command-line application.
 version: 0.1.0-dev.1
 publish_to: none
+homepage: https://github.com/pattobrien/cli-gen
+repository: https://github.com/pattobrien/cli-gen
+issue_tracker: https://github.com/pattobrien/cli-gen/issues
+
+topics:
+  - cli
+  - args
+  - codegen
+  - macros
 
 environment:
-  sdk: ^3.2.0
+  sdk: ^3.0.0
 
 dependencies:
   analyzer: ^6.4.1

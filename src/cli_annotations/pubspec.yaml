@@ -1,9 +1,18 @@
 name: cli_annotations
 description: A sample command-line application.
 version: 0.1.0-dev.1
+homepage: https://github.com/pattobrien/cli-gen
+repository: https://github.com/pattobrien/cli-gen
+issue_tracker: https://github.com/pattobrien/cli-gen/issues
+
+topics:
+  - cli
+  - args
+  - codegen
+  - macros
 
 environment:
-  sdk: ^3.2.0
+  sdk: ^3.0.0
 
 dependencies:
   args: ^2.4.2
