@@ -190,7 +190,7 @@ void main() {
   });
 }
 
-extension on Subject<MethodInvocation> {
+extension MethodInvocationX on Subject<MethodInvocation> {
   Subject<IndexExpression> hasIndexExpSingleArg() {
     return has((p0) => p0.argumentList.arguments.single, 'single argument')
         .isA<IndexExpression>();

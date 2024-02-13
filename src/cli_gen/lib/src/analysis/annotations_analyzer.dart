@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
@@ -15,7 +17,6 @@ class AnnotationsAnalyzer {
     if (annotationElement is! InterfaceElement) return false;
 
     final isMatch = annotationElement.allSupertypes.any((e) {
-      // ignore: deprecated_member_use
       final isNamedOption = e.name == 'BaseOption';
       final isCliAnnotationUri = e.element.library.source.uri.toString() ==
           'package:cli_annotations/src/args.dart';

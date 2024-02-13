@@ -220,14 +220,14 @@ void main() async {
       });
 
       test('Required + No Default Value', () {
-        final param = namedParams.firstWhere((p) => p.ref.symbol == 'reqValue');
+        // final param = namedParams.firstWhere((p) => p.ref.symbol == 'reqValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(true)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
       });
 
       test('Nullable + No Default Value', () {
-        final param = namedParams.firstWhere((p) => p.ref.symbol == 'optValue');
+        // final param = namedParams.firstWhere((p) => p.ref.symbol == 'optValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
@@ -237,7 +237,7 @@ void main() async {
       // a) mandatory=true and b) has a default value. Therefore, we should
       // follow suit: if a parameter has a default value, mandatory should be false.
       test('Non-Nullable + Default Value', () {
-        final param = namedParams.firstWhere((p) => p.ref.symbol == 'defValue');
+        // final param = namedParams.firstWhere((p) => p.ref.symbol == 'defValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNotNull();
@@ -255,21 +255,21 @@ void main() async {
       });
 
       test('Required + Positional', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'reqValue');
+        // final param = parameters.firstWhere((p) => p.ref.symbol == 'reqValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(true)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
       });
 
       test('Optional + Positional', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'optValue');
+        // final param = parameters.firstWhere((p) => p.ref.symbol == 'optValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNull();
       });
 
       test('Positional + Default Value', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'defValue');
+        // final param = parameters.firstWhere((p) => p.ref.symbol == 'defValue');
         // check(param)
         //   ..has((p0) => p0.isRequired, 'isRequired').equals(false)
         //   ..has((p0) => p0.defaultValueCode, 'defaultValueCode').isNotNull();
