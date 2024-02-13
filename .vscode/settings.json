@@ -4,7 +4,7 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
-    "**/.DS_Store": true,
+    "**/.DS_Store": false,
     "**/Thumbs.db": true,
     "**/*.g.dart": false,
     "**/*.freezed.dart": true,
