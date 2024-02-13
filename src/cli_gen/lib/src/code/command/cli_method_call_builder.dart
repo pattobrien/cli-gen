@@ -57,16 +57,19 @@ class CliMethodCallBuilder {
     // creating of references, so this is probably a safe move.
     final isNullable = param.type.isNullable ?? false;
     final hasDefault = param.defaultValueCode != null;
-    final isIterable = param.isIterable;
+
+    // create the parser expression based on:
+    // a) whether a parser is available (will only be null for String types)
+    // b) whether the parameter is iterable and needs to call `.map` on the result
     Expression parserExpression;
-    if (isIterable && param.parser != null) {
+    if (param.isIterable && param.parser != null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
           .property('from')
           .call([resultKeyValue])
           .property('map')
           .call([param.parser!]);
-    } else if (isIterable && param.parser == null) {
+    } else if (param.isIterable && param.parser == null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
           .property('from')
@@ -74,19 +77,6 @@ class CliMethodCallBuilder {
     } else {
       parserExpression = parser?.call([resultKeyValue]) ?? resultKeyValue;
     }
-
-    // final parserExpression = isIterable
-    //     ? refer('List')
-    //         .toTypeRef(typeArguments: [refer('String')])
-    //         .property('from')
-    //         .call([
-    //           resultKeyValue,
-    //         ])
-    //         .property('map')
-    //         .call([
-    //           parser?.call([refer('it')])
-    //         ])
-    //     : parser?.call([resultKeyValue]);
 
     switch ((isNullable, hasDefault)) {
       case (true, _):

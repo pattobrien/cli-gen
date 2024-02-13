@@ -128,7 +128,6 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
 
 - Generate an ArgParser from a Constructor or Method/Function
 
-  - `help` comments from doc comments
   - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
     - [x] Primatives:
       - [x] String
@@ -147,8 +146,11 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
       - [ ] Classes
       - [ ] Extension Types
   - Multi-Select arguments
+
     - [ ] List of primative values
     - [ ] enums for a finite list of values
+
+  - `help` comments from doc comments
 
 - annotations to help guide the generator
 

@@ -7,22 +7,26 @@ import '../utils/types.dart';
 
 void main() {
   group('User Method Invocation - int positional arg', () {
-    final invocationExp = generateArgResultHandlerExp();
-    final singleArg = invocationExp.argumentList.arguments.single;
+    final invocationExp = generateArgResultHandlerExp(
+      paramName: 'myParam',
+      isNamed: true,
+    );
 
     test('End-to-end test', () {
-      // check(singleArg).isA<MethodInvocation>()
-      //   ..has((p0) => p0.realTarget, 'type target')
-      //       .isA<SimpleIdentifier>()
-      //       .has((p0) => p0.name, 'type name')
-      //       .equals('int')
-      //   ..has((p0) => p0.methodName.name, 'method name').equals('parse')
-      //   ..has((p0) => p0.argumentList.arguments.single, 'arguments')
-      //       .isA<IndexExpression>()
-      //       .has((p0) => p0.index, 'index')
-      //       .isA<SimpleStringLiteral>()
-      //       .has((p0) => p0.value, 'value')
-      //       .equals('message'); // the name of the parameter
+      check(invocationExp).isA<MethodInvocation>()
+        ..has((p0) => p0.methodName.name, 'method name').equals('myCliMethod')
+        ..has((p0) => p0.argumentList.arguments.single, 'arguments')
+            .isA<NamedExpression>()
+            .which(
+              (p0) => p0
+                ..has((p) => p.name.label.name, 'name').equals('myParam')
+                ..has((p) => p.expression, 'expression')
+                    .isA<IndexExpression>()
+                    .has((p0) => p0.index, 'index')
+                    .isA<SimpleStringLiteral>()
+                    .has((p0) => p0.value, 'value')
+                    .equals('myParam'), // the name of the parameter);
+            );
     });
   });
 
