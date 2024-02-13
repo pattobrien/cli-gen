@@ -46,9 +46,18 @@ class AnnotationsAnalyzer {
       final x = constantReader.revive().namedArguments['parser'];
 
       final parserSource = x!.toFunctionValue();
-      final classElement = parserSource!.enclosingElement as ClassElement;
-      parserRef = refer('${classElement.name}.${parserSource.name}',
-          parserSource.librarySource.uri.toString());
+      final parserExecutableName = switch (parserSource) {
+        MethodElement(:final name, :final enclosingElement) =>
+          '${(enclosingElement as ClassElement).name}.$name',
+        FunctionElement(:final name) => name,
+        ConstructorElement(:final name, :InterfaceElement enclosingElement) =>
+          '${enclosingElement.name}.$name',
+        _ => throw UnimplementedError(
+            'Unsupported parser source: $parserSource',
+          ),
+      };
+      parserRef = refer(
+          parserExecutableName, parserSource!.librarySource.uri.toString());
       if (!parserReader.parameters.first.type.isDartCoreString) {
         throw ArgumentError(
           'Parser $parserName must take a single String argument.',
@@ -71,8 +80,39 @@ class AnnotationsAnalyzer {
       // -- generic type args --
       parser: parserRef,
       // valueHelp: TODO
-      // defaultsTo: TODO
+      defaultsTo: readDefaultToArg(constantReader),
     );
+  }
+
+  Expression? readDefaultToArg(ConstantReader annotation) {
+    final defaultsTo = annotation.revive().namedArguments['defaultsTo'];
+    if (defaultsTo == null) return null;
+
+    switch (annotation.objectValue.type) {
+      case InterfaceType(:final name) when name == 'Option':
+        final literalValue = ConstantReader(defaultsTo).literalValue;
+        if (literalValue is String) return literal(literalValue);
+        if (literalValue is! String) {
+          final value = literalValue.toString();
+          final nonWrappedVal = literalString(value);
+          final expValue = literalString(value.toString());
+          return expValue;
+        }
+        throw ArgumentError(
+          'Unsupported defaultsTo type: ${literalValue.runtimeType}',
+        );
+
+      case InterfaceType(:final name) when name == 'MultiOption':
+        return literalList(
+          defaultsTo.toListValue()!.map((e) => literal("'${e.toString()}'")),
+        );
+      case InterfaceType(:final name) when name == 'Flag':
+        return literalBool(defaultsTo.toBoolValue()!);
+      default:
+        throw ArgumentError(
+          'Unsupported annotation type: ${annotation.objectValue.type}',
+        );
+    }
   }
 }
 

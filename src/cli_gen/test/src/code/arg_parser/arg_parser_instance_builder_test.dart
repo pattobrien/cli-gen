@@ -126,7 +126,7 @@ void main() {
 
       test('Parameter WITH a STRING default value', () {
         final arguments = generateOptionArguments(
-          computedDefaultValue: "'value1'",
+          computedDefaultValue: 'value1',
           defaultValue: 'MyFooEnum.value1',
         );
 

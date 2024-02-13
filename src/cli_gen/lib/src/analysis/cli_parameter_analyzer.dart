@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
+import '../code/models/annotation_model.dart';
 import '../code/models/command_parameter_model.dart';
 import '../code/utils/remove_doc_slashes.dart';
 import 'annotations_analyzer.dart';
@@ -22,11 +23,7 @@ class CliParameterAnalyzer {
     final availableOptions = getImplicitAvailableOptions(element);
     // final defaultValue = getDefaultValueCode(element);
     final computedDefaultValue = getDefaultConstantValue(element);
-    const annotationAnalyzer = AnnotationsAnalyzer();
-    final annotations = element.metadata
-        .where(annotationAnalyzer.isOptionsAnnotation)
-        .map(annotationAnalyzer.fromElementAnnotation)
-        .toList();
+    final annotations = getAnnotations(element);
 
     return CommandParameterModel(
       parser: getParserForParameter(element, element.type),
@@ -37,7 +34,6 @@ class CliParameterAnalyzer {
       optionType:
           isMultiOptional(element) ? OptionType.multiOption : OptionType.single,
       availableOptions: availableOptions,
-      defaultValueCode: element.defaultValueCode,
       computedDefaultValue: computedDefaultValue,
       docComments: cleanedUpComments,
       isIterable: isParameterTypeAnIterable(element),
@@ -49,6 +45,30 @@ class CliParameterAnalyzer {
     return element.type.isDartCoreIterable ||
         element.type.isDartCoreList ||
         element.type.isDartCoreSet;
+  }
+
+  List<AnnotationModel> getAnnotations(ParameterElement element) {
+    const annotationAnalyzer = AnnotationsAnalyzer();
+    return _getAnnotationsForParameter(element)
+        .where(annotationAnalyzer.isOptionsAnnotation)
+        .map(annotationAnalyzer.fromElementAnnotation)
+        .toList();
+  }
+
+  List<ElementAnnotation> _getAnnotationsForParameter(
+    ParameterElement element,
+  ) {
+    switch (element) {
+      case FieldFormalParameterElement(:final field):
+        return [...element.metadata, ...?field?.metadata];
+      case SuperFormalParameterElement(
+          :ParameterElement superConstructorParameter,
+        ):
+        return element.metadata +
+            _getAnnotationsForParameter(superConstructorParameter);
+      case ParameterElement():
+        return element.metadata;
+    }
   }
 
   Expression? getParserForParameter(

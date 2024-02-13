@@ -10,17 +10,34 @@ class CommandParameterModel {
     required this.isRequired,
     required this.optionType,
     this.docComments,
-    this.defaultValueCode,
-    this.computedDefaultValue,
+    // this.defaultValueCode,
+    String? computedDefaultValue,
     this.annotations = const [],
     this.availableOptions,
-    required this.parser,
+    required Expression? parser,
     required this.isIterable,
-  });
+  })  : _parser = parser,
+        _computedDefaultValue = computedDefaultValue;
+
+  final Expression? _parser;
+  final String? _computedDefaultValue;
 
   final OptionType optionType;
+
   final Reference ref;
-  final Expression? parser;
+
+  Expression? get parser =>
+      annotations.map((e) => e.parser).firstOrNull ?? _parser;
+
+  Expression? get computedDefaultValue {
+    return annotations.map((e) => e.defaultsTo).firstOrNull ??
+        (_computedDefaultValue != null
+            // ? CodeExpression(Code("'$_computedDefaultValue'"))
+            ? type.symbol == 'bool'
+                ? literalBool(bool.parse(_computedDefaultValue))
+                : literalString(_computedDefaultValue)
+            : null);
+  }
 
   final TypeReference type;
   final bool isIterable;
@@ -31,10 +48,10 @@ class CommandParameterModel {
 
   final String? docComments;
 
-  // TODO: should defaultValueCode be a Code or a String?
-  final String? defaultValueCode;
+  // // TODO: should defaultValueCode be a Code or a String?
+  // final String? defaultValueCode;
 
-  final String? computedDefaultValue;
+  // final String? computedDefaultValue;
 
   final List<String>? availableOptions;
 

@@ -56,7 +56,7 @@ class CliMethodCallBuilder {
     // but we never require passing a null or non-null value anywhere in the
     // creating of references, so this is probably a safe move.
     final isNullable = param.type.isNullable ?? false;
-    final hasDefault = param.defaultValueCode != null;
+    final hasDefault = param.computedDefaultValue != null;
 
     // create the parser expression based on:
     // a) whether a parser is available (will only be null for String types)
@@ -90,7 +90,7 @@ class CliMethodCallBuilder {
         // value into a non-nullable parameter.
         return resultKeyValue.notEqualTo(literalNull).conditional(
               parserExpression,
-              CodeExpression(Code(param.defaultValueCode!)),
+              param.computedDefaultValue!,
             );
       case (false, false):
         return parserExpression;

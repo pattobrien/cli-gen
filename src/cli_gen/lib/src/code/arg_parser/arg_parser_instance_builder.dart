@@ -79,8 +79,7 @@ class ArgParserInstanceExp {
       if (!isFlag) 'valueHelp': literalString('property'),
       // if (!isFlag) 'allowed': literalList([]),
       if (isFlag) 'negatable': literalBool(isNegatable),
-      if (defaultValue != null)
-        'defaultsTo': CodeExpression(Code(defaultValue)),
+      if (defaultValue != null) 'defaultsTo': defaultValue,
       if (docComment != null)
         'help': literalString(removeDocSlashes(docComment)!),
     });

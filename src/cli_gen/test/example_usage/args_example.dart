@@ -90,3 +90,18 @@ void multiSelect({
 }) {}
 
 final String x = MyFooEnum.value1.name;
+
+@CliCommand()
+void annotatedParams({
+  @Option(
+    abbr: 'a',
+    help: 'Annotation comment.',
+    defaultsTo: 123,
+    parser: myCustomParser,
+  )
+
+  /// Parameter comment.
+  int numericValue = 234,
+}) {}
+
+int myCustomParser(String value) => int.parse(value);
