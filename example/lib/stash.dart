@@ -18,9 +18,7 @@ class StashSubcommand extends _$StashSubcommand {
     @Option(abbr: 'u') bool includeUntracked = false,
   }) async {
     print('Stashing changes with message: $message');
-    if (includeUntracked) {
-      print('Including untracked files');
-    }
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   /// Apply the stash at the given [stashRef] to the working directory.
