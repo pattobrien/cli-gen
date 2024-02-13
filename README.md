@@ -2,6 +2,13 @@
 
 A package for building cli applications using code generation and macros.
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [License](#license)
+
 <table>
 <tr>
 <th>Before</th>
@@ -100,13 +107,8 @@ class GitRunner extends _$GitRunner {
   /// Join two or more development histories together.
   @cliCommand
   Future<void> merge({
-    /// The name of the branch to be merged into the current branch.
     required String branch,
-
-    /// Pass merge strategy specific option through to the merge strategy.
     MergeStrategy strategy = MergeStrategy.ort,
-
-    /// Perform the merge and commit the result.
     bool? commit,
   }) async {
     // ... application logic ...
@@ -223,3 +225,7 @@ Examples of the generated code can be found in the `example` project, within the
 - [x] Generate a `Subcommand` class using a `@cliSubcommand` annotation
 - [x] Generate a `CommandRunner` using a `@cliRunner` annotation
   - [x] Allow mounting nested subcommands using a `@mount` annotation
+
+## License
+
+cli-gen is released under the MIT License. See [LICENSE](LICENSE) for details.
