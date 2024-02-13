@@ -1,6 +1,6 @@
 # cli-gen
 
-A package for building cli applications using code-gen.
+A package for building cli applications using code generation and macros.
 
 <table>
 <tr>
@@ -121,11 +121,59 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
 </tr>
 </table>
 
-### NOTES FOR EXAMPLE ABOVE
+## Getting Started
 
-- [x] can we add a non-String type that shows the type parsing ability?
-- [x] a parameter with a default value
-- [x] perhaps an enum that shows the `availableOptions` feature ?
+1. Create a `CommandRunner` by annotating a class with `@cliRunner` and extending the generated superclass (uses the typical `_$` prefix).
+
+```dart
+@cliRunner
+class GitRunner extends _$GitRunner {
+  // ...
+}
+```
+
+2. Create a `Command` by simply creating a method on the class. Any parameter type will be automatically parsed from string arguments.
+
+```dart
+@cliRunner
+class GitRunner extends _$GitRunner {
+  @cliCommand
+  Future<void> merge({
+    required String branch,
+    MergeStrategy strategy = MergeStrategy.ort,
+    bool? commit,
+  }) async {
+    // ... application logic ...
+  }
+}
+```
+
+3. Alternatively, you can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
+
+```dart
+// Create a Subcommand
+@cliSubcommand
+class StashSubcommand extends _$StashSubcommand {
+  @cliCommand
+  Future<void> push() async {
+    // ... push application logic ...
+  }
+
+  @cliCommand
+  Future<void> pop() async {
+    // ... pop application logic ...
+  }
+}
+
+// Then mount it to the main `CommandRunner` or a parent `Subcommand`.
+@cliRunner
+class GitRunner extends _$GitRunner {
+  @mount
+  Command get stash => StashSubcommand();
+}
+```
+
+That's all there is to it!
 
 ## Features
 
@@ -160,3 +208,8 @@ enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
 - annotations to help guide the generator
 
 ### Command generation
+
+- [x] Generate a `Command` class using a `@cliCommand` annotation on a method or function
+- [x] Generate a `Subcommand` class using a `@cliSubcommand` annotation
+- [x] Generate a `CommandRunner` using a `@cliRunner` annotation
+  - [x] Allow mounting nested subcommands using a `@mount` annotation
