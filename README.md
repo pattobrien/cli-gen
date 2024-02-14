@@ -12,18 +12,6 @@
 
 Build CLI applications from plain Dart classes and functions.
 
-## Motivation
-
-The ability to quickly whip up a command line script or application is a powerful skill for a developer to have. Unlike the Dart language itself, which offers a tremendous developer experience when building many kinds of apps, cli-based Dart libraries like `package:args` leave a lot to desire when it comes to getting up and running quickly, and being able to focus on building application logic instead of parsing and managing dynamic string data.
-
-`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by allowing you to generate command line APIs from plain Dart functions. It does so by providing the following features:
-
-- type-safe arguments via generated string parsing
-- `help` text generation from param names, doc comments, and default values
-- proper error handling, without printing stack traces to the console
-
-`cli-gen` was designed to make writing CLI applications as intuitive as writing any other piece of Dart code, by abstracting away the underlying `package:args` semantics while providing access to the underlying details, if ever necessary.
-
 <table>
 <tr>
 <th>Before</th>
@@ -63,6 +51,18 @@ The ability to quickly whip up a command line script or application is a powerfu
 - [Design Goals](#design-goals)
 - [Inspiration](#inspiration)
 - [License](#license)
+
+## Motivation
+
+The ability to quickly whip up a command line script or application is a powerful skill for a developer to have. Unlike the Dart language itself, which offers a tremendous developer experience when building many kinds of apps, cli-based Dart libraries like `package:args` leave a lot to desire when it comes to getting up and running quickly, and being able to focus on building application logic instead of parsing and managing dynamic string data.
+
+`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by allowing you to generate command line APIs from plain Dart functions. It does so by providing the following features:
+
+- type-safe arguments via generated string parsing
+- `help` text generation from param names, doc comments, and default values
+- proper error handling, without printing stack traces to the console
+
+`cli-gen` was designed to make writing CLI applications as intuitive as writing any other piece of Dart code, by abstracting away the underlying `package:args` semantics while providing access to the underlying details, if ever necessary.
 
 ## Quick Start
 
@@ -279,7 +279,7 @@ Future<void> myCustomCommand({
 The above Dart function will generate a cli command with the following help text:
 
 ```bash
-$ myCustomCommand --help
+$ my-custom-command --help
 Save your local modifications to a new stash.
 
 Usage: git stash my-custom-command [arguments]
@@ -326,7 +326,7 @@ Run "git help" to see global options.
 
 #### Enums and Allowed Values
 
-Enums are special in that they define a set of allowable values, and `cli-gen` can use that information to generate a list of allowed values in the help text.
+Enums are unique in that they inherently define a finite set of allowable values. `cli-gen` can use that information to generate a list of allowed values in the help text.
 
 ```dart
 enum Values { a, b, c }
