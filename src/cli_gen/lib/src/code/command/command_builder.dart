@@ -4,90 +4,67 @@ import 'package:recase/recase.dart';
 import '../../types/identifiers.dart';
 import '../arg_parser/arg_parser_instance_builder.dart';
 import '../models/command_method_model.dart';
-import 'cli_method_call_builder.dart';
+import 'user_method_call_builder.dart';
 
+/// Builds the `Command` class for a user method annotated with `@cliCommand`.
+///
+/// [buildCommandClass] generates the implementation of the `name`, `description`,
+/// and `argParser` getters, and constructs a `run` method that parses the
+/// argument strings into the types required to call the user's method.
 class CommandBuilder {
   const CommandBuilder();
 
   Class buildCommandClass(CommandMethodModel model) {
     return Class((builder) {
-      builder.name = '${model.methodRef.symbol!.pascalCase}Command';
+      builder.name = model.generatedCommandClassName;
       builder.extend = Identifiers.args.command;
 
-      builder.constructors.add(Constructor((constructor) {
-        constructor.requiredParameters.add(
-          Parameter((builder) {
-            builder.name = 'userMethod';
-            builder.toThis = true;
-          }),
-        );
-      }));
+      // -- unnamed constructor --
+      builder.constructors.add(
+        Constructor((builder) {
+          builder.requiredParameters.add(
+            Parameter((builder) {
+              builder.name = 'userMethod';
+              builder.toThis = true;
+            }),
+          );
+        }),
+      );
+
+      // -- create the userMethod callback field --
+      // an example of a generated callback field:
+      // `final void Function({required String branch, bool? commit}) userMethod;`
 
       builder.fields.add(Field((builder) {
         builder.name = 'userMethod';
         builder.modifier = FieldModifier.final$;
+
         builder.type = FunctionType((builder) {
-          builder.returnType = model.returnType;
+          final requiredPositionalParams =
+              model.parameters.where((e) => !e.isNamed && e.isRequired);
+          builder.requiredParameters.addAll(
+            requiredPositionalParams.map((e) => e.type),
+          );
+
+          final optionalPositionalParams =
+              model.parameters.where((e) => !e.isNamed && !e.isRequired);
+          builder.optionalParameters.addAll(
+            optionalPositionalParams.map((e) => e.type),
+          );
+
+          final optionalNamedParams =
+              model.parameters.where((e) => e.isNamed && !e.isRequired);
+          builder.namedParameters.addAll(
+            Map<String, TypeReference>.fromEntries(
+              optionalNamedParams.map((e) => MapEntry(e.ref.symbol!, e.type)),
+            ),
+          );
+
           final requiredNamedParams =
               model.parameters.where((e) => e.isNamed && e.isRequired).toList();
-          final optionalNamedParams = model.parameters
-              .where((e) => e.isNamed && !e.isRequired)
-              .toList();
-          final requiredPositionalParams = model.parameters
-              .where((e) => !e.isNamed && e.isRequired)
-              .toList();
-          final optionalPositionalParams = model.parameters
-              .where((e) => !e.isNamed && !e.isRequired)
-              .toList();
-
-          builder.requiredParameters.addAll(
-            requiredPositionalParams.map(
-              (e) => e.type,
-              // (e) => TypeReference((builder) {
-              //   builder.symbol = e.type.symbol;
-              //   builder.isNullable = e.type.isNullable;
-              //   builder.types.addAll(e.type.types);
-              // }),
-            ),
-          );
-
-          builder.optionalParameters.addAll(
-            optionalPositionalParams.map(
-              (e) => e.type,
-              // (e) => TypeReference((builder) {
-              //   builder.symbol = e.type.symbol;
-              //   builder.isNullable = e.type.isNullable;
-              //   builder.types.addAll(e.type.types);
-              // }),
-            ),
-          );
-
-          builder.namedParameters.addAll(
-            Map.fromEntries(
-              optionalNamedParams.map(
-                (e) => MapEntry(
-                  e.ref.symbol!,
-                  e.type,
-                  // TypeReference((builder) {
-                  //   builder.symbol = e.type.symbol;
-                  //   builder.isNullable = e.type.isNullable;
-                  //   builder.types.addAll(e.type.types);
-                  // }),
-                ),
-              ),
-            ),
-          );
-
           builder.namedRequiredParameters.addAll(
-            Map.fromEntries(
-              requiredNamedParams.map(
-                (e) => MapEntry(e.ref.symbol!, e.type),
-                // (e) => MapEntry(e.ref.symbol!, TypeReference((builder) {
-                //   builder.symbol = e.type.symbol;
-                //   builder.isNullable = e.type.isNullable;
-                //   builder.url = e.type.url;
-                // })),
-              ),
+            Map<String, TypeReference>.fromEntries(
+              requiredNamedParams.map((e) => MapEntry(e.ref.symbol!, e.type)),
             ),
           );
         });
@@ -95,6 +72,7 @@ class CommandBuilder {
 
       builder.methods.addAll([
         // -- Command name getter --
+        // `String get name => 'commit';`
         Method((builder) {
           builder.name = 'name';
           builder.returns = Identifiers.dart.string;
@@ -106,6 +84,7 @@ class CommandBuilder {
         }),
 
         // -- Command description getter --
+        // `String get description => 'Commits the current changes';`
         Method((builder) {
           builder.name = 'description';
           builder.returns = Identifiers.dart.string;
@@ -129,23 +108,24 @@ class CommandBuilder {
           );
         }),
 
-        // -- Command run method --
+        // -- Command.run() overriden method --
         Method((builder) {
           builder.name = 'run';
           builder.returns = model.returnType;
-          builder.annotations.add(
-            Identifiers.dart.override,
-          );
-          const cliRunBuilder = CliMethodCallBuilder();
+          builder.annotations.add(Identifiers.dart.override);
+
           builder.body = Block((builder) {
+            final userMethodCallBuilder = UserMethodCallBuilder();
+
             builder.statements.addAll([
               // -- declare a `results` variable --
-              declareFinal(
-                'results',
-              ).assign(refer('argResults')).nullChecked.statement,
+              declareFinal('results')
+                  .assign(refer('argResults'))
+                  .nullChecked
+                  .statement,
 
               // -- call the user method --
-              cliRunBuilder.buildInlineCallStatement(model),
+              userMethodCallBuilder.buildInlineCallStatement(model),
             ]);
           });
         }),

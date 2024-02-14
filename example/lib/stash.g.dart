@@ -24,7 +24,7 @@ class _$StashSubcommand extends Command {
 class PushCommand extends Command {
   PushCommand(this.userMethod);
 
-  final Future<void> Function(
+  final Function(
     String, {
     bool includeUntracked,
   }) userMethod;
@@ -64,7 +64,7 @@ class PushCommand extends Command {
 class ApplyCommand extends Command {
   ApplyCommand(this.userMethod);
 
-  final Future<void> Function({String stashRef}) userMethod;
+  final Function({String stashRef}) userMethod;
 
   @override
   String get name => 'apply';

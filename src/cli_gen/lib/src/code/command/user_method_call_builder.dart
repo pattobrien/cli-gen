@@ -6,8 +6,8 @@ import '../../analysis/utils/reference_ext.dart';
 import '../models/command_method_model.dart';
 import '../models/command_parameter_model.dart';
 
-class CliMethodCallBuilder {
-  const CliMethodCallBuilder();
+class UserMethodCallBuilder {
+  const UserMethodCallBuilder();
 
   Code buildInlineCallStatement(CommandMethodModel method) {
     final methodCallArgs = buildMethodArguments(method.parameters);

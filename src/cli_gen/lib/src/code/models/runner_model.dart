@@ -1,17 +1,10 @@
-import 'package:code_builder/code_builder.dart';
+import 'subcommand_model.dart';
 
-import 'command_method_model.dart';
-
-class RunnerModel {
-  final List<CommandMethodModel> subcommands;
-  final String? docComments;
-  final String name;
-  final List<Reference> mountedSubcommands;
-
+class RunnerModel extends SubcommandModel {
   const RunnerModel({
-    required this.mountedSubcommands,
-    required this.subcommands,
-    required this.docComments,
-    required this.name,
+    required super.mountedSubcommands,
+    required super.commandMethods,
+    required super.docComments,
+    required super.userClassName,
   });
 }

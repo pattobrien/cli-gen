@@ -32,7 +32,7 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
     final library = Library((builder) {
       const subcommandBuilder = RunnerBuilder();
       builder.body.addAll(
-        subcommandBuilder.buildSubcommandAndNestedCommands(model),
+        subcommandBuilder.buildRunnerClassAndUserMethods(model),
       );
     });
 

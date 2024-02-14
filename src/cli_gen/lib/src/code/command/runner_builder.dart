@@ -1,73 +1,61 @@
 import 'package:code_builder/code_builder.dart';
-import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../models/runner_model.dart';
 import 'command_builder.dart';
+import 'subcommand_constructor_body_builder.dart';
 
+/// Builds the CommandRunner and Commands defined in a `@cliRunner` class.
+///
+/// See [buildRunnerClass] for more details.
 class RunnerBuilder {
   const RunnerBuilder();
 
-  Iterable<Class> buildSubcommandAndNestedCommands(
+  /// Builds the CommandRunner class and all `@cliCommand` methods.
+  ///
+  /// See [buildRunnerClass] and [CommandBuilder.buildCommandClass] for more
+  /// details.
+  Iterable<Class> buildRunnerClassAndUserMethods(
     RunnerModel model,
   ) {
     const commandBuilder = CommandBuilder();
-    final subcommandClass = buildSubcommandClass(model);
+    final commandRunnerClass = buildRunnerClass(model);
 
-    final subcommands = model.subcommands.map((e) {
+    final generatedCommandClasses = model.commandMethods.map((e) {
       return commandBuilder.buildCommandClass(e);
     });
 
-    return [subcommandClass, ...subcommands];
+    return [commandRunnerClass, ...generatedCommandClasses];
   }
 
-  Class buildSubcommandClass(RunnerModel model) {
+  /// Builds the CommandRunner class.
+  ///
+  /// This class is responsible for three things:
+  /// - mounting `@mount` subcommands or command methods in the user subclass
+  /// - supplying the executable name and description to `CommandRunner`
+  /// - TODO: overriding the `run()` method to provide custom error handling
+  Class buildRunnerClass(RunnerModel model) {
     return Class((builder) {
-      builder.name = '_\$${model.name}';
+      builder.name = model.generatedClassName;
       builder.extend = Identifiers.args.commandRunner;
 
-      builder.constructors.add(Constructor((constructor) {
-        // TODO: Add constructor parameters from user-defined @cliSubcommand class
-
-        constructor.initializers.add(
-          CodeExpression(
+      builder.constructors.add(
+        Constructor((builder) {
+          // -- super initializer --
+          // e.g. `super('executableName', 'executableDescription')`
+          builder.initializers.add(
             refer('super').call([
-              literalString(model.name.paramCase),
+              literalString(model.executableName),
               literalString(model.docComments ?? '')
             ]).code,
-          ).code,
-        );
-
-        // -- add subcommands
-        constructor.body = Block((block) {
-          block.addExpression(declareFinal('upcastedType').assign(
-            refer('this').asA(refer(model.name)),
-          ));
-          block.statements.addAll(
-            model.subcommands.map(
-              (e) => Identifiers.args.addCommand.call(
-                [
-                  refer('${e.methodRef.symbol!.pascalCase}Command').call([
-                    refer('upcastedType')
-                        .property(e.methodRef.symbol!.camelCase),
-                  ])
-                ],
-              ).statement,
-            ),
           );
 
-          // -- mounted subcommands --
-          block.statements.addAll(
-            model.mountedSubcommands.map(
-              (e) => Identifiers.args.addCommand.call(
-                [
-                  refer('upcastedType').property(e.symbol!),
-                ],
-              ).statement,
-            ),
-          );
-        });
-      }));
+          // -- the constructor body --
+          // adds nested commands and `@mount` subcommands to the CommandRunner
+          final bodyBuilder = SubcommandConstructorBodyBuilder();
+          builder.body = bodyBuilder.buildSubcommandConstructorBody(model);
+        }),
+      );
     });
   }
 }

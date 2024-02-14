@@ -9,8 +9,8 @@ import '../code/models/annotation_model.dart';
 import 'utils/reference_ext.dart';
 
 /// Converts an analyzer representation of a `cli_gen` annotation into a Model representation.
-class AnnotationsAnalyzer {
-  const AnnotationsAnalyzer();
+class OptionsAnnotationAnalyzer {
+  const OptionsAnnotationAnalyzer();
 
   bool isOptionsAnnotation(ElementAnnotation annotation) {
     final annotationElement = annotation.computeConstantValue()?.type?.element;

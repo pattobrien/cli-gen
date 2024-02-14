@@ -2,7 +2,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart' hide Block;
 import 'package:cli_gen/src/code/arg_parser/arg_parser_instance_builder.dart';
-import 'package:cli_gen/src/code/command/cli_method_call_builder.dart';
+import 'package:cli_gen/src/code/command/user_method_call_builder.dart';
 import 'package:cli_gen/src/code/models/command_method_model.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
 import 'package:code_builder/code_builder.dart' hide Expression;
@@ -29,7 +29,7 @@ InvocationExpression generateArgResultHandlerExp({
   String? parser,
   bool isIterable = false,
 }) {
-  final builder = CliMethodCallBuilder();
+  final builder = UserMethodCallBuilder();
   final callStatement = builder.buildInlineCallStatement(
     CommandMethodModel(
       methodRef: refer(methodName),

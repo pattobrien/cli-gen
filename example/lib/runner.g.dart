@@ -9,7 +9,7 @@ part of 'runner.dart';
 class _$GitRunner extends CommandRunner {
   _$GitRunner()
       : super(
-          'git-runner',
+          'git',
           'A command-line interface for version control.',
         ) {
     final upcastedType = (this as GitRunner);
@@ -21,7 +21,7 @@ class _$GitRunner extends CommandRunner {
 class MergeCommand extends Command {
   MergeCommand(this.userMethod);
 
-  final Future<void> Function({
+  final Function({
     required String branch,
     bool? commit,
     List<int>? options,

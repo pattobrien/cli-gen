@@ -5,7 +5,7 @@ import 'package:source_gen/source_gen.dart';
 
 import '../code/models/annotation_model.dart';
 import '../code/models/command_parameter_model.dart';
-import 'annotations_analyzer.dart';
+import 'options_annotation_analyzer.dart';
 import 'utils/reference_ext.dart';
 import 'utils/remove_doc_slashes.dart';
 
@@ -47,7 +47,7 @@ class CliParameterAnalyzer {
   }
 
   List<AnnotationModel> getAnnotations(ParameterElement element) {
-    const annotationAnalyzer = AnnotationsAnalyzer();
+    const annotationAnalyzer = OptionsAnnotationAnalyzer();
     return _getAnnotationsForParameter(element)
         .where(annotationAnalyzer.isOptionsAnnotation)
         .map(annotationAnalyzer.fromElementAnnotation)

@@ -18,12 +18,12 @@ class CliSubcommandAnalyzer {
           .where(commandMethodAnalyzer.isAnnotatedWithSubcommandMount)
           .map((e) => refer(e.name, e.librarySource.uri.toString()))
           .toList(),
-      subcommands: element.methods
+      commandMethods: element.methods
           .where(commandMethodAnalyzer.isAnnotatedWithCliCommand)
           .map(commandMethodAnalyzer.fromExecutableElement)
           .toList(),
       docComments: removeDocSlashes(element.documentationComment),
-      name: element.name,
+      userClassName: element.name,
     );
   }
 }
