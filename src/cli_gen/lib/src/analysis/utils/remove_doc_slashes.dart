@@ -1,16 +1,23 @@
 /// Removes the `///` from the beginning of a doc comment.
-String? removeDocSlashes(String? docComment) {
+String? removeDocSlashes(
+  String? docComment, {
+  bool firstLineOnly = true,
+}) {
   if (docComment == null) {
     return null;
   }
 
-  final lines = docComment.split('\n');
-  final result = lines.map((line) {
+  final allLines = docComment.split('\n');
+  final cleanedLines = allLines.map((line) {
     if (line.startsWith('///')) {
       return line.substring(3).trim();
     }
     return line;
-  }).join('\n');
+  });
 
-  return result;
+  if (firstLineOnly) {
+    return cleanedLines.first;
+  }
+
+  return cleanedLines.join('\n');
 }

@@ -2,7 +2,7 @@ import 'package:cli_annotations/cli_annotations.dart';
 
 part 'stash.g.dart';
 
-/// Implements a subset of Git stash commands for managing a stack of stashed changes.
+/// Commands for managing a stack of stashed changes.
 ///
 /// Use this to save and restore changes in a working directory temporarily, allowing
 /// you to switch contexts and manage your work in progress without committing to the

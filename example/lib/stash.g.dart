@@ -17,8 +17,7 @@ class _$StashSubcommand extends Command {
   String get name => 'stash';
 
   @override
-  String get description =>
-      'Implements a subset of Git stash commands for managing a stack of stashed changes.\n\nUse this to save and restore changes in a working directory temporarily, allowing\nyou to switch contexts and manage your work in progress without committing to the\nGit history.';
+  String get description => 'Commands for managing a stack of stashed changes.';
 }
 
 class PushCommand extends Command {
