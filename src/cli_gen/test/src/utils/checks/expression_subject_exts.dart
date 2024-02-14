@@ -64,3 +64,11 @@ extension InstanceCreationExpressionX on Subject<InstanceCreationExpression> {
     return has((p0) => p0.argumentList.arguments.single, 'single argument');
   }
 }
+
+extension SimpleStringLiteralX on Subject<Expression> {
+  void isStringWithValue(String value) {
+    isA<SimpleStringLiteral>()
+        .has((p0) => p0.value, 'string value')
+        .equals(value);
+  }
+}

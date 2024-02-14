@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:checks/checks.dart';
 import 'package:test/test.dart';
 
+import '../../utils/checks/expression_subject_exts.dart';
 import '../utils/arg_parser_test_utils.dart';
 import '../utils/types.dart';
 
@@ -21,7 +22,7 @@ void main() {
             .isA<CascadeExpression>()
             .has((p0) => p0.cascadeSections.first, 'cascade section')
             .isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('addOption')
+          ..hasMethodNamed('addOption')
           ..has((p0) => p0.argumentList.arguments.map((e) => e.toSource()),
                   'arguments')
               .unorderedEquals([
@@ -36,22 +37,14 @@ void main() {
       test('single-word parameter name', () {
         final arguments = generateOptionArguments(paramName: 'message');
 
-        check(arguments).any((p0) {
-          p0
-              .isA<SimpleStringLiteral>()
-              .has((p0) => p0.value, 'value')
-              .equals('message');
-        });
+        check(arguments).any((p0) => p0.isStringWithValue('message'));
       });
 
-      test('multi-word parameter name', () {
+      test('Multi-word parameter name', () {
         final arguments = generateOptionArguments(paramName: 'authorDateOrder');
 
         check(arguments).any(
-          (argument) => argument
-              .isA<SimpleStringLiteral>()
-              .has((p0) => p0.value, 'value')
-              .equals('author-date-order'),
+          (arg) => arg.isStringWithValue('author-date-order'),
         );
       });
     });
@@ -64,7 +57,7 @@ void main() {
 
         check(arguments).any(
           (argument) => argument.isA<NamedExpression>()
-            ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+            ..hasLabelNamed('mandatory')
             ..has((p0) => p0.expression.toSource(), 'value').equals('true'),
         );
       });
@@ -73,8 +66,8 @@ void main() {
         final arguments = generateOptionArguments(isRequired: false);
 
         check(arguments).any(
-          (argument) => argument.isA<NamedExpression>()
-            ..has((p0) => p0.name.label.name, 'name').equals('mandatory')
+          (arg) => arg.isA<NamedExpression>()
+            ..hasLabelNamed('mandatory')
             ..has((p0) => p0.expression.toSource(), 'value').equals('false'),
         );
       });
@@ -83,26 +76,25 @@ void main() {
     /// Tests whether the parameter's doc comment is copied to the
     /// `help` argument of the `addOption` method.
     group('Doc comments:', () {
-      test('Parameter WITH doc comments', () {
+      test('Parameter WITH doc comments generates `help` arg.', () {
         final args = generateOptionArguments(docComment: 'Foo message.');
 
         check(args).any(
           (argument) => argument.isA<NamedExpression>()
-            ..has((p0) => p0.name.label.name, 'name').equals('help')
+            ..hasLabelNamed('help')
             ..has((p0) => p0.expression.toSource(), 'value')
                 .equals("'Foo message.'"),
         );
       });
 
-      test('Parameter WITHOUT doc comment', () {
+      test('Parameter WITHOUT doc comment doesn\'t generate `help` arg.', () {
         final args = generateOptionArguments(docComment: null);
 
-        check(args).not((p0) => p0.any(
-              (p0) => p0
-                  .isA<NamedExpression>()
-                  .has((p0) => p0.name.label.name, 'name')
-                  .equals('help'),
-            ));
+        check(args).not(
+          (p0) => p0.any(
+            (p0) => p0.isA<NamedExpression>().hasLabelNamed('help'),
+          ),
+        );
       });
     });
 
@@ -112,30 +104,23 @@ void main() {
     /// The generated expression should always be of either type BooleanLiteral
     /// or StringLiteral.
     group('Default values:', () {
-      test('Parameter WITHOUT default value', () {
-        final arguments = generateOptionArguments(defaultValue: null);
+      test('Parameter WITHOUT default value has no `defaultTo` arg.', () {
+        final arguments = generateOptionArguments(computedDefaultValue: null);
 
         check(arguments).not((p0) => p0.any(
-              (p0) => p0
-                  .isA<NamedExpression>()
-                  .has((p0) => p0.name.label.name, 'name')
-                  .equals('defaultsTo'),
-            ));
+            (p0) => p0.isA<NamedExpression>().hasLabelNamed('defaultsTo')));
       });
 
-      test('Parameter WITH a STRING default value', () {
+      test('Parameter WITH default value has a `defaultTo` arg.', () {
         final arguments = generateOptionArguments(
           computedDefaultValue: 'value1',
-          defaultValue: 'MyFooEnum.value1',
         );
 
         check(arguments).any(
           (argument) => argument.isA<NamedExpression>()
-            ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
-            ..has((p0) => p0.expression, 'value')
-                .isA<SimpleStringLiteral>()
-                .has((p0) => p0.value, 'string value')
-                .equals('value1'),
+            ..hasLabelNamed('defaultsTo')
+            ..has((p0) => p0.expression, 'expression')
+                .isStringWithValue('value1'),
         );
       });
 
@@ -149,10 +134,9 @@ void main() {
       test('Use `addFlag` method when parameter type is a boolean', () {
         check(expression)
             .isA<CascadeExpression>()
-            .has((p0) => p0.cascadeSections.first, 'cascade section')
+            .has((p0) => p0.cascadeSections.single, 'cascade section')
             .isA<MethodInvocation>()
-            .has((p0) => p0.methodName.name, 'method name')
-            .equals('addFlag');
+            .hasMethodNamed('addFlag');
       });
 
       /// NOTE: `bool` parameter types are the only case where the defaultsTo
@@ -160,13 +144,11 @@ void main() {
       test('`defaultsTo` should be a boolean literal, not a string', () {
         final arguments = generateOptionArguments(
           type: TestTypes.bool,
-          docComment: 'A boolean value.',
-          defaultValue: 'true',
           computedDefaultValue: 'true',
         );
         check(arguments).any(
           (argument) => argument.isA<NamedExpression>()
-            ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')
+            ..hasLabelNamed('defaultsTo')
             ..has((p0) => p0.expression, 'defaultsTo')
                 .isA<BooleanLiteral>()
                 .has((p0) => p0.value, 'value')
