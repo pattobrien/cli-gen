@@ -132,7 +132,7 @@ class GitRunner extends _$GitRunner {
     MergeStrategy strategy = MergeStrategy.ort,
     bool? commit,
   }) async {
-    // ... `git merge` application logic ...
+    // ... `git merge` logic ...
   }
 }
 ```
@@ -203,14 +203,16 @@ Run "git-runner help" to see global options.
 
 ### Type-Safe Argument Parsing
 
+`cli-gen` automatically parses incoming string arguments into the correct type, and automatically informs your user if they've entered an invalid value.
+
 #### Supported Types
 
-You can define your command methods with any Dart primitive type or enum, and `cli-gen` will automatically parse the incoming string arguments into the correct type.
+You can define your command methods with any Dart primitive type or enum, and `cli-gen` will **automatically** parse the incoming string arguments into the correct type.
 
 ```dart
 @cliCommand
 Future<void> myCustomCommand({
-  // Supported types: String, int, double, bool, num, Uri, BigInt, and DateTime
+  // Use any supported type, nullable or not
   Uri? outputFile,
 
   // Enums can automatically be parsed from strings
@@ -223,6 +225,10 @@ Future<void> myCustomCommand({
   // ...
 }
 ```
+
+<blockquote>
+NOTE: Types that can be automatically parsed are: String, int, double, bool, num, Uri, BigInt, and DateTime
+</blockquote>
 
 #### Collection Types
 
@@ -239,7 +245,7 @@ Future<void> myCustomCommand({
 
 ### Help Text Inference (--help)
 
-CLI applications typically provide a `--help` option that displays a list of available commands and their parameters, to help users understand how they can interact with the application.
+CLI applications typically provide a `--help` option that displays a list of available commands and descriptions of their parameters, to help users understand how they can interact with the application.
 
 Rather than manually manitaining these details yourself, `cli-gen` automatically generates help text from your annotated methods, based on the method and parameter names, doc comments, default values, and whether each parameter is required or not.
 
@@ -326,6 +332,8 @@ Using the above `Values` enum as a parameter to a `cliCommand` will generate the
 ```bash
 --values (allowed: a, b, c)
 ```
+
+If you ever need to override the default allowed values, you can do so by providing a list of values to the `allowed` parameter of the `@Option` annotation.
 
 ### Name Formatting
 
