@@ -67,7 +67,7 @@ CascadeExpression generateArgParserCascaseExp({
     isRequired: isRequired,
     isNamed: isNamed,
     optionType: optionType,
-    availableOptions: availableOptions,
+    allowedOptions: availableOptions,
   );
   final codeExpression = builder.generateArgOption(argParserExp, parameter);
 

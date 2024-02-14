@@ -79,12 +79,10 @@ void main() async {
       final executable = functions.firstWhere((e) => e.name == 'userTypes');
       final parameters = paramAnalyzer.fromExecutableElement(executable);
 
-      test('Implicit available options from Enum constants', () {
+      test('Implicit allowed options from Enum constants', () {
         final param =
             parameters.firstWhere((p) => p.name.symbol == 'enumValue');
-        check(param.availableOptions)
-            .isNotNull()
-            .unorderedEquals(['value1', 'value2']);
+        check(param.allowed).isNotNull().unorderedEquals(['value1', 'value2']);
       });
 
       test('Enum default', () {

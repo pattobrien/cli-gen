@@ -41,7 +41,7 @@ MethodInvocation generateUserMethodCallExp({
           computedDefaultValue: computedDefaultValue,
           defaultValueAsCode: defaultValueCode,
           docComments: null,
-          availableOptions: [],
+          allowedOptions: [],
         ),
       ],
     ),

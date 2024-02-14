@@ -10,21 +10,23 @@ class CommandParameterModel {
     required this.isNamed,
     required this.isRequired,
     required this.optionType,
+    this.annotations = const [],
     String? docComments,
     Expression? computedDefaultValue,
     required String? defaultValueAsCode,
-    this.annotations = const [],
-    this.availableOptions,
+    List<String>? allowedOptions,
     required Expression? parser,
   })  : _parser = parser,
         _computedDefaultValue = computedDefaultValue,
         _docComments = docComments,
-        _defaultValueAsCode = defaultValueAsCode;
+        _defaultValueAsCode = defaultValueAsCode,
+        _availableOptions = allowedOptions;
 
   final Expression? _parser;
   final Expression? _computedDefaultValue;
   final String? _defaultValueAsCode;
   final String? _docComments;
+  final List<String>? _availableOptions;
 
   final OptionType optionType;
 
@@ -32,10 +34,11 @@ class CommandParameterModel {
 
   Expression? get defaultValueAsCode {
     final annotationValue = annotations.map((e) => e.defaultsTo).firstOrNull;
-    return annotationValue ??
-        (_defaultValueAsCode != null
-            ? CodeExpression(Code(_defaultValueAsCode!))
-            : null);
+    if (annotationValue != null) return annotationValue;
+
+    return _defaultValueAsCode != null
+        ? CodeExpression(Code(_defaultValueAsCode!))
+        : null;
   }
 
   Expression? get parser {
@@ -67,8 +70,6 @@ class CommandParameterModel {
 
   final bool isRequired;
 
-  final List<String>? availableOptions;
-
   final List<AnnotationModel> annotations;
 
   String? get abbr => annotations.map((e) => e.abbr).firstOrNull;
@@ -77,7 +78,8 @@ class CommandParameterModel {
 
   bool? get hide => annotations.map((e) => e.hide).firstOrNull;
 
-  List<String>? get allowed => annotations.map((e) => e.allowed).firstOrNull;
+  List<String>? get allowed =>
+      annotations.map((e) => e.allowed).firstOrNull ?? _availableOptions;
 
   List<String>? get aliases => annotations.map((e) => e.aliases).firstOrNull;
 

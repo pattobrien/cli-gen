@@ -46,6 +46,14 @@ class MergeCommand extends Command {
       'strategy',
       defaultsTo: 'ort',
       mandatory: false,
+      allowed: [
+        'ort',
+        'recursive',
+        'resolve',
+        'octopus',
+        'ours',
+        'subtree',
+      ],
     )
     ..addFlag('commit')
     ..addOption(

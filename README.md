@@ -191,16 +191,18 @@ Examples of generated code can be found in the `example` project, within their r
 
   - [ ] Generate from a Constructor or Method/Function signature
   - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
+
     - [x] Primatives: String, int, double, bool, Uri, DateTime
     - [x] Collections: List, Set, Iterable
       - [ ] Map
-    - [ ] User-Defined types: Enums
+    - [x] User-Defined types: Enums
       - [ ] Classes
       - [ ] Extension Types
-  - Multi-Select arguments
 
-    - [ ] List of primative values
-    - [ ] enums for a finite list of values
+  - [x] Multi-Select arguments:
+
+    - [x] List of primative values
+    - [x] enums for a finite list of values
 
   - `help` comments from doc comments
 
