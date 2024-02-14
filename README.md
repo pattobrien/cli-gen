@@ -188,7 +188,77 @@ Examples of generated code can be found in the `example` project, within their r
 
 ## Features
 
-TODO: sections for each feature with short descriptions and examples, if necessary.
+(Note: this section is a WIP)
+
+### Type-Safe Argument Parsing
+
+You can define your command methods with any Dart primitive type or enum, and `cli-gen` will automatically parse the incoming string arguments into the correct type.
+
+```dart
+@cliCommand
+Future<void> myCustomCommand({
+  // Supported types: String, int, double, bool, num, Uri, BigInt, and DateTime
+  Uri? outputFile,
+
+  // Enums can automatically be parsed from strings
+  MergeStrategy? strategy,
+
+  // Custom types can also be used, but require passing your own
+  // String -> CustomType parser to the `@Option` annotation
+  @Option(parser: Email.parser) Email? email,
+}) async {
+  // ...
+}
+```
+
+### Helper Text Inference
+
+`cli-gen` will automatically generate help text for your commands and parameters, based on the parameter names, doc comments, default values, and whether the parameter is required or not.
+
+```dart
+@cliCommand
+Future<void> myCustomCommand({
+  // Required parameters will be shown to the user as `mandatory`
+  required String requiredParam,
+
+  // Optional and/or nullable parameters are not `mandatory`
+  int? optionalParam,
+
+  // Default values are also shown in the help text
+  String defaultPath = '~/',
+
+  // Use doc comments (i.e. 3 slashes) to display a description of the parameter
+  /// A parameter that uses a doc comment
+  String someDocumentedParameter,
+
+  // You can override any generated values using `@Option`
+  @Option(
+    help: 'A help message from the `@Option` annotation',
+    defaultsTo: 42,
+  )
+  int? customParameter,
+}) async {
+  // ...
+}
+```
+
+The above Dart function will generate a cli command with the following help text:
+
+```bash
+$ myCustomCommand --help
+Save your local modifications to a new stash.
+
+Usage: git stash my-custom-command [arguments]
+-h, --help                         Print this usage information.
+    --required-param (mandatory)
+    --optional-param
+    --default-path                 (defaults to "~/")
+    --some-documented-parameter    A parameter that uses a doc comment
+    --custom-parameter             A help message from the `@Option` annotation
+                                   (defaults to "42")
+
+Run "git help" to see global options.
+```
 
 ## Design Goals
 
