@@ -1,15 +1,15 @@
 import 'package:code_builder/code_builder.dart';
-import 'package:meta/meta.dart';
-import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../models/command_parameter_model.dart';
 
-/// Responsible for generating an instance of `ArgParser` and adding flags/options to it.
+/// Generates an instance of `ArgParser` and adding flags/options to it.
+///
+/// see [ArgParserInstanceExp.buildArgParserInstance] for usage.
 class ArgParserInstanceExp {
   const ArgParserInstanceExp();
 
-  /// Creates a new `ArgParser` instance and adds a flag/option for each of [parameters].
+  /// Generates an `ArgParser` instance and adds a flag/option for [parameters].
   ///
   /// Example of generated code:
   /// ```dart
@@ -24,19 +24,19 @@ class ArgParserInstanceExp {
     List<CommandParameterModel> parameters,
   ) {
     final argParserRef = Identifiers.args.argParser;
-    var argParserExp = argParserRef.newInstance([]);
+    var argParserInstance = argParserRef.newInstance([]);
 
     for (final parameter in parameters) {
-      argParserExp = generateArgOption(argParserExp, parameter);
+      argParserInstance = generateArgOption(argParserInstance, parameter);
     }
 
-    return argParserExp;
+    return argParserInstance;
   }
 
   /// Generates a single `addOption` or `addFlag` method call on the given
-  /// [argParserExp].
+  /// [argParserInstance].
   ///
-  /// To generate the entire `ArgParser` instance, see [buildArgParserInstance].
+  /// To generate the entire `ArgParser` instance, use [buildArgParserInstance].
   ///
   /// Example of generated code:
   /// ```dart
@@ -47,57 +47,31 @@ class ArgParserInstanceExp {
   ///     help: 'Some doc comment here.',
   ///   );
   /// ```
-  @visibleForTesting
   Expression generateArgOption(
-    Expression argParserExp,
-    CommandParameterModel parameter,
+    Expression argParserInstance,
+    CommandParameterModel param,
   ) {
-    final name = parameter.ref;
-
-    final docComment = parameter.docComments;
-
-    final type = parameter.type;
-    final isRequired = parameter.isRequired;
-
     final boolRef = Identifiers.dart.bool;
+    final type = param.type;
     final isFlag = type.symbol == boolRef.symbol && type.url == boolRef.url;
-    final defaultValue = parameter.computedDefaultValue;
-    final isNegatable = false;
-    final hide = parameter.hide;
-    final valueHelp = parameter.valueHelp;
-    final abbr = parameter.abbr;
-    final aliases = parameter.aliases;
+    final methodName = isFlag ? 'addFlag' : 'addOption';
 
-    final property = isFlag ? 'addFlag' : 'addOption';
+    final isNegatable = false; // TODO: implement negatable
 
-    // we change the option name from camelCase to param-case, for example:
-    // `authorDateOrder` to `author-date-order`.
-    final optionName = name.symbol!.paramCase;
-
-    return argParserExp.cascade(property).call([
-      literalString(optionName),
+    return argParserInstance.cascade(methodName).call([
+      literalString(param.cliArgumentName),
     ], {
-      // 'abbr': literalString('p'),
-      if (!isFlag) 'mandatory': literalBool(isRequired),
-      if (!isFlag && valueHelp != null) 'valueHelp': valueHelp,
-      // if (!isFlag) 'allowed': literalList([]),
-      if (isFlag) 'negatable': literalBool(isNegatable),
-      if (hide != null) 'hide': literalBool(hide),
-      if (abbr != null) 'abbr': literalString(abbr),
-      if (aliases != null) 'aliases': literalList(aliases),
+      if (param.abbr != null) 'abbr': literalString(param.abbr!),
+      if (param.hide != null) 'hide': literalBool(param.hide!),
+      if (param.aliases != null) 'aliases': literalList(param.aliases!),
+      if (param.docComments != null) 'help': literalString(param.docComments!),
+      if (param.computedDefault != null) 'defaultsTo': param.computedDefault!,
 
-      if (defaultValue != null) 'defaultsTo': defaultValue,
-      if (docComment != null) 'help': literalString(docComment),
+      if (isFlag) 'negatable': literalBool(isNegatable),
+
+      if (!isFlag) 'mandatory': literalBool(param.isRequired),
+      if (!isFlag && param.valueHelp != null) 'valueHelp': param.valueHelp!,
+      // if (!isFlag) 'allowed': literalList([]),
     });
   }
-}
-
-void x() {
-  ArgParserInstanceExp()
-    ..buildArgParserInstance([
-      // TODO
-    ])
-    ..buildArgParserInstance([
-      // TODO
-    ]);
 }

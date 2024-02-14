@@ -41,9 +41,6 @@ class AnnotationModel {
     this.aliases,
     this.splitCommas,
     this.parser,
-
-    // required this.unNamedArgs,
-    // required this.namedArgs,
   });
 
   bool get isOptionType => type.symbol == 'Option';

@@ -39,7 +39,7 @@ InvocationExpression generateArgResultHandlerExp({
       parameters: [
         CommandParameterModel(
           parser: parser != null ? refer(parser) : null,
-          ref: Reference(paramName),
+          name: Reference(paramName),
           type: paramType ?? TestTypes.string,
           isRequired: isRequired,
           isNamed: isNamed,
@@ -102,7 +102,7 @@ CascadeExpression generateArgParserOption({
 
   final parameter = CommandParameterModel(
     parser: Reference(parser),
-    ref: Reference(paramName),
+    name: Reference(paramName),
     docComments: docComments,
     computedDefaultValue: computedDefaultValue,
     type: type,

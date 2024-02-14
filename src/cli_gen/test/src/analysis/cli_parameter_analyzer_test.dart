@@ -32,7 +32,7 @@ void main() async {
 
         final parameter = parameters.single;
 
-        check(parameter).has((p0) => p0.ref.symbol, 'name').equals('message');
+        check(parameter).has((p0) => p0.name.symbol, 'name').equals('message');
 
         check(parameter).has((p0) => p0.type.symbol, 'type').equals('String');
         check(parameter).has((p0) => p0.isRequired, 'isRequired').equals(true);
@@ -52,21 +52,22 @@ void main() async {
 
       test('String Literal', () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'stringValue');
+            parameters.firstWhere((p) => p.name.symbol == 'stringValue');
         check(param.type)
           ..has((p0) => p0.symbol, 'type').equals('String')
           ..has((p0) => p0.url, 'type url').equals('dart:core');
       });
 
       test('Integer Literal', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'intValue');
+        final param = parameters.firstWhere((p) => p.name.symbol == 'intValue');
         check(param.type)
           ..has((p0) => p0.symbol, 'type').equals('int')
           ..has((p0) => p0.url, 'type url').equals('dart:core');
       });
 
       test('Boolean Literal', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'boolValue');
+        final param =
+            parameters.firstWhere((p) => p.name.symbol == 'boolValue');
         check(param.type)
           ..has((p0) => p0.symbol, 'type').equals('bool')
           ..has((p0) => p0.url, 'type url').equals('dart:core');
@@ -78,7 +79,8 @@ void main() async {
       final parameters = paramAnalyzer.fromExecutableElement(executable);
 
       test('Implicit available options from Enum constants', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'enumValue');
+        final param =
+            parameters.firstWhere((p) => p.name.symbol == 'enumValue');
         check(param.availableOptions)
             .isNotNull()
             .unorderedEquals(['value1', 'value2']);
@@ -86,8 +88,8 @@ void main() async {
 
       test('Enum default', () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'enumValue2');
-        check(param.computedDefaultValue?.code.toString())
+            parameters.firstWhere((p) => p.name.symbol == 'enumValue2');
+        check(param.computedDefault?.code.toString())
             .isNotNull()
             .equals("'value1'");
       });
@@ -98,8 +100,8 @@ void main() async {
       // });
 
       test('Constant variable default', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'constVar');
-        check(param.computedDefaultValue?.code.toString())
+        final param = parameters.firstWhere((p) => p.name.symbol == 'constVar');
+        check(param.computedDefault?.code.toString())
             .isNotNull()
             .equals("'42'");
       });
@@ -121,7 +123,7 @@ void main() async {
           'ParameterElement properties are overridden by annotation properties',
           () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'numericValue');
+            parameters.firstWhere((p) => p.name.symbol == 'numericValue');
         check(param)
           ..hasDefaultValueOf(123)
           ..has((p0) => p0.docComments, 'doc comments')
@@ -139,17 +141,18 @@ void main() async {
 
       test('List<String> supports multiple values', () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'multiString');
+            parameters.firstWhere((p) => p.name.symbol == 'multiString');
         check(param.optionType).equals(OptionType.multi);
       });
 
       test('Set<int> supports multiple values', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'multiInt');
+        final param = parameters.firstWhere((p) => p.name.symbol == 'multiInt');
         check(param.optionType).equals(OptionType.multi);
       });
 
       test('Iterable<String> supports multiple values', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'multiEnum');
+        final param =
+            parameters.firstWhere((p) => p.name.symbol == 'multiEnum');
         check(param.optionType).equals(OptionType.multi);
       });
     });
@@ -179,20 +182,21 @@ void main() async {
       final parameters = paramAnalyzer.fromExecutableElement(executable);
 
       test('String', () {
-        final param = parameters.firstWhere((p) => p.ref.symbol == 'stringVal');
+        final param =
+            parameters.firstWhere((p) => p.name.symbol == 'stringVal');
         check(param).hasDefaultValueOf('default');
       });
 
       test('Boolean', () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'booleanVal');
+            parameters.firstWhere((p) => p.name.symbol == 'booleanVal');
         // check(param.defaultValueCode).equals('true');
         check(param).hasDefaultBooleanValueOf(true);
       });
 
       test('Integer', () {
         final param =
-            parameters.firstWhere((p) => p.ref.symbol == 'integerVal');
+            parameters.firstWhere((p) => p.name.symbol == 'integerVal');
         // check(param.defaultValueCode).equals('42');
         check(param).hasDefaultValueOf(42);
       });
@@ -283,14 +287,14 @@ void main() async {
 
 extension CommandParameterModelCheckExt on Subject<CommandParameterModel> {
   void hasDefaultValueOf(Object? value) {
-    has((p0) => p0.computedDefaultValue, 'computedDefaultValue')
+    has((p0) => p0.computedDefault, 'computedDefaultValue')
         .isA<LiteralExpression>()
         .has((p0) => p0.literal, 'literal value')
         .equals((literalString(value.toString()) as LiteralExpression).literal);
   }
 
   void hasDefaultBooleanValueOf(bool value) {
-    has((p0) => p0.computedDefaultValue, 'computedDefaultValue')
+    has((p0) => p0.computedDefault, 'computedDefaultValue')
         .isA<LiteralExpression>()
         .has((p0) => p0.literal, 'literal value')
         .equals((literalBool(value) as LiteralExpression).literal);

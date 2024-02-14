@@ -25,7 +25,7 @@ class UserMethodCallBuilder {
         positionalParams.map((e) => buildSingleArgParseExp(e)).toList();
 
     final namedArgs = Map.fromEntries(namedParams.map((e) => MapEntry(
-          e.ref.symbol!,
+          e.name.symbol!,
           buildSingleArgParseExp(e),
         )));
 
@@ -52,13 +52,13 @@ class UserMethodCallBuilder {
     // as ArgParser takes care of erroring to the user in those cases (presumably).
 
     final resultKeyValue =
-        resultsRef.index(literalString(param.ref.symbol!.paramCase));
+        resultsRef.index(literalString(param.name.symbol!.paramCase));
 
     // TODO: not sure if assuming `null` is the right approach here
     // but we never require passing a null or non-null value anywhere in the
     // creating of references, so this is probably a safe move.
     final isNullable = param.type.isNullable ?? false;
-    final hasDefault = param.computedDefaultValue != null;
+    final hasDefault = param.computedDefault != null;
 
     // create the parser expression based on:
     // a) whether a parser is available (will only be null for String types)
@@ -98,7 +98,7 @@ class UserMethodCallBuilder {
         // value into a non-nullable parameter.
         return resultKeyValue.notEqualTo(literalNull).conditional(
               parserExpression,
-              param.computedDefaultValue!,
+              param.computedDefault!,
             );
       case (false, false):
         return parserExpression;

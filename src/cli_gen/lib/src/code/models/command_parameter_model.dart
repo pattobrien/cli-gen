@@ -1,10 +1,11 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:recase/recase.dart';
 
 import 'annotation_model.dart';
 
 class CommandParameterModel {
   const CommandParameterModel({
-    required this.ref,
+    required this.name,
     required this.type,
     required this.isNamed,
     required this.isRequired,
@@ -14,23 +15,23 @@ class CommandParameterModel {
     this.annotations = const [],
     this.availableOptions,
     required Expression? parser,
-    // required this.isIterable,
   })  : _parser = parser,
         _computedDefaultValue = computedDefaultValue,
         _docComments = docComments;
 
   final Expression? _parser;
   final String? _computedDefaultValue;
+  final String? _docComments;
 
   final OptionType optionType;
 
-  final Reference ref;
+  final Reference name;
 
   Expression? get parser {
     return annotations.map((e) => e.parser).firstOrNull ?? _parser;
   }
 
-  Expression? get computedDefaultValue {
+  Expression? get computedDefault {
     return annotations.map((e) => e.defaultsTo).firstOrNull ??
         (_computedDefaultValue != null
             ? type.symbol == 'bool'
@@ -43,19 +44,19 @@ class CommandParameterModel {
     return annotations.map((e) => e.help).firstOrNull ?? _docComments;
   }
 
+  /// The name of the argument as it will appear in the generated CLI.
+  ///
+  /// Transforms the name from camelCase to param-case.
+  ///
+  /// e.g. `authorDateOrder` to `author-date-order`.
+  String get cliArgumentName => name.symbol!.paramCase;
+
+  /// The Dart type of the parameter, defined by the user.
   final TypeReference type;
-  // final bool isIterable;
 
   final bool isNamed;
 
   final bool isRequired;
-
-  final String? _docComments;
-
-  // // TODO: should defaultValueCode be a Code or a String?
-  // final String? defaultValueCode;
-
-  // final String? computedDefaultValue;
 
   final List<String>? availableOptions;
 

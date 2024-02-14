@@ -56,7 +56,7 @@ class CommandBuilder {
               model.parameters.where((e) => e.isNamed && !e.isRequired);
           builder.namedParameters.addAll(
             Map<String, TypeReference>.fromEntries(
-              optionalNamedParams.map((e) => MapEntry(e.ref.symbol!, e.type)),
+              optionalNamedParams.map((e) => MapEntry(e.name.symbol!, e.type)),
             ),
           );
 
@@ -64,7 +64,7 @@ class CommandBuilder {
               model.parameters.where((e) => e.isNamed && e.isRequired).toList();
           builder.namedRequiredParameters.addAll(
             Map<String, TypeReference>.fromEntries(
-              requiredNamedParams.map((e) => MapEntry(e.ref.symbol!, e.type)),
+              requiredNamedParams.map((e) => MapEntry(e.name.symbol!, e.type)),
             ),
           );
         });

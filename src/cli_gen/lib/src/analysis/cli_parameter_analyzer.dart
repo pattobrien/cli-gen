@@ -28,7 +28,7 @@ class CliParameterAnalyzer {
 
     return CommandParameterModel(
       parser: getParserForParameter(element, element.type),
-      ref: element.toRef(),
+      name: element.toRef(),
       type: element.type.toRef().toTypeRef(),
       isRequired: element.isRequired,
       isNamed: element.isNamed,
