@@ -11,13 +11,28 @@ part 'stash.g.dart';
 class StashSubcommand extends _$StashSubcommand {
   /// Save your local modifications to a new stash.
   @cliCommand
-  Future<void> push(
-    String message, {
-    /// Whether to include untracked files.
-    bool includeUntracked = false,
+  Future<void> myCustomCommand({
+    // Required parameters will be shown to the user as `mandatory`
+    required String name,
+
+    // Optional and/or nullable parameters are not `mandatory`
+    int? age,
+
+    // Default values are also shown in the help text
+    String defaultPath = '~/',
+
+    /// Use doc comments (i.e. 3 slashes) to display a description of the parameter
+    String? someDocumentedParameter,
+
+    // You can override any generated values using `@Option`
+    @Option(
+      help: 'A custom help message for the parameter',
+      defaultsTo: 42,
+    )
+    int? customParameter,
   }) async {
-    print('Stashing changes with message: $message');
-    await Future.delayed(const Duration(seconds: 1));
+    // print('Stashing changes with message: $message');
+    // await Future.delayed(const Duration(seconds: 1));
   }
 
   /// Apply the stash at the given [stashRef] to the working directory.

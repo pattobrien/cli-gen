@@ -49,6 +49,16 @@ The ability to quickly whip up a command line script or application is a powerfu
 - [Motivation](#motivation)
 - [Quick Start](#quick-start)
 - [Features](#features)
+  - [Type-Safe Argument Parsing](#type-safe-argument-parsing)
+    - [Supported Types](#supported-types)
+    - [Collection Types](#collection-types)
+    - [Named and Positional Parameters](#named-and-positional-parameters)
+    - [Enums and Allowed Values](#enums-and-allowed-values)
+  - [Help Text Inference (--help)](#help-text-inference---help)
+    - [Parameter Help Text](#parameter-help-text)
+    - [Command Help Text](#command-help-text)
+  - [Name Formatting](#name-formatting)
+  - [Proper Error Handling](#proper-error-handling)
 - [Under the Hood](#under-the-hood)
 - [Design Goals](#design-goals)
 - [Inspiration](#inspiration)
@@ -188,9 +198,9 @@ Examples of generated code can be found in the `example` project, within their r
 
 ## Features
 
-(Note: this section is a WIP)
-
 ### Type-Safe Argument Parsing
+
+#### Supported Types
 
 You can define your command methods with any Dart primitive type or enum, and `cli-gen` will automatically parse the incoming string arguments into the correct type.
 
@@ -204,16 +214,51 @@ Future<void> myCustomCommand({
   MergeStrategy? strategy,
 
   // Custom types can also be used, but require passing your own
-  // String -> CustomType parser to the `@Option` annotation
-  @Option(parser: Email.parser) Email? email,
+  // String parser to the `@Option` annotation
+  @Option(parser: Email.fromString) Email? email,
 }) async {
   // ...
 }
 ```
 
-### Helper Text Inference
+#### Collection Types
 
-`cli-gen` will automatically generate help text for your commands and parameters, based on the parameter names, doc comments, default values, and whether the parameter is required or not.
+The Collection types `List`, `Set`, and `Iterable` are also supported, and can be used in combination with any of the above supported types.
+
+```dart
+@cliCommand
+Future<void> myCustomCommand({
+  List<Uri>? inputFiles,
+}) async {
+  // ...
+}
+```
+
+#### Named and Positional Parameters
+
+`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit.
+
+```dart
+@cliCommand
+Future<void> myCustomCommand(
+  int? positionalParam, {
+  String? namedParam,
+}) async {
+  // ...
+}
+```
+
+#### Enums and Allowed Values
+
+TODO
+
+### Help Text Inference (--help)
+
+CLI applications typically provide a `--help` option that displays a list of available commands and their parameters, to help users understand how they can interact with the application.
+
+Rather than manually manitaining these details yourself, `cli-gen` automatically generates help text from your annotated methods, based on the method and parameter names, doc comments, default values, and whether each parameter is required or not.
+
+#### Parameter Help Text
 
 ```dart
 @cliCommand
@@ -230,13 +275,6 @@ Future<void> myCustomCommand({
   // Use doc comments (i.e. 3 slashes) to display a description of the parameter
   /// A parameter that uses a doc comment
   String someDocumentedParameter,
-
-  // You can override any generated values using `@Option`
-  @Option(
-    help: 'A help message from the `@Option` annotation',
-    defaultsTo: 42,
-  )
-  int? customParameter,
 }) async {
   // ...
 }
@@ -254,11 +292,53 @@ Usage: git stash my-custom-command [arguments]
     --optional-param
     --default-path                 (defaults to "~/")
     --some-documented-parameter    A parameter that uses a doc comment
-    --custom-parameter             A help message from the `@Option` annotation
-                                   (defaults to "42")
 
 Run "git help" to see global options.
 ```
+
+#### Command Help Text
+
+You can also generate descriptions for your commands and the entire application by using doc comments on the annotated classes and methods.
+
+```dart
+/// A dart implementation of the git CLI.
+@cliRunner
+class GitRunner extends _$GitRunner {
+
+  /// Merge two or more development histories together.
+  @cliCommand
+  Future<void> commit() async {
+    // ...
+  }
+}
+```
+
+will generate:
+
+```bash
+$ git-runner --help
+A dart implementation of the git CLI.
+
+Usage: git-runner [arguments]
+-h, --help    Print this usage information.
+
+Available commands:
+  commit    Merge two or more development histories together.
+
+Run "git help" to see global options.
+```
+
+### Name Formatting
+
+`cli-gen` translates Dart class, method and parameter names to kebab-case, which is the convention for CLI commands and flags.
+
+For example, a method named `stashChanges` will be translated to `stash-changes`, and a parameter named `outputFile` will be translated to `--output-file`.
+
+To override the default behavior, simply provide a `name` to the respective annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and `@Option`).
+
+### Proper Error Handling
+
+TODO
 
 ## Design Goals
 
