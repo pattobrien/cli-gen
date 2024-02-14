@@ -9,7 +9,7 @@ import '../utils/types.dart';
 void main() {
   group('`ArgResults` to User Method Call -', () {
     group('End-to-end tests', () {
-      final invocationExp = generateArgResultHandlerExp(
+      final invocationExp = generateUserMethodCallExp(
         paramName: 'myParam',
         isNamed: true,
       );
@@ -36,7 +36,7 @@ void main() {
       // TODO:
       // positional arg case
       test('Positional', () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramName: 'myParam',
           isNamed: false,
         );
@@ -53,7 +53,7 @@ void main() {
 
       // named arg case
       test('Named', () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramName: 'myParam',
           isNamed: true,
         );
@@ -106,7 +106,7 @@ void main() {
 
     group('Type parsing:', () {
       test('String (no parser needed)', () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.string,
           parser: null,
         );
@@ -118,7 +118,7 @@ void main() {
       });
       // - int.parse
       test('int (uses `int.parse`)', () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.int_,
           parser: 'int.parse',
           defaultValueCode: null,
@@ -136,7 +136,7 @@ void main() {
       });
 
       test('Uri (uses `Uri.parse`)', () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.uri,
           parser: 'Uri.parse',
           defaultValueCode: null,
@@ -156,7 +156,7 @@ void main() {
       test(
           'List<int> (uses `List<String>.from(result[\'foo\'].map(int.parse).toList()`)',
           () {
-        final invocationExp = generateArgResultHandlerExp(
+        final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.listOf(TestTypes.int_),
           parser: 'int.parse',
           defaultValueCode: null,

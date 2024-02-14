@@ -1,18 +1,11 @@
 import 'package:code_builder/code_builder.dart';
 
+/// Common Identifiers used throughout the test suite.
 class TestTypes {
-  static TypeReference get string =>
-      // Reference('String', 'dart:core').type as TypeReference;
-      TypeReference((builder) {
+  static TypeReference get string => TypeReference((builder) {
         builder.symbol = 'String';
         builder.url = 'dart:core';
         builder.isNullable = false;
-      });
-  static TypeReference listOf(TypeReference type) => TypeReference((builder) {
-        builder.symbol = 'List';
-        builder.url = 'dart:core';
-        builder.isNullable = false;
-        builder.types.add(type);
       });
 
   static TypeReference get bool => TypeReference((builder) {
@@ -33,15 +26,20 @@ class TestTypes {
   static TypeReference get int_ => TypeReference((builder) {
         builder.symbol = 'int';
         builder.url = 'dart:core';
-        // builder.isNullable = false;
+        builder.isNullable = false;
       });
 
   static TypeReference get myFooEnum => TypeReference((builder) {
         builder.symbol = 'MyFooEnum';
         builder.url = 'args_example.dart';
         builder.isNullable = false;
-        builder.types.addAll([
-          Reference('Enum', 'dart:core'),
-        ]);
+        builder.types.addAll([Reference('Enum', 'dart:core')]);
+      });
+
+  static TypeReference listOf(TypeReference type) => TypeReference((builder) {
+        builder.symbol = 'List';
+        builder.url = 'dart:core';
+        builder.isNullable = false;
+        builder.types.add(type);
       });
 }

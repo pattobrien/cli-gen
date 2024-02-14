@@ -12,7 +12,7 @@ import '../utils/types.dart';
 void main() {
   group('ArgParser Code Generation -', () {
     group('end-to-end test -', () {
-      final exp = generateArgParserOption(
+      final exp = generateArgParserCascaseExp(
         paramName: 'msg',
         type: TestTypes.string,
       );
@@ -144,7 +144,7 @@ void main() {
     });
 
     group('ArgParser.addFlag specifics:', () {
-      final expression = generateArgParserOption(type: TestTypes.bool);
+      final expression = generateArgParserCascaseExp(type: TestTypes.bool);
 
       test('Use `addFlag` method when parameter type is a boolean', () {
         check(expression)

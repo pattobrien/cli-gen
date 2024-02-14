@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart' hide Block;
 import 'package:cli_gen/src/code/arg_parser/arg_parser_instance_builder.dart';
@@ -10,15 +9,10 @@ import 'package:dart_style/dart_style.dart';
 
 import 'types.dart';
 
-ParseStringResult parseCode(Code code) {
-  final emitter = DartEmitter(useNullSafetySyntax: true);
-  final content = code.accept(emitter).toString();
-  final formatter = DartFormatter();
-  final formattedContent = formatter.format(content);
-  return parseString(content: formattedContent);
-}
-
-InvocationExpression generateArgResultHandlerExp({
+/// Generates the call expression Code for `userMethod()` with all of its
+/// arguments, analyzes the result, and returns the `InvocationExpression` AST
+/// node.
+InvocationExpression generateUserMethodCallExp({
   String methodName = 'userMethod',
   String paramName = 'message',
   TypeReference? paramType,
@@ -53,7 +47,8 @@ InvocationExpression generateArgResultHandlerExp({
     ),
   );
 
-// now lets build a fake function to hold the callStatement
+  // Create a function to hold the callStatement (required for the analyzer
+  // to parse the callStatement).
   final function = Method(
     (b) => b
       ..name = 'testHandler'
@@ -66,23 +61,44 @@ InvocationExpression generateArgResultHandlerExp({
         })))
       ..body = Block.of([callStatement]),
   );
-  // final library = Library((builder) {
-  //   builder.body.add(function);
-  // });
 
-  final analyzedResult = parseCode(function.closure.code);
-
-  final functionDecl =
-      analyzedResult.unit.declarations.single as FunctionDeclaration;
-  final functionBody =
-      functionDecl.functionExpression.body as BlockFunctionBody;
-  final statement = functionBody.block.statements.single as ReturnStatement;
+  final unit = _parseCode(function.closure.code);
+  final funcDeclaration = unit.declarations.single as FunctionDeclaration;
+  final funcBody = funcDeclaration.functionExpression.body as BlockFunctionBody;
+  final statement = funcBody.block.statements.single as ReturnStatement;
   return statement.expression as InvocationExpression;
+}
+
+/// Generates the call expression Code for `ArgParser()..addOption()`, analyzes
+/// the result, and returns a list of unresolved Expression AST nodes that
+/// represent the arguments of the `addOption` call.
+List<Expression> generateOptionArguments({
+  String paramName = 'message',
+  TypeReference? type,
+  bool isRequired = true,
+  bool isNamed = false,
+  String? defaultValue,
+  String? computedDefaultValue,
+  String? docComment = 'The message to display.',
+}) {
+  final cascadeExp = generateArgParserCascaseExp(
+    paramName: paramName,
+    type: type,
+    defaultValueCode: defaultValue,
+    computedDefaultValue: computedDefaultValue,
+    isRequired: isRequired,
+    docComments: docComment,
+    isNamed: isNamed,
+  );
+
+  final singleCascadeExp = cascadeExp.cascadeSections.single;
+  singleCascadeExp as MethodInvocation;
+  return singleCascadeExp.argumentList.arguments;
 }
 
 /// Used for testing the code gen for the `ArgParser()..addOption()` cascade
 /// expressions.
-CascadeExpression generateArgParserOption({
+CascadeExpression generateArgParserCascaseExp({
   String paramName = 'message',
   String? docComments = 'The message to display.',
   TypeReference? type,
@@ -113,38 +129,18 @@ CascadeExpression generateArgParserOption({
   );
   final codeExpression = builder.generateArgOption(argParserExp, parameter);
 
-  final analyzedResult = parseCode(codeExpression.statement);
-  final variable =
-      analyzedResult.unit.declarations.single as TopLevelVariableDeclaration;
+  final unit = _parseCode(codeExpression.statement);
+  final variable = unit.declarations.single as TopLevelVariableDeclaration;
   return variable.variables.variables.single.initializer as CascadeExpression;
 }
 
-List<Expression> getOptionArguments(CascadeExpression expression) {
-  final singleCascadeExp = expression.cascadeSections.single;
-  singleCascadeExp as MethodInvocation;
-  return singleCascadeExp.argumentList.arguments;
-}
-
-/// A test utility to generate the call expression for `ArgParser()..addOption()`
-/// as a list of AST expressions.
-List<Expression> generateOptionArguments({
-  String paramName = 'message',
-  TypeReference? type,
-  bool isRequired = true,
-  bool isNamed = false,
-  String? defaultValue,
-  String? computedDefaultValue,
-  String? docComment = 'The message to display.',
-}) {
-  final cascadeExp = generateArgParserOption(
-    paramName: paramName,
-    type: type,
-    defaultValueCode: defaultValue,
-    computedDefaultValue: computedDefaultValue,
-    isRequired: isRequired,
-    docComments: docComment,
-    isNamed: isNamed,
-  );
-
-  return getOptionArguments(cascadeExp);
+/// Converts a [Code] object into a [CompilationUnit] object.
+///
+/// NOTE: The returned [CompilationUnit] is not resolved.
+CompilationUnit _parseCode(Code code) {
+  final emitter = DartEmitter(useNullSafetySyntax: true);
+  final content = code.accept(emitter).toString();
+  final formatter = DartFormatter();
+  final formattedContent = formatter.format(content);
+  return parseString(content: formattedContent).unit;
 }
