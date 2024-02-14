@@ -46,89 +46,105 @@ The ability to quickly whip up a CLI application is a powerful skill for a devel
 ## Table of Contents
 
 - [Motivation](#motivation)
-- [Getting Started](#getting-started)
+- [Quick Start](#quick-start)
 - [Features](#features)
 - [Under the Hood](#under-the-hood)
 - [Design Goals](#design-goals)
 - [Inspiration](#inspiration)
 - [License](#license)
 
-## Getting Started
+## Quick Start
 
 1. Add `cli_annotations` to your `pubspec` dependencies and `cli_gen` and `build_runner` as dev dependencies.
 
-   Optionally, you can define an executable name and activate it using [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
+   ```yaml
+   name: dart_git
+   description: An implementation of the git CLI in Dart.
 
-```yaml
-dependencies:
-  cli_annotations: ^0.0.1
+   environment:
+     sdk: ^3.0.0
 
-dev_dependencies:
-  build_runner: ^2.1.0
-  cli_gen: ^0.0.1
+   dependencies:
+     cli_annotations: ^0.0.1
 
-# define an executable name (optional)
-executables:
-  dart_cli:
-    path: main # file name of `main()` in bin/ directory
-```
+   dev_dependencies:
+     build_runner: ^2.1.0
+     cli_gen: ^0.0.1
+
+   # define an executable name (optional)
+   executables:
+     dart_git:
+       path: main # file name of `main()` in bin/ directory
+   ```
+
+   You can optionally define an executable name and activate it using [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
+
+   Once dependencies are installed, start the `build_runner` to begin code generation.
+
+   ```bash
+    $ dart run build_runner watch -d
+   ```
 
 2. Create a `CommandRunner` by annotating a class with `@cliRunner` and extending the generated superclass (uses the typical `_$` prefix).
 
-```dart
-@cliRunner
-class GitRunner extends _$GitRunner {
-  // ...
-}
-```
+   The generated code contains a single `CommandRunner.run()` method, which is the entry point for your CLI application and will be called from the `main` function.
 
-3. Create a `Command` by simply creating a method on the class. Any parameter type will be automatically parsed from string arguments.
+   ```dart
+   @cliRunner
+   class GitRunner extends _$GitRunner {
+     // ...
+   }
+   ```
 
-```dart
-@cliRunner
-class GitRunner extends _$GitRunner {
-  @cliCommand
-  Future<void> merge({
-    required String branch,
-    MergeStrategy strategy = MergeStrategy.ort,
-    bool? commit,
-  }) async {
-    // ... application logic ...
-  }
-}
-```
+3. Create a `Command` by simply creating a method on the class. Any primative type or enum will be automatically parsed from incoming string arguments.
 
-4. Alternatively, you can group similar commands under one `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
+   ```dart
+   @cliRunner
+   class GitRunner extends _$GitRunner {
+     @cliCommand
+     Future<void> merge({
+       required String branch,
+       MergeStrategy strategy = MergeStrategy.ort,
+       bool? commit,
+     }) async {
+       // ... application logic ...
+     }
+   }
+   ```
 
-```dart
-// Create a `stash` Subcommand
-@cliSubcommand
-class StashSubcommand extends _$StashSubcommand {
-  @cliCommand
-  Future<void> push() async { /* ... */ }
+4. As your application grows, you'll begin to want to separate your commands into their own groups.
 
-  @cliCommand
-  Future<void> pop() async { /* ... */ }
-}
+   You can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
 
-// Then mount it to the main `CommandRunner` or a parent `Subcommand`
-@cliRunner
-class GitRunner extends _$GitRunner {
-  @mount
-  Command get stash => StashSubcommand();
-}
-```
+   ```dart
+   // Create your subcommand
+   @cliSubcommand
+   class StashSubcommand extends _$StashSubcommand {
+     @cliCommand
+     Future<void> push() async { /* ... */ }
 
-5. Create a `main` function that runs the `CommandRunner`.
+     @cliCommand
+     Future<void> pop() async { /* ... */ }
+   }
 
-```dart
-void main(List<String> arguments) async {
-  final runner = GitRunner();
-  await runner.run(arguments);
-}
-```
+   // Then mount it to your `CommandRunner` or a parent `Subcommand`
+   @cliRunner
+   class GitRunner extends \_$GitRunner {
+     @mount
+     Command get stash => StashSubcommand();
+   }
+   ```
 
-You're ready to go! Run your application via the command line and see the generated help text and argument parsing in action.
+5. Finally, create a `main` function that calls `run` on your `CommandRunner`.
+
+   ```dart
+   void main(List<String> arguments) async {
+     final runner = GitRunner();
+     await runner.run(arguments);
+   }
+   ```
+
+You're application is ready to go! Run your application via the command line and see the generated help text and argument parsing in action.
 
 ```bash
 # activate the executable (if executable is defined in `pubspec.yaml`)
