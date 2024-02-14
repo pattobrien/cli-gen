@@ -1,5 +1,6 @@
-import '../utils/identifier_part.dart';
+import 'models/identifier_part.dart';
 
+/// Identifiers for the `dart:core` library.
 class DartCoreIdentifiers {
   const DartCoreIdentifiers();
 

@@ -1,5 +1,10 @@
 import 'package:code_builder/code_builder.dart';
 
+/// A utility class that represents a part of code.
+///
+/// Each instance/part can be either a String or an Identifier. This utility
+/// class was created to make it easier to share code geneation logic between
+/// `macros` and `builders`.
 sealed class EmitterPart {
   const EmitterPart();
 
