@@ -1,13 +1,25 @@
 # cli-gen
 
+[![Build Pipeline](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml/badge.svg)](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml)
+[![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations)
+
 A package for building cli applications using code generation and macros.
 
-## Table of Contents
+## Motivation
 
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-- [Features](#features)
-- [License](#license)
+<blockquote>
+  🚧 This package is in early preview.
+</blockquote>
+
+The ability to quickly whip up a CLI application is a powerful skill for a developer to have. Yet the boilerplate of `cli` Dart libraries like `package:args` leave a lot to desire in terms of quickly getting a script up and running.
+
+`cli-gen` aims to be a quality-of-life improvement for creating CLI apps, by providing the following benefits:
+
+- type-safe arguments
+- `help` text generation from doc comments and Types
+- proper user error output, without stack traces
+
+`cli-gen` makes writing CLI applications in Dart as intuitive as writing any other native Dart function or method, and removes the need to learn the underlying `package:args` semantics.
 
 <table>
 <tr>
@@ -29,6 +41,16 @@ A package for building cli applications using code generation and macros.
 </td>
 </tr>
 </table>
+
+## Table of Contents
+
+- [Motivation](#motivation)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Under the Hood](#under-the-hood)
+- [Design Goals](#design-goals)
+- [Inspiration](#inspiration)
+- [License](#license)
 
 ## Getting Started
 
@@ -75,24 +97,20 @@ class GitRunner extends _$GitRunner {
 }
 ```
 
-4. Alternatively, you can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
+4. Alternatively, you can group similar commands under one `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
 
 ```dart
-// Create a Subcommand
+// Create a `stash` Subcommand
 @cliSubcommand
 class StashSubcommand extends _$StashSubcommand {
   @cliCommand
-  Future<void> push() async {
-    // ... push application logic ...
-  }
+  Future<void> push() async { /* ... */ }
 
   @cliCommand
-  Future<void> pop() async {
-    // ... pop application logic ...
-  }
+  Future<void> pop() async { /* ... */ }
 }
 
-// Then mount it to the main `CommandRunner` or a parent `Subcommand`.
+// Then mount it to the main `CommandRunner` or a parent `Subcommand`
 @cliRunner
 class GitRunner extends _$GitRunner {
   @mount
@@ -112,7 +130,7 @@ void main(List<String> arguments) async {
 You're ready to go! Run your application via the command line and see the generated help text and argument parsing in action.
 
 ```bash
-# activate the executable (if defined in `pubspec.yaml`)
+# activate the executable (if executable is defined in `pubspec.yaml`)
 $ dart pub global activate . --source=path
 
 # run the application
@@ -121,7 +139,7 @@ $ dart_git merge --help
 
 You should see the following output:
 
-```plaintext
+```bash
 $ dart_git merge --help
 Join two or more development histories together.
 
@@ -134,15 +152,21 @@ Run "git-runner help" to see global options.
 
 ```
 
-## How it Works
+## Under the Hood
 
-`cli-gen` uses `package:args` under the hood to manage argument parsing, command hierarchies, and help text generation. The annotations included with this package are roughly a 1:1 mapping to their `package:args` equivalents, for example:
+`cli-gen` uses `package:args` to manage command hierarchies and help text generation. The annotations included with this package are roughly a 1:1 mapping to similar concepts included with `package:args`, for example:
 
-- `@cliRunner` generates a `CommandRunner` class
-- `@cliCommand` generates a `Command` class and overrides the `run` method with a call to your method or function
-- `@cliSubcommand` generates a `Command` class and adds all nested commands as subcommands
+- `@cliRunner`
+  - generates a `CommandRunner` class
+  - mounts any nested commands as subcommands via `CommandRunner.addCommand`
+- `@cliCommand`
+  - generates a `Command` class
+  - overrides the `run` method with a call to your method or function
+- `@cliSubcommand`
+  - generates a `Command` class
+  - adds all nested commands as subcommands via `Command.addSubcommand`
 
-Examples of the generated code can be found in the `example` project, within their respective `.g.dart` files.
+Examples of generated code can be found in the `example` project, within their respective `.g.dart` files.
 
 ## Features
 
@@ -151,17 +175,8 @@ Examples of the generated code can be found in the `example` project, within the
 - Generate an ArgParser from a Constructor or Method/Function
 
   - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
-    - [x] Primatives:
-      - [x] String
-      - [x] int
-      - [x] double
-      - [x] bool
-      - [x] Uri
-      - [x] DateTime
-    - [x] Collections:
-      - [x] List
-      - [x] Set
-      - [x] Iterable
+    - [x] Primatives: String, int, double, bool, Uri, DateTime
+    - [x] Collections: List, Set, Iterable
       - [ ] Map
     - [ ] User-Defined types:
       - [x] Enums
@@ -182,6 +197,16 @@ Examples of the generated code can be found in the `example` project, within the
 - [x] Generate a `Subcommand` class using a `@cliSubcommand` annotation
 - [x] Generate a `CommandRunner` using a `@cliRunner` annotation
   - [x] Allow mounting nested subcommands using a `@mount` annotation
+
+## Design Goals
+
+TODO: write a little blurb about the goals (what `cli-gen` is and what it is not).
+
+## Inspiration
+
+Several projects were researched as references of CLI ergonomics and macro libraries, including:
+
+- [clap](https://docs.rs/clap/latest/clap/) - a declarative CLI parser for Rust
 
 ## License
 
