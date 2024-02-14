@@ -17,13 +17,11 @@ class GitRunner extends _$GitRunner {
     required String branch,
 
     // /// Pass merge strategy specific option through to the merge strategy.
-    // MergeStrategy strategy = MergeStrategy.ort,
+    MergeStrategy strategy = MergeStrategy.ort,
 
     /// Perform the merge and commit the result.
     bool? commit,
-    // List<int>? options,
-    Set<int> message = const {1, 2},
-    bool squash = true,
+    Set<int>? vals = const {1, 2, 3},
   }) async {
     print('Merging branch $branch');
     if (commit == true) {

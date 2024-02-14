@@ -6,6 +6,7 @@ import 'package:checks/checks.dart';
 import 'package:cli_gen/src/analysis/parameters/cli_parameter_analyzer.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:code_builder/src/specs/expression.dart';
 import 'package:test/test.dart';
 
 void main() async {
@@ -199,16 +200,15 @@ void main() async {
         check(param).hasDefaultValueOf(42);
       });
 
-      // test('List<String>', () {
-      //   final param = parameters.firstWhere((p) => p.ref.symbol == 'listVal');
-      //   check(param).hasDefaultValueOf(['a', 'b', 'c']);
-      // });
+      test('List<String>', () {
+        final param = parameters.firstWhere((p) => p.name.symbol == 'listVal');
+        check(param).hasDefaultListValueOf(['a', 'b', 'c']);
+      });
 
-      // test('Set<int>', () {
-      //   final param = parameters.firstWhere((p) => p.ref.symbol == 'setVal');
-      //   // check(param.defaultValueCode).equals('const {}');
-      //   check(param).hasDefaultValueOf(const {});
-      // });
+      test('Set<int>', () {
+        final param = parameters.firstWhere((p) => p.name.symbol == 'setVal');
+        check(param).hasDefaultListValueOf(const ['1', '2', '3']);
+      });
     });
 
     group('Named parameters:', () {
@@ -289,6 +289,20 @@ extension CommandParameterModelCheckExt on Subject<CommandParameterModel> {
         .isA<LiteralExpression>()
         .has((p0) => p0.literal, 'literal value')
         .equals((literalString(value.toString()) as LiteralExpression).literal);
+  }
+
+  void hasDefaultListValueOf(List<Object> value) {
+    has((p0) => p0.computedDefault, 'computedDefaultValue')
+        .isA<LiteralListExpression>()
+        .has((p0) => p0.values, 'values')
+        .unorderedEquals(value);
+  }
+
+  void hasDefaultSetValueOf(Set<Object> value) {
+    has((p0) => p0.computedDefault, 'computedDefaultValue')
+        .isA<LiteralSetExpression>()
+        .has((p0) => p0.values, 'elements')
+        .unorderedEquals(value);
   }
 
   void hasDefaultBooleanValueOf(bool value) {

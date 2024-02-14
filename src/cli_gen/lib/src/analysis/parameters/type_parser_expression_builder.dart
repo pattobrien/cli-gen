@@ -26,7 +26,7 @@ class TypeParserExpressionBuilder {
     if (paramType.isDartCoreString) return null;
 
     final isDartCore =
-        paramType.element!.librarySource!.uri.path == 'dart:core';
+        paramType.element!.librarySource!.uri.toString() == 'dart:core';
 
     // built-in parsers: int, double, num, BigInt, Uri, DateTime
     if (paramType.isDartCoreInt) {

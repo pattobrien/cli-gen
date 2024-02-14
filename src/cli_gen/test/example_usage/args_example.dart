@@ -65,7 +65,7 @@ void defaultValues({
   int integerVal = 42,
   bool booleanVal = true,
   List<String> listVal = const ['a', 'b', 'c'],
-  Set<int> setVal = const {},
+  Set<int> setVal = const {1, 2, 3},
 }) {}
 
 // -- DOC COMMENTS --

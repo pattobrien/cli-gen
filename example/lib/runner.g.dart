@@ -23,9 +23,9 @@ class MergeCommand extends Command {
 
   final Function({
     required String branch,
+    MergeStrategy strategy,
     bool? commit,
-    Set<int> message,
-    bool squash,
+    Set<int>? vals,
   }) userMethod;
 
   @override
@@ -40,21 +40,22 @@ class MergeCommand extends Command {
       'branch',
       mandatory: true,
     )
+    ..addOption(
+      'strategy',
+      defaultsTo: 'ort',
+      mandatory: false,
+    )
     ..addFlag(
       'commit',
       negatable: true,
     )
     ..addMultiOption(
-      'message',
+      'vals',
       defaultsTo: [
         '1',
         '2',
+        '3',
       ],
-    )
-    ..addFlag(
-      'squash',
-      defaultsTo: true,
-      negatable: true,
     );
 
   @override
@@ -62,11 +63,13 @@ class MergeCommand extends Command {
     final results = argResults!;
     return userMethod(
       branch: results['branch'],
+      strategy: results['strategy'] != null
+          ? EnumParser(MergeStrategy.values).parse(results['strategy'])
+          : MergeStrategy.ort,
       commit: results['commit'] != null ? results['commit'] : null,
-      message: results['message'] != null
-          ? List<String>.from(results['message']).map(int.parse).toSet()
-          : const {1, 2},
-      squash: results['squash'] != null ? results['squash'] : true,
+      vals: results['vals'] != null
+          ? List<String>.from(results['vals']).map(int.parse).toSet()
+          : null,
     );
   }
 }
