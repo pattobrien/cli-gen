@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
-/// A dart implementation of distributed version control.
+/// A command-line interface for version control, written in Dart.
 class GitRunner extends CommandRunner<void> {
   GitRunner()
       : super(

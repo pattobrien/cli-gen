@@ -2,7 +2,7 @@ import 'package:cli_annotations/cli_annotations.dart';
 
 part 'runner.g.dart';
 
-/// A command-line interface for version control.
+/// A command-line interface for version control, written in Dart.
 @cliRunner
 class GitRunner extends _$GitRunner {
   /// Join two or more development histories together.

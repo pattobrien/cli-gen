@@ -4,23 +4,23 @@
 [![CodeCoverage](https://codecov.io/gh/pattobrien/cli-gen/branch/main/graph/badge.svg)](https://codecov.io/gh/pattobrien/cli-gen)
 [![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations)
 
-A package for building cli applications using code generation and macros.
+<blockquote>
+  🚧 This package is in early preview and is subject to API changes.
+</blockquote>
+
+Build CLI applications from plain Dart classes and functions.
 
 ## Motivation
 
-<blockquote>
-  🚧 This package is in early preview.
-</blockquote>
+The ability to quickly whip up a command line script or application is a powerful skill for a developer to have. Unlike the Dart language itself, which offers a tremendous developer experience when building many kinds of apps, cli-based Dart libraries like `package:args` leave a lot to desire when it comes to getting up and running quickly, and being able to focus on building application logic instead of parsing and managing dynamic string data.
 
-The ability to quickly whip up a CLI application is a powerful skill for a developer to have. Yet the boilerplate required of cli-based Dart libraries like `package:args` leave a lot to desire in terms of quickly getting a script up and running.
-
-`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by providing the following features:
+`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by allowing you to generate command line APIs from plain Dart functions. It does so by providing the following features:
 
 - type-safe arguments via generated string parsing
 - `help` text generation from param names, doc comments, and default values
-- proper handling of argument errors, without stack traces
+- proper error handling, without printing stack traces to the console
 
-`cli-gen` was designed to make writing CLI applications as intuitive as writing any other native Dart function or method, by abstracting the underlying `package:args` semantics while providing access to the underlying package when needed.
+`cli-gen` was designed to make writing CLI applications as intuitive as writing any other piece of Dart code, by abstracting away the underlying `package:args` semantics while providing access to the underlying details, if ever necessary.
 
 <table>
 <tr>
@@ -65,11 +65,11 @@ The ability to quickly whip up a CLI application is a powerful skill for a devel
      sdk: ^3.0.0
 
    dependencies:
-     cli_annotations: ^0.0.1
+     cli_annotations: ^0.1.0-dev.1
 
    dev_dependencies:
-     build_runner: ^2.1.0
-     cli_gen: ^0.0.1
+    build_runner: ^2.4.8
+     cli_gen: ^0.1.0-dev.1
 
    # define an executable name (optional)
    executables:
@@ -129,7 +129,7 @@ The ability to quickly whip up a CLI application is a powerful skill for a devel
 
    // Then mount it to your `CommandRunner` or a parent `Subcommand`
    @cliRunner
-   class GitRunner extends \_$GitRunner {
+   class GitRunner extends _$GitRunner {
      @mount
      Command get stash => StashSubcommand();
    }
