@@ -17,34 +17,14 @@ A package for building cli applications using code generation and macros.
 <tr>
 <td valign="top">
 
-```dart
+<!--  screenshots are located in docs/before_and_after/screenshots/** (before.png and after.png) -->
 
-```
+[![Before](docs/before_and_after/screenshots/before.png)](docs/before_and_after/screenshots/before.png)
 
 </td>
 <td valign="top">
 
-```dart
-/// A command-line interface for version control.
-@cliRunner
-class GitRunner extends _$GitRunner {
-
-  @mount
-  Command get stash => StashSubcommand();
-
-  /// Join two or more development histories together.
-  @cliCommand
-  Future<void> merge({
-    required String branch,
-    MergeStrategy strategy = MergeStrategy.ort,
-    bool? commit,
-  }) async {
-    // ... application logic ...
-  }
-}
-
-enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
-```
+[![After](docs/before_and_after/screenshots/after.png)](docs/before_and_after/screenshots/after.png)
 
 </td>
 </tr>
