@@ -61,7 +61,7 @@ class UserMethodCallBuilder {
     final hasDefault = param.defaultValueAsCode != null;
 
     // create the parser expression based on:
-    // a) whether a parser is available (will only be null for String types)
+    // a) whether a parser is available (will only be null for String and bool types)
     // b) whether the parameter is iterable and needs to call `.map` on the result
     Expression parserExpression;
     final isIterable = param.optionType == OptionType.multi;

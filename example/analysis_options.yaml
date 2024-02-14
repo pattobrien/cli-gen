@@ -7,3 +7,4 @@ analyzer:
 linter:
   rules:
     prefer_relative_imports: true
+    prefer_if_null_operators: false
