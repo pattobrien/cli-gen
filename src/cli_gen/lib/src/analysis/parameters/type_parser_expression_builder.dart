@@ -4,6 +4,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../../types/identifiers.dart';
+import '../annotations/options_annotation_analyzer.dart';
 
 /// Generates an expression for a String -> [paramType] parse method.
 ///
@@ -21,6 +22,15 @@ class TypeParserExpressionBuilder {
     Element element,
     DartType paramType,
   ) {
+    // the first thing we do is check for any options annotations that
+    // may define a parser, and if so we use that parser.
+    final optionAnnotationAnalyzer = OptionsAnnotationAnalyzer();
+    final annotations = optionAnnotationAnalyzer.annotationsForElement(element);
+    final parserExpressions = annotations.map((e) => e.parser).nonNulls;
+    if (parserExpressions.isNotEmpty) {
+      return parserExpressions.first;
+    }
+
     // `package:args` already parses to bool and String, so no parser is needed.
     if (paramType.isDartCoreBool) return null;
     if (paramType.isDartCoreString) return null;

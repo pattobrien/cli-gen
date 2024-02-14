@@ -77,6 +77,8 @@ class ArgParserInstanceExp {
       if (!isFlag && param.valueHelp != null) 'valueHelp': param.valueHelp!,
       if (!isFlag && param.allowed != null)
         'allowed': literalList(param.allowed!),
+      if (!isFlag && param.allowedHelp != null)
+        'allowedHelp': literalMap(param.allowedHelp!),
     });
   }
 }

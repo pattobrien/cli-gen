@@ -20,10 +20,10 @@ class GitRunner extends _$GitRunner {
     MergeStrategy strategy = MergeStrategy.ort,
 
     /// Perform the merge and commit the result.
-    bool? commit,
-    Uri? uri,
+    @Flag() bool? commit,
+    @Option(hide: true, parser: specialDurationParser) Duration? uri,
     @MultiOption(allowed: [1, 2, 3]) int? ff,
-    // Map<String, String>? options,
+    Set<int> someSet = const {1, 2, 3},
   }) async {
     print('Merging branch $branch');
     if (commit == true) {
@@ -34,3 +34,7 @@ class GitRunner extends _$GitRunner {
 }
 
 enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }
+
+Duration specialDurationParser(String input) {
+  return Duration(seconds: int.parse(input));
+}

@@ -116,7 +116,6 @@ class Flag<T> extends BaseOption<T> {
   const Flag({
     super.abbr,
     super.help,
-    super.valueHelp,
     super.negatable,
     super.hide,
     super.aliases,

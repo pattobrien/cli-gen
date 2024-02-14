@@ -13,6 +13,12 @@ import '../utils/reference_ext.dart';
 class OptionsAnnotationAnalyzer {
   const OptionsAnnotationAnalyzer();
 
+  Iterable<AnnotationModel> annotationsForElement(Element element) {
+    return element.metadata
+        .where(isOptionsAnnotation)
+        .map(fromElementAnnotation);
+  }
+
   bool isOptionsAnnotation(ElementAnnotation annotation) {
     final annotationElement = annotation.computeConstantValue()?.type?.element;
     if (annotationElement is! InterfaceElement) return false;
@@ -41,49 +47,154 @@ class OptionsAnnotationAnalyzer {
           ),
         );
 
-    final parserReader = namedArgs['parser']?.objectValue.type as FunctionType?;
-    Expression? parserRef;
-    if (parserReader != null) {
-      final parserName = parserReader.getDisplayString(withNullability: false);
-      final x = constantReader.revive().namedArguments['parser'];
+    // final parserReader = namedArgs['parser']?.objectValue.type as FunctionType?;
+    // Expression? parserRef;
+    // if (parserReader != null) {
+    //   final parserName = parserReader.getDisplayString(withNullability: false);
+    //   final x = constantReader.revive().namedArguments['parser'];
 
-      final parserSource = x!.toFunctionValue();
-      final parserExecutableName = switch (parserSource) {
-        MethodElement(:final name, :final enclosingElement) =>
-          '${(enclosingElement as ClassElement).name}.$name',
-        FunctionElement(:final name) => name,
-        ConstructorElement(:final name, :InterfaceElement enclosingElement) =>
-          '${enclosingElement.name}.$name',
-        _ => throw UnimplementedError(
-            'Unsupported parser source: $parserSource',
-          ),
-      };
-      parserRef = refer(
-          parserExecutableName, parserSource!.librarySource.uri.toString());
-      if (!parserReader.parameters.first.type.isDartCoreString) {
-        throw ArgumentError(
-          'Parser $parserName must take a single String argument.',
-        );
-      }
+    //   final parserSource = x!.toFunctionValue();
+    //   final parserExecutableName = switch (parserSource) {
+    //     MethodElement(:final name, :final enclosingElement) =>
+    //       '${(enclosingElement as ClassElement).name}.$name',
+    //     FunctionElement(:final name) => name,
+    //     ConstructorElement(:final name, :InterfaceElement enclosingElement) =>
+    //       '${enclosingElement.name}.$name',
+    //     _ => throw UnimplementedError(
+    //         'Unsupported parser source: $parserSource',
+    //       ),
+    //   };
+    //   parserRef = refer(
+    //       parserExecutableName, parserSource!.librarySource.uri.toString());
+    //   if (!parserReader.parameters.first.type.isDartCoreString) {
+    //     throw ArgumentError(
+    //       'Parser $parserName must take a single String argument.',
+    //     );
+    //   }
 
-      // TODO: check that the parser return type matches the type of the
-      // annotated parameter / field element.
-    }
+    //   // TODO: check that the parser return type matches the type of the
+    //   // annotated parameter / field element.
+    // }
+
+    final parserRef = buildParserExpression(
+      namedArgs['parser']?.objectValue.type as FunctionType?,
+      constantReader,
+    );
 
     return AnnotationModel(
       type: annotation.toRef().toTypeRef(),
-      abbr: namedArgs['abbr']?.literalValue as String?,
-      help: namedArgs['help']?.literalValue as String?,
-      negatable: namedArgs['negatable']?.literalValue as bool?,
-      hide: namedArgs['hide']?.literalValue as bool?,
-      aliases: namedArgs['aliases']?.literalValue as List<String>?,
-      splitCommas: namedArgs['splitCommas']?.literalValue as bool?,
+      abbr: getAbbr(namedArgs['abbr']),
+      help: getHelp(namedArgs['help']),
+      negatable: getNegatable(namedArgs['negatable']),
+      hide: getHide(namedArgs['hide']),
+      aliases: getAliases(namedArgs['aliases']),
+      splitCommas: getSplitCommas(namedArgs['splitCommas']),
 
       // -- generic type args --
       parser: parserRef,
       defaultsTo: readDefaultToArg(constantReader),
       allowed: readAllowedArg(annotation),
+      allowedHelp: readAllowedHelpArg(annotation),
     );
+  }
+
+  Expression? buildParserExpression(
+    FunctionType? parserReader,
+    ConstantReader annotation,
+  ) {
+    if (parserReader == null) return null;
+    final parserName = parserReader.getDisplayString(withNullability: false);
+    final x = annotation.revive().namedArguments['parser'];
+
+    final parserSource = x!.toFunctionValue();
+    final parserExecutableName = switch (parserSource) {
+      MethodElement(:final name, :final enclosingElement) =>
+        '${(enclosingElement as ClassElement).name}.$name',
+      FunctionElement(:final name) => name,
+      ConstructorElement(:final name, :InterfaceElement enclosingElement) =>
+        '${enclosingElement.name}.$name',
+      _ => throw UnimplementedError(
+          'Unsupported parser source: $parserSource',
+        ),
+    };
+    if (!parserReader.parameters.first.type.isDartCoreString) {
+      throw ArgumentError(
+        'Parser $parserName must take a single String argument.',
+      );
+    }
+    return refer(
+      parserExecutableName,
+      parserSource!.librarySource.uri.toString(),
+    );
+  }
+
+  String? getAbbr(ConstantReader? abbrReader) {
+    if (abbrReader == null) return null;
+    if (abbrReader.isNull) return null;
+    return abbrReader.stringValue;
+  }
+
+  String? getHelp(ConstantReader? helpReader) {
+    if (helpReader == null) return null;
+    if (helpReader.isNull) return null;
+    return helpReader.stringValue;
+  }
+
+  /// Parse the `negatable` argument from [negatableReader] or return `null`.
+  bool? getNegatable(ConstantReader? negatableReader) {
+    if (negatableReader == null) return null;
+    if (negatableReader.isNull) return null;
+    return negatableReader.boolValue;
+  }
+
+  /// Parse the `hide` argument from [hideReader] or return `null`.
+  bool? getHide(ConstantReader? hideReader) {
+    if (hideReader == null) return null;
+    if (hideReader.isNull) return null;
+    return hideReader.boolValue;
+  }
+
+  /// Parse the `splitCommas` argument from [splitCommasReader] or return `null`.
+  bool? getSplitCommas(ConstantReader? splitCommasReader) {
+    if (splitCommasReader == null) return null;
+    if (splitCommasReader.isNull) return null;
+    return splitCommasReader.boolValue;
+  }
+
+  /// Parse the list of aliases from [aliasesReader] or return `null`.
+  List<String>? getAliases(ConstantReader? aliasesReader) {
+    if (aliasesReader == null) return null;
+    if (aliasesReader.isNull) return null;
+    return aliasesReader.listValue.map((e) {
+      return ConstantReader(e).stringValue;
+    }).toList();
+  }
+
+  Map<String, String>? readAllowedHelpArg(ElementAnnotation annotation) {
+    final constant = annotation.computeConstantValue()!;
+    final annotationReader = ConstantReader(constant);
+    final allowedHelp = annotationReader.revive().namedArguments['allowedHelp'];
+    if (allowedHelp == null) return null;
+
+    final allowedHelpReader = ConstantReader(allowedHelp);
+    if (allowedHelpReader.isNull) return null;
+
+    final valueBuilder = DefaultValueCodeBuilder();
+
+    // method to call: valueBuilder.getSingleValueForObject(object, enumType)
+    final enumType = annotation.library!.typeProvider.enumElement!.thisType;
+    final allowedHelpMap = allowedHelpReader.mapValue;
+
+    final allowedHelpValues = allowedHelpMap.map((key, value) {
+      final keyString = key != null
+          ? valueBuilder.getSingleValueForObject(key, enumType)
+          : 'null';
+      final valueString = value != null
+          ? valueBuilder.getSingleValueForObject(value, enumType)
+          : 'null';
+      return MapEntry(keyString, valueString);
+    });
+    return allowedHelpValues;
   }
 
   /// Returns the `allowed` argument from the given [annotation] as a list of strings.
