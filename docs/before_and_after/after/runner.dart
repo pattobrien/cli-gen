@@ -2,8 +2,6 @@ import 'package:cli_annotations/cli_annotations.dart';
 
 part 'runner.g.dart';
 
-Future<void> main(List<String> arguments) => GitRunner().run(arguments);
-
 /// A command-line interface for version control.
 @cliRunner
 class GitRunner extends _$GitRunner {

@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
-Future<void> main(List<String> arguments) => GitRunner().run(arguments);
-
 /// A dart implementation of distributed version control.
 class GitRunner extends CommandRunner<void> {
   GitRunner()
