@@ -2,7 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:checks/checks.dart';
 import 'package:test/test.dart';
 
-import '../utils/analyzer_parsers.dart';
+import '../utils/arg_parser_test_utils.dart';
 import '../utils/types.dart';
 
 // Tests the code-generation portion of the `ArgParser` instance builder

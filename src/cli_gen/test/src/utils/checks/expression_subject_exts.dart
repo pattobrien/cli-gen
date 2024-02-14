@@ -37,3 +37,30 @@ extension IndexExpressionSubject on Subject<IndexExpression> {
         .equals(name);
   }
 }
+
+extension NamedExpressionX on Subject<NamedExpression> {
+  void hasLabelNamed(String name) {
+    has((p0) => p0.name.label.name, 'label name').equals(name);
+  }
+}
+
+extension NamedTypeX on Subject<NamedType> {
+  void hasName(String name) {
+    has((p0) => p0.name2.lexeme, 'name').equals(name);
+  }
+
+  Subject<TypeAnnotation> hasSingleTypeArg() {
+    return has((p0) => p0.typeArguments?.arguments.single, 'type arguments')
+        .isNotNull();
+  }
+}
+
+extension InstanceCreationExpressionX on Subject<InstanceCreationExpression> {
+  Subject<NamedType> hasType() {
+    return has((p0) => p0.constructorName.type, 'type name');
+  }
+
+  Subject<Expression> hasSingleArg() {
+    return has((p0) => p0.argumentList.arguments.single, 'single argument');
+  }
+}

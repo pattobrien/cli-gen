@@ -3,8 +3,7 @@ import 'package:checks/checks.dart';
 import 'package:test/test.dart';
 
 import '../../utils/checks/expression_subject_exts.dart';
-import '../utils/analyzer_parsers.dart';
-import '../utils/types.dart';
+import '../utils/utils.dart';
 
 void main() {
   group('`ArgResults` to User Method Call -', () {
@@ -14,63 +13,50 @@ void main() {
         isNamed: true,
       );
 
-      test('Single positional parameter', () {
-        check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
-          ..has((p0) => p0.argumentList.arguments.single, 'arguments')
-              .isA<NamedExpression>()
-              .which(
-                (p0) => p0
-                  ..has((p) => p.name.label.name, 'name').equals('myParam')
-                  ..has((p) => p.expression, 'expression')
-                      .isA<IndexExpression>()
-                      .has((p0) => p0.index, 'index')
-                      .isA<SimpleStringLiteral>()
-                      .has((p0) => p0.value, 'value')
-                      .equals('my-param'), // the name of the parameter);
-              );
+      test('Single positional parameter (e2e)', () {
+        check(invocationExp)
+          ..hasMethodNamed('userMethod')
+          ..hasSingleArg().isA<NamedExpression>().which((p0) => p0
+            ..hasLabelNamed('myParam')
+            ..has((p) => p.expression, 'expression')
+                .isA<IndexExpression>()
+                .which((p0) => p0
+                  ..hasTargetNamed('results')
+                  ..hasKeyNamed('my-param')));
       });
     });
 
+    /// Tests if the `userMethod()` call is correctly generated with
+    /// NamedExpressions for named parameters, and non-NamedExpressions
+    /// for positional parameters.
     group('Positional and Named arguments:', () {
       // TODO:
       // positional arg case
       test('Positional', () {
-        final invocationExp = generateUserMethodCallExp(
+        final methodCall = generateUserMethodCallExp(
           paramName: 'myParam',
           isNamed: false,
         );
 
-        check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
-          ..has((p0) => p0.argumentList.arguments.single, 'arguments')
-              .isA<IndexExpression>()
-              .has((p0) => p0.index, 'index')
-              .isA<SimpleStringLiteral>()
-              .has((p0) => p0.value, 'value')
-              .equals('my-param'); // the name of the parameter);
+        check(methodCall)
+          ..hasMethodNamed('userMethod')
+          ..hasSingleArg().isA<IndexExpression>().hasKeyNamed('my-param');
       });
 
-      // named arg case
       test('Named', () {
         final invocationExp = generateUserMethodCallExp(
           paramName: 'myParam',
           isNamed: true,
         );
 
-        check(invocationExp).isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('userMethod')
-          ..has((p0) => p0.argumentList.arguments.single, 'arguments')
-              .isA<NamedExpression>()
-              .which(
+        check(invocationExp)
+          ..hasMethodNamed('userMethod')
+          ..hasSingleArg().isA<NamedExpression>().which(
                 (p0) => p0
-                  ..has((p) => p.name.label.name, 'name').equals('myParam')
+                  ..hasLabelNamed('myParam')
                   ..has((p) => p.expression, 'expression')
                       .isA<IndexExpression>()
-                      .has((p0) => p0.index, 'index')
-                      .isA<SimpleStringLiteral>()
-                      .has((p0) => p0.value, 'value')
-                      .equals('my-param'), // the name of the parameter);
+                      .hasKeyNamed('my-param'),
               );
       });
     });
@@ -104,32 +90,33 @@ void main() {
       // 4. optional + non-nullable + default:     e.g. `({String x = 'foo'})`  -> `callSite(x: value != null ? int.parse(value) : 42);`
     });
 
+    /// Tests if argument expressions passed to `userMethod()` use the expected
+    /// parser expressions.
+    ///
+    /// For example, a parameter type of `int` expects a parser expression of
+    /// `int.parse`, but a parameter type of `String` does not expect a parser
+    /// expression at all.
     group('Type parsing:', () {
+      /// The single argument = `result['message']` (i.e. no parsing needed)
       test('String (no parser needed)', () {
         final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.string,
           parser: null,
         );
-        final singleArg = invocationExp.argumentList.arguments.single;
-
-        check(singleArg).isA<IndexExpression>()
+        check(invocationExp).hasSingleArg().isA<IndexExpression>()
           ..hasTargetNamed('results')
           ..hasKeyNamed('message');
       });
-      // - int.parse
+
+      /// The single argument = `int.parse(result['message'])`
       test('int (uses `int.parse`)', () {
         final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.int_,
           parser: 'int.parse',
-          defaultValueCode: null,
-          computedDefaultValue: null,
-          isRequired: true,
         );
-        final singleArg = invocationExp.argumentList.arguments.single;
-
-        check(singleArg).isA<MethodInvocation>()
-          ..hasMethodNamed('parse')
+        check(invocationExp).hasSingleArg().isA<MethodInvocation>()
           ..hasRealTargetNamed('int')
+          ..hasMethodNamed('parse')
           ..hasSingleArg().isA<IndexExpression>().which((p0) => p0
             ..hasTargetNamed('results')
             ..hasKeyNamed('message'));
@@ -139,13 +126,9 @@ void main() {
         final invocationExp = generateUserMethodCallExp(
           paramType: TestTypes.uri,
           parser: 'Uri.parse',
-          defaultValueCode: null,
-          computedDefaultValue: null,
-          isRequired: true,
         );
-        final singleArg = invocationExp.argumentList.arguments.single;
 
-        check(singleArg).isA<MethodInvocation>()
+        check(invocationExp).hasSingleArg().isA<MethodInvocation>()
           ..hasRealTargetNamed('Uri')
           ..hasMethodNamed('parse')
           ..hasSingleArg().isA<IndexExpression>().which((p0) => p0
@@ -153,6 +136,7 @@ void main() {
             ..hasKeyNamed('message'));
       });
 
+      // expression = List<String>.from(result['message']).map(int.parse).toList()
       test(
           'List<int> (uses `List<String>.from(result[\'foo\'].map(int.parse).toList()`)',
           () {
@@ -164,32 +148,31 @@ void main() {
           isRequired: true,
           isIterable: true,
         );
-        final singleArg = invocationExp.argumentList.arguments.single;
 
-        // target = List<String>.from(result['foo']).map(int.parse)
-        // method = .toList()
-
-        check(singleArg)
-            .isA<MethodInvocation>()
-            .has((p0) => p0.realTarget, 'real target')
-            // -- `map(int.parse)` part of the expression
-            .isA<MethodInvocation>()
-          ..has((p0) => p0.methodName.name, 'method name').equals('map')
-          ..hasSingleArg().which((p0) => p0
-              .isA<PrefixedIdentifier>()
-              .has((p0) => p0.name, 'identifier')
-              .equals('int.parse'))
-          ..has((p0) => p0.realTarget, 'second real target')
-              .isA<InstanceCreationExpression>()
-              .has((p0) => p0.constructorName.type, 'type name')
-              .which((p0) {
-            p0.has((p0) => p0.name2.lexeme, 'type name').equals('List');
-            p0.has((p0) => p0.typeArguments!.arguments.single, 'type arguments')
-              ..isA<NamedType>()
-              ..has((p0) => (p0 as NamedType).name2.lexeme,
-                      'type argument name')
-                  .equals('String');
-          });
+        check(invocationExp).hasSingleArg().isA<MethodInvocation>()
+          ..hasMethodNamed('toList')
+          ..has((p0) => p0.realTarget, 'real target')
+              .isA<MethodInvocation>()
+              .which(
+                (p0) => p0
+                  ..hasMethodNamed('map')
+                  ..hasSingleArg().which((p0) => p0
+                      .isA<PrefixedIdentifier>()
+                      .has((p0) => p0.name, 'identifier')
+                      .equals('int.parse'))
+                  ..has((p0) => p0.realTarget, 'instance creation target')
+                      .isA<InstanceCreationExpression>()
+                      .which((p0) => p0
+                        ..has((p0) => p0.constructorName.type, 'type name')
+                            .which((p0) => p0
+                              ..hasName('List')
+                              ..hasSingleTypeArg()
+                                  .isA<NamedType>()
+                                  .hasName('String'))
+                        ..hasSingleArg().isA<IndexExpression>().which((p0) => p0
+                          ..hasTargetNamed('results')
+                          ..hasKeyNamed('message'))),
+              );
       });
     });
   });
