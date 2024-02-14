@@ -36,7 +36,7 @@ class AnnotationModel {
     this.negatable,
     this.hide,
     this.defaultsTo,
-    this.allowed,
+    required this.allowed,
     this.allowedHelp,
     this.aliases,
     this.splitCommas,

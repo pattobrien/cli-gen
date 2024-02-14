@@ -6,6 +6,7 @@ import 'package:code_builder/code_builder.dart' hide FunctionType;
 import 'package:source_gen/source_gen.dart';
 
 import '../../code/models/annotation_model.dart';
+import '../parameters/default_value_code_builder.dart';
 import '../utils/reference_ext.dart';
 
 /// Converts an analyzer representation of a `cli_gen` annotation into a Model representation.
@@ -81,7 +82,34 @@ class OptionsAnnotationAnalyzer {
       // -- generic type args --
       parser: parserRef,
       defaultsTo: readDefaultToArg(constantReader),
+      allowed: readAllowedArg(annotation),
     );
+  }
+
+  /// Returns the `allowed` argument from the given [annotation] as a list of strings.
+  ///
+  /// The `allowed` argument is a List<T>, so this method performs some type
+  /// checking and manipulation to output a supported type into a string.
+  ///
+  /// If the type T is not supported, an [ArgumentError] will be thrown.
+  List<String>? readAllowedArg(ElementAnnotation annotation) {
+    final constant = annotation.computeConstantValue()!;
+    final annotationReader = ConstantReader(constant);
+    final allowed = annotationReader.revive().namedArguments['allowed'];
+    if (allowed == null) return null;
+
+    final allowedReader = ConstantReader(allowed);
+    if (allowedReader.isNull) return null;
+
+    final valueBuilder = DefaultValueCodeBuilder();
+
+    // method to call: valueBuilder.getSingleValueForObject(object, enumType)
+    final enumType = annotation.library!.typeProvider.enumElement!.thisType;
+    final allowedList = allowedReader.listValue;
+    final allowedValues = allowedList.map((e) {
+      return valueBuilder.getSingleValueForObject(e, enumType);
+    }).toList();
+    return allowedValues;
   }
 
   Expression? readDefaultToArg(ConstantReader annotation) {

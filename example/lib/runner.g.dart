@@ -25,7 +25,8 @@ class MergeCommand extends Command {
     required String branch,
     MergeStrategy strategy,
     bool? commit,
-    Set<int>? vals,
+    Uri? uri,
+    int? ff,
   }) userMethod;
 
   @override
@@ -49,9 +50,14 @@ class MergeCommand extends Command {
       'commit',
       negatable: true,
     )
-    ..addMultiOption(
-      'vals',
-      defaultsTo: [
+    ..addOption(
+      'uri',
+      mandatory: false,
+    )
+    ..addOption(
+      'ff',
+      mandatory: false,
+      allowed: [
         '1',
         '2',
         '3',
@@ -67,9 +73,8 @@ class MergeCommand extends Command {
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
           : MergeStrategy.ort,
       commit: results['commit'] != null ? results['commit'] : null,
-      vals: results['vals'] != null
-          ? List<String>.from(results['vals']).map(int.parse).toSet()
-          : null,
+      uri: results['uri'] != null ? Uri.parse(results['uri']) : null,
+      ff: results['ff'] != null ? int.parse(results['ff']) : null,
     );
   }
 }

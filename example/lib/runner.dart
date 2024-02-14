@@ -21,7 +21,9 @@ class GitRunner extends _$GitRunner {
 
     /// Perform the merge and commit the result.
     bool? commit,
-    Set<int>? vals = const {1, 2, 3},
+    Uri? uri,
+    @Option(allowed: [1, 2, 3]) int? ff,
+    // Map<String, String>? options,
   }) async {
     print('Merging branch $branch');
     if (commit == true) {

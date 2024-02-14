@@ -73,12 +73,11 @@ class ArgParserInstanceExp {
       if (param.aliases != null) 'aliases': literalList(param.aliases!),
       if (param.docComments != null) 'help': literalString(param.docComments!),
       if (param.computedDefault != null) 'defaultsTo': param.computedDefault!,
-
       if (isFlag) 'negatable': literalBool(isNegatable),
-
       if (isSingleOption) 'mandatory': literalBool(param.isRequired),
       if (!isFlag && param.valueHelp != null) 'valueHelp': param.valueHelp!,
-      // if (!isFlag) 'allowed': literalList([]),
+      if (!isFlag && param.allowed != null)
+        'allowed': literalList(param.allowed!),
     });
   }
 }

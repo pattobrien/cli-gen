@@ -194,8 +194,7 @@ Examples of generated code can be found in the `example` project, within their r
     - [x] Primatives: String, int, double, bool, Uri, DateTime
     - [x] Collections: List, Set, Iterable
       - [ ] Map
-    - [ ] User-Defined types:
-      - [x] Enums
+    - [ ] User-Defined types: Enums
       - [ ] Classes
       - [ ] Extension Types
   - Multi-Select arguments
