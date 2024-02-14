@@ -5,4 +5,6 @@ import 'src/builders/runner_generator.dart';
 import 'src/builders/subcommand_generator.dart';
 
 SharedPartBuilder cliGenerator(BuilderOptions options) => SharedPartBuilder(
-    [SubcommandGenerator(), CliRunnerGenerator()], 'cli_generator');
+      [SubcommandGenerator(), CliRunnerGenerator()],
+      'cli_generator',
+    );

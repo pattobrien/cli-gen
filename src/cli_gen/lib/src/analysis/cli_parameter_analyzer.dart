@@ -5,9 +5,9 @@ import 'package:source_gen/source_gen.dart';
 
 import '../code/models/annotation_model.dart';
 import '../code/models/command_parameter_model.dart';
-import '../code/utils/remove_doc_slashes.dart';
 import 'annotations_analyzer.dart';
 import 'utils/reference_ext.dart';
+import 'utils/remove_doc_slashes.dart';
 
 class CliParameterAnalyzer {
   const CliParameterAnalyzer();
@@ -23,6 +23,8 @@ class CliParameterAnalyzer {
     final availableOptions = getImplicitAvailableOptions(element);
     final computedDefaultValue = getDefaultConstantValue(element);
     final annotations = getAnnotations(element);
+    final optionType =
+        isMultiOptional(element) ? OptionType.multi : OptionType.single;
 
     return CommandParameterModel(
       parser: getParserForParameter(element, element.type),
@@ -30,8 +32,7 @@ class CliParameterAnalyzer {
       type: element.type.toRef().toTypeRef(),
       isRequired: element.isRequired,
       isNamed: element.isNamed,
-      optionType:
-          isMultiOptional(element) ? OptionType.multiOption : OptionType.single,
+      optionType: optionType,
       availableOptions: availableOptions,
       computedDefaultValue: computedDefaultValue,
       docComments: cleanedUpComments,
@@ -69,8 +70,11 @@ class CliParameterAnalyzer {
     }
   }
 
+  /// Gets a fromString parser for the given [type].
+  ///
+  /// The provided [element] is only used for error reporting.
   Expression? getParserForParameter(
-    ParameterElement element,
+    Element element,
     DartType type,
   ) {
     // if type is one of the following, use a built in parser:
@@ -149,7 +153,8 @@ class CliParameterAnalyzer {
 
     // else, throw an error
     throw InvalidGenerationSource(
-      'Could not find a parser for parameter',
+      // ignore: deprecated_member_use
+      'Could not find a parser for the type: ${type.name}',
       element: element,
       todo: 'Add a parser for this type',
     );

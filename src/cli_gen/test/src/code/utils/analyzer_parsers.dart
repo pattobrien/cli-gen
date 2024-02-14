@@ -43,7 +43,7 @@ InvocationExpression generateArgResultHandlerExp({
           type: paramType ?? TestTypes.string,
           isRequired: isRequired,
           isNamed: isNamed,
-          optionType: isIterable ? OptionType.multiOption : OptionType.single,
+          optionType: isIterable ? OptionType.multi : OptionType.single,
           annotations: [],
           computedDefaultValue: computedDefaultValue,
           docComments: null,

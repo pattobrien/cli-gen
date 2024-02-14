@@ -64,7 +64,7 @@ class CliMethodCallBuilder {
     // a) whether a parser is available (will only be null for String types)
     // b) whether the parameter is iterable and needs to call `.map` on the result
     Expression parserExpression;
-    final isIterable = param.optionType == OptionType.multiOption;
+    final isIterable = param.optionType == OptionType.multi;
     if (isIterable && param.parser != null) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])

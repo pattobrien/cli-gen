@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:checks/checks.dart';
 import 'package:test/test.dart';
 
+import '../../utils/checks/expression_subject_exts.dart';
 import '../utils/analyzer_parsers.dart';
 import '../utils/types.dart';
 
@@ -112,7 +113,7 @@ void main() {
         final singleArg = invocationExp.argumentList.arguments.single;
 
         check(singleArg).isA<IndexExpression>()
-          ..hasIdentifierNamed('results')
+          ..hasTargetNamed('results')
           ..hasKeyNamed('message');
       });
       // - int.parse
@@ -128,9 +129,9 @@ void main() {
 
         check(singleArg).isA<MethodInvocation>()
           ..hasMethodNamed('parse')
-          ..hasTargetNamed('int')
-          ..hasIndexExpSingleArg().which((p0) => p0
-            ..hasIdentifierNamed('results')
+          ..hasRealTargetNamed('int')
+          ..hasSingleArg().isA<IndexExpression>().which((p0) => p0
+            ..hasTargetNamed('results')
             ..hasKeyNamed('message'));
       });
 
@@ -145,10 +146,10 @@ void main() {
         final singleArg = invocationExp.argumentList.arguments.single;
 
         check(singleArg).isA<MethodInvocation>()
-          ..hasTargetNamed('Uri')
+          ..hasRealTargetNamed('Uri')
           ..hasMethodNamed('parse')
-          ..hasIndexExpSingleArg().which((p0) => p0
-            ..hasIdentifierNamed('results')
+          ..hasSingleArg().isA<IndexExpression>().which((p0) => p0
+            ..hasTargetNamed('results')
             ..hasKeyNamed('message'));
       });
 
@@ -165,7 +166,7 @@ void main() {
         );
         final singleArg = invocationExp.argumentList.arguments.single;
 
-        // target = List<String>.from(result['foo'].map(int.parse))
+        // target = List<String>.from(result['foo']).map(int.parse)
         // method = .toList()
 
         check(singleArg)
@@ -192,53 +193,4 @@ void main() {
       });
     });
   });
-}
-
-extension MethodInvocationX on Subject<MethodInvocation> {
-  Subject<IndexExpression> hasIndexExpSingleArg() {
-    return has((p0) => p0.argumentList.arguments.single, 'single argument')
-        .isA<IndexExpression>();
-  }
-
-  Subject<Expression> hasSingleArg() {
-    return has((p0) => p0.argumentList.arguments.single, 'single argument');
-  }
-
-  void hasMethodNamed(String name) {
-    has((p0) => p0.methodName.name, 'method name').equals(name);
-  }
-
-  void hasInstanceCreationTypeNamed(String name) {
-    has((p0) => p0.staticType!.getDisplayString(withNullability: false),
-            'type name')
-        .equals(name);
-  }
-
-  Subject<InstanceCreationExpression> isAInstanceCreationExp() {
-    return has((p0) => p0.realTarget, 'type target')
-        .isA<InstanceCreationExpression>();
-  }
-
-  void hasTargetNamed(String name) {
-    has((p0) => p0.realTarget, 'type target')
-        .isA<SimpleIdentifier>()
-        .has((p0) => p0.name, 'type name')
-        .equals(name);
-  }
-}
-
-extension on Subject<IndexExpression> {
-  void hasIdentifierNamed(String name) {
-    has((p0) => p0.target, 'name')
-        .isA<SimpleIdentifier>()
-        .has((p0) => p0.name, 'name')
-        .equals(name);
-  }
-
-  void hasKeyNamed(String name) {
-    has((p0) => p0.index, 'index expression')
-        .isA<SimpleStringLiteral>()
-        .has((p0) => p0.value, 'key value')
-        .equals(name);
-  }
 }

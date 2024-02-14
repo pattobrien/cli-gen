@@ -4,7 +4,6 @@ import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../models/command_parameter_model.dart';
-import '../utils/remove_doc_slashes.dart';
 
 /// Responsible for generating an instance of `ArgParser` and adding flags/options to it.
 class ArgParserInstanceExp {
@@ -88,8 +87,7 @@ class ArgParserInstanceExp {
       if (aliases != null) 'aliases': literalList(aliases),
 
       if (defaultValue != null) 'defaultsTo': defaultValue,
-      if (docComment != null)
-        'help': literalString(removeDocSlashes(docComment)!),
+      if (docComment != null) 'help': literalString(docComment),
     });
   }
 }

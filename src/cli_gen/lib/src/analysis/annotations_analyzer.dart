@@ -80,7 +80,6 @@ class AnnotationsAnalyzer {
 
       // -- generic type args --
       parser: parserRef,
-      // valueHelp: TODO
       defaultsTo: readDefaultToArg(constantReader),
     );
   }

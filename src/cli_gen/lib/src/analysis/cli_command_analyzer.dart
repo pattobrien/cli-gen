@@ -1,38 +1,37 @@
 import 'package:analyzer/dart/element/element.dart';
 
 import '../code/models/command_method_model.dart';
-import '../code/utils/remove_doc_slashes.dart';
 import 'annotations_analyzer.dart';
 import 'cli_parameter_analyzer.dart';
 import 'utils/reference_ext.dart';
+import 'utils/remove_doc_slashes.dart';
 
 class CliCommandAnalyzer {
   const CliCommandAnalyzer();
 
+  /// Checks if the given [element] is annotated with `@CliCommand`.
   bool isAnnotatedWithCliCommand(MethodElement element) {
     return element.metadata.any(
       (annotation) {
-        return annotation
-                .computeConstantValue()!
-                .type!
-                .getDisplayString(withNullability: false) ==
-            'CliCommand';
+        final annotationType = annotation.computeConstantValue()!.type!;
+        // ignore: deprecated_member_use
+        return annotationType.name == 'CliCommand';
       },
     );
   }
 
+  /// Checks if the given [element] is annotated with `@SubcommandMount`.
   bool isAnnotatedWithSubcommandMount(ExecutableElement element) {
     return element.metadata.any(
       (annotation) {
-        return annotation
-                .computeConstantValue()!
-                .type!
-                .getDisplayString(withNullability: false) ==
-            'SubcommandMount';
+        final annotationType = annotation.computeConstantValue()!.type!;
+        // ignore: deprecated_member_use
+        return annotationType.name == 'SubcommandMount';
       },
     );
   }
 
+  /// Extracts the [CommandMethodModel] from the given [element].
   CommandMethodModel fromExecutableElement(
     ExecutableElement element,
   ) {

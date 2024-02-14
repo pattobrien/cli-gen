@@ -10,6 +10,7 @@ import 'package:source_gen/source_gen.dart';
 import '../analysis/cli_runner_analyzer.dart';
 import '../code/command/runner_builder.dart';
 
+/// A [Generator] that generates `CommandRunner` classes.
 class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
   @override
   FutureOr<String> generateForAnnotatedElement(
@@ -23,10 +24,11 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
         element: element,
       );
     }
-
+    // Creates a model from the annotated ClassElement.
     const subcommandAnalyzer = CliRunnerAnalyzer();
     final model = subcommandAnalyzer.fromClassElement(element);
 
+    // Generates code from the model.
     final library = Library((builder) {
       const subcommandBuilder = RunnerBuilder();
       builder.body.addAll(

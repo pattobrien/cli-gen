@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
 
 /// Used to annotated arguments to a CLI command.
@@ -55,10 +56,11 @@ sealed class BaseOption<T> {
   final bool? hide;
   final Object? defaultsTo; // this could be a list, if this is a MultiOption
   final List<T>? allowed;
+  // not yet implemented
+  @experimental
   final Map<T, String>? allowedHelp;
   final List<String>? aliases;
-  // final Object Function(String)? parser;
-  final bool? splitCommas; // this should only apply for MultiOption
+  final bool? splitCommas; // this only applies for MultiOption
 
   const BaseOption({
     this.abbr,
@@ -70,7 +72,6 @@ sealed class BaseOption<T> {
     this.allowed,
     this.allowedHelp,
     this.aliases,
-    // this.parser,
     this.splitCommas,
   });
 }

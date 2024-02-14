@@ -82,5 +82,5 @@ enum OptionType {
   single,
 
   /// Option where user can select more than one value
-  multiOption,
+  multi,
 }

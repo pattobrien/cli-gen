@@ -140,17 +140,17 @@ void main() async {
       test('List<String> supports multiple values', () {
         final param =
             parameters.firstWhere((p) => p.ref.symbol == 'multiString');
-        check(param.optionType).equals(OptionType.multiOption);
+        check(param.optionType).equals(OptionType.multi);
       });
 
       test('Set<int> supports multiple values', () {
         final param = parameters.firstWhere((p) => p.ref.symbol == 'multiInt');
-        check(param.optionType).equals(OptionType.multiOption);
+        check(param.optionType).equals(OptionType.multi);
       });
 
       test('Iterable<String> supports multiple values', () {
         final param = parameters.firstWhere((p) => p.ref.symbol == 'multiEnum');
-        check(param.optionType).equals(OptionType.multiOption);
+        check(param.optionType).equals(OptionType.multi);
       });
     });
 
