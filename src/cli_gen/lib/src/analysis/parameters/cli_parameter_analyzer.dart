@@ -1,5 +1,8 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+// ignore: implementation_imports
+import 'package:analyzer/src/dart/ast/utilities.dart';
 
 import '../../code/models/annotation_model.dart';
 import '../../code/models/command_parameter_model.dart';
@@ -13,17 +16,56 @@ class CliParameterAnalyzer {
   const CliParameterAnalyzer();
 
   /// Extracts [CommandParameterModel]s from the parameters on the
-  /// given Executable [element].
-  ///
-  /// Note: This method supports Constructors, Methods, and Functions.
-  List<CommandParameterModel> fromExecutableElement(
-    ExecutableElement element,
+  /// given ConstructorDeclaration [node].
+  List<CommandParameterModel> fromConstructorDeclaration(
+    ConstructorDeclaration node,
+  ) {
+    final parameterElements = node.declaredElement!.parameters;
+    final nodes = fromParameterElements(parameterElements, node);
+    return fromParameterAstNodes(nodes);
+  }
+
+  /// Extracts [CommandParameterModel]s from the parameters on the
+  /// given FunctionDeclaration [node].
+  List<CommandParameterModel> fromFunctionDeclaration(
+    FunctionDeclaration node,
+  ) {
+    final parameterElements = node.declaredElement!.parameters;
+    final nodes = fromParameterElements(parameterElements, node);
+    return fromParameterAstNodes(nodes);
+  }
+
+  /// Extracts [CommandParameterModel]s from the parameters on the
+  /// given MethodDeclaration [node].
+  List<CommandParameterModel> fromMethodDeclaration(
+    MethodDeclaration node,
+  ) {
+    final parameterElements = node.declaredElement!.parameters;
+    final nodes = fromParameterElements(parameterElements, node);
+    return fromParameterAstNodes(nodes);
+  }
+
+  List<FormalParameter> fromParameterElements(
+    List<ParameterElement> elements,
+    AstNode rootNode,
+  ) {
+    return elements.map((e) {
+      return NodeLocator(
+        e.nameOffset,
+        e.nameOffset + e.nameLength,
+      ).searchWithin(rootNode) as FormalParameter;
+    }).toList();
+  }
+
+  List<CommandParameterModel> fromParameterAstNodes(
+    List<FormalParameter> nodes,
   ) =>
-      element.parameters.map(fromParameter).toList();
+      nodes.map(fromParameter).toList();
 
   /// Extracts [CommandParameterModel] information from a single parameter.
-  CommandParameterModel fromParameter(ParameterElement element) {
-    final docComments = getDocComments(element);
+  CommandParameterModel fromParameter(FormalParameter node) {
+    final element = node.declaredElement!;
+    final docComments = getDocCommentsFromAstNode(node);
     final cleanedUpComments = removeDocSlashes(docComments);
     final availableOptions = getImplicitAvailableOptions(element);
     final annotations = getAnnotations(element);
@@ -102,6 +144,16 @@ class CliParameterAnalyzer {
         }(),
       _ => null,
     };
+  }
+
+  String? getDocCommentsFromAstNode(FormalParameter node) {
+    // check the AstNode directly for a doc comment
+    // otherwise, check the element via [getDocComments]
+    final nodeComment = node.beginToken.precedingComments?.lexeme;
+    if (nodeComment != null) {
+      return removeDocSlashes(nodeComment);
+    }
+    return getDocComments(node.declaredElement!);
   }
 
   /// Returns a doc comment depending on the type of parameter.

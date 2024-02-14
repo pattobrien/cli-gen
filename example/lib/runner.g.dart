@@ -37,10 +37,13 @@ class MergeCommand extends Command {
   ArgParser get argParser => ArgParser()
     ..addOption(
       'branch',
+      help: 'The name of the branch to be merged into the current branch.',
       mandatory: true,
     )
     ..addOption(
       'strategy',
+      help:
+          'Pass merge strategy specific option through to the merge strategy.',
       defaultsTo: 'ort',
       mandatory: false,
       allowed: [
@@ -52,7 +55,10 @@ class MergeCommand extends Command {
         'subtree',
       ],
     )
-    ..addFlag('commit');
+    ..addFlag(
+      'commit',
+      help: 'Perform the merge and commit the result.',
+    );
 
   @override
   Future<void> run() {
