@@ -12,15 +12,15 @@ A package for building cli applications using code generation and macros.
   🚧 This package is in early preview.
 </blockquote>
 
-The ability to quickly whip up a CLI application is a powerful skill for a developer to have. Yet the boilerplate of `cli` Dart libraries like `package:args` leave a lot to desire in terms of quickly getting a script up and running.
+The ability to quickly whip up a CLI application is a powerful skill for a developer to have. Yet the boilerplate required of cli-based Dart libraries like `package:args` leave a lot to desire in terms of quickly getting a script up and running.
 
-`cli-gen` aims to be a quality-of-life improvement for building and maintaining CLI apps, by providing the following benefits:
+`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by providing the following features:
 
-- type-safe arguments
-- `help` text generation from doc comments and Types
-- proper user error output, without stack traces
+- type-safe arguments via generated string parsing
+- `help` text generation from param names, doc comments, and default values
+- proper handling of argument errors, without stack traces
 
-`cli-gen` makes writing CLI applications in Dart as intuitive as writing any other native Dart function or method, and removes the need to learn the underlying `package:args` semantics.
+`cli-gen` was designed to make writing CLI applications as intuitive as writing any other native Dart function or method, by abstracting the underlying `package:args` semantics while providing access to the underlying package when needed.
 
 <table>
 <tr>
@@ -144,7 +144,7 @@ The ability to quickly whip up a CLI application is a powerful skill for a devel
    }
    ```
 
-You're application is ready to go! Run your application via the command line and see the generated help text and argument parsing in action.
+Your application is ready to go! Run a command to test out the generated help text and see the argument parsing in action.
 
 ```bash
 # activate the executable (if executable is defined in `pubspec.yaml`)
@@ -166,15 +166,15 @@ Usage: git-runner merge [arguments]
 --options
 
 Run "git-runner help" to see global options.
-
 ```
 
 ## Under the Hood
 
-`cli-gen` uses `package:args` to manage command hierarchies and help text generation. The annotations included with this package are roughly a 1:1 mapping to similar concepts included with `package:args`, for example:
+`cli-gen` generates code that uses `package:args` classes and utilities to manage command hierarchies and help text generation. The annotations included with this package are a 1:1 mapping to similar or identical concepts included with `package:args`, for example:
 
 - `@cliRunner`
   - generates a `CommandRunner` class
+  - has a `run` method that should be passed args and run from your `main` function
   - mounts any nested commands as subcommands via `CommandRunner.addCommand`
 - `@cliCommand`
   - generates a `Command` class
@@ -187,10 +187,9 @@ Examples of generated code can be found in the `example` project, within their r
 
 ## Features
 
-### ArgParser generation from Parameters
+- [ ] Arg parser generation from Parameters
 
-- Generate an ArgParser from a Constructor or Method/Function
-
+  - [ ] Generate from a Constructor or Method/Function signature
   - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
     - [x] Primatives: String, int, double, bool, Uri, DateTime
     - [x] Collections: List, Set, Iterable
@@ -206,18 +205,24 @@ Examples of generated code can be found in the `example` project, within their r
 
   - `help` comments from doc comments
 
-- annotations to help guide the generator
+- Annotations to guide the generator and override default behavior
 
-### Command generation
+  - [ ] `@cliCommand` to override the generated command name
+  - [ ] `@cliSubcommand` to override the generated subcommand name
+  - [ ] `@cliRunner` to override the generated runner name
+  - [ ] `@mount` to mount a subcommand to a parent command
+  - [ ] `@cliOption` to provide access to `package:args` options
 
-- [x] Generate a `Command` class using a `@cliCommand` annotation on a method or function
-- [x] Generate a `Subcommand` class using a `@cliSubcommand` annotation
-- [x] Generate a `CommandRunner` using a `@cliRunner` annotation
-  - [x] Allow mounting nested subcommands using a `@mount` annotation
+- Command generation
+
+  - [x] Generate a `Command` class using a `@cliCommand` Method or Function annotation
+  - [x] Generate a `Subcommand` class using a `@cliSubcommand` Class annotation
+  - [x] Generate a `CommandRunner` using a `@cliRunner` Class annotation
+    - [x] Allow mounting nested subcommands using a `@mount` annotation on a Getter or Method
 
 ## Design Goals
 
-TODO: write a little blurb about the goals (what `cli-gen` is and what it is not).
+TODO: write a little blurb about the goals (incl. what `cli-gen` is and what it is not).
 
 ## Inspiration
 
