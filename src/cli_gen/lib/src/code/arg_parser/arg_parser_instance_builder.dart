@@ -63,8 +63,6 @@ class ArgParserInstanceExp {
             ? 'addMultiOption'
             : 'addOption';
 
-    final isNegatable = true; // TODO: implement negatable
-
     return argParserInstance.cascade(methodName).call([
       literalString(param.cliArgumentName),
     ], {
@@ -73,8 +71,9 @@ class ArgParserInstanceExp {
       if (param.aliases != null) 'aliases': literalList(param.aliases!),
       if (param.docComments != null) 'help': literalString(param.docComments!),
       if (param.computedDefault != null) 'defaultsTo': param.computedDefault!,
-      if (isFlag) 'negatable': literalBool(isNegatable),
       if (isSingleOption) 'mandatory': literalBool(param.isRequired),
+      if (isFlag && param.negatable != null)
+        'negatable': literalBool(param.negatable!),
       if (!isFlag && param.valueHelp != null) 'valueHelp': param.valueHelp!,
       if (!isFlag && param.allowed != null)
         'allowed': literalList(param.allowed!),

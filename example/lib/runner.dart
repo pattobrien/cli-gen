@@ -22,7 +22,7 @@ class GitRunner extends _$GitRunner {
     /// Perform the merge and commit the result.
     bool? commit,
     Uri? uri,
-    @Option(allowed: [1, 2, 3]) int? ff,
+    @MultiOption(allowed: [1, 2, 3]) int? ff,
     // Map<String, String>? options,
   }) async {
     print('Merging branch $branch');

@@ -46,10 +46,7 @@ class MergeCommand extends Command {
       defaultsTo: 'ort',
       mandatory: false,
     )
-    ..addFlag(
-      'commit',
-      negatable: true,
-    )
+    ..addFlag('commit')
     ..addOption(
       'uri',
       mandatory: false,

@@ -51,6 +51,8 @@ class CommandParameterModel {
     return annotations.map((e) => e.help).firstOrNull ?? _docComments;
   }
 
+  bool? get negatable => annotations.map((e) => e.negatable).firstOrNull;
+
   /// The name of the argument as it will appear in the generated CLI.
   ///
   /// Transforms the name from camelCase to param-case.
@@ -72,8 +74,6 @@ class CommandParameterModel {
   String? get abbr => annotations.map((e) => e.abbr).firstOrNull;
 
   Expression? get valueHelp => annotations.map((e) => e.valueHelp).firstOrNull;
-
-  bool? get negatable => annotations.map((e) => e.negatable).firstOrNull;
 
   bool? get hide => annotations.map((e) => e.hide).firstOrNull;
 
