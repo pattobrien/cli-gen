@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 
 import '../../code/models/command_method_model.dart';
@@ -11,6 +12,7 @@ import '../utils/remove_doc_slashes.dart';
 /// see [CommandMethodModel] and [fromExecutableElement].
 class CliCommandAnalyzer {
   const CliCommandAnalyzer();
+  CliParameterAnalyzer get _parameterAnalyzer => const CliParameterAnalyzer();
 
   /// Checks if the given [element] is annotated with `@CliCommand`.
   bool isAnnotatedWithCliCommand(
@@ -38,12 +40,75 @@ class CliCommandAnalyzer {
     );
   }
 
-  /// Extracts the [CommandMethodModel] from the given [element].
-  ///
-  /// For the most part, this method delegates most of the work to
-  /// [CliParameterAnalyzer] and [OptionsAnnotationAnalyzer], which extract
-  /// the parameters and annotations, respectively.
-  CommandMethodModel fromExecutableElement(
+  /// Extracts [CommandMethodModel]s from the parameters on the
+  /// given ConstructorDeclaration [node].
+  CommandMethodModel fromConstructorDeclaration(
+    ConstructorDeclaration node,
+  ) {
+    final parameters = node.declaredElement!.parameters;
+    final nodes = _parameterAnalyzer.fromParameterElements(parameters, node);
+    return fromParameterAstNodes(nodes, node.declaredElement!);
+  }
+
+  /// Extracts [CommandMethodModel]s from the parameters on the
+  /// given FunctionDeclaration [node].
+  CommandMethodModel fromFunctionDeclaration(
+    FunctionDeclaration node,
+  ) {
+    final parameters = node.declaredElement!.parameters;
+    final nodes = _parameterAnalyzer.fromParameterElements(parameters, node);
+    return fromParameterAstNodes(nodes, node.declaredElement!);
+  }
+
+  /// Extracts [CommandMethodModel]s from the parameters on the
+  /// given MethodDeclaration [node].
+  CommandMethodModel fromMethodDeclaration(
+    MethodDeclaration node,
+  ) {
+    final parameters = node.declaredElement!.parameters;
+    final nodes = _parameterAnalyzer.fromParameterElements(parameters, node);
+    return fromParameterAstNodes(nodes, node.declaredElement!);
+  }
+
+  // /// Extracts the [CommandMethodModel] from the given [element].
+  // ///
+  // /// For the most part, this method delegates most of the work to
+  // /// [CliParameterAnalyzer] and [OptionsAnnotationAnalyzer], which extract
+  // /// the parameters and annotations, respectively.
+  // Future<CommandMethodModel> fromExecutableElement(
+  //   ExecutableElement element,
+  //   Resolver resolver,
+  // ) async {
+  //   List<FormalParameter> nodes = [];
+  //   for (final parameter in element.parameters) {
+  //     final astNode = await resolver.astNodeFor(parameter, resolve: true);
+
+  //     if (astNode is! FormalParameter) {
+  //       throw InvalidGenerationSourceError(
+  //         'The `@CliCommand` annotation can only be used on methods with parameters.',
+  //         element: element,
+  //       );
+  //     }
+
+  //     nodes.add(astNode);
+  //   }
+
+  //   return fromParameterAstNodes(nodes, element);
+
+  //   // return CommandMethodModel(
+  //   //   methodRef: element.toRef(),
+  //   //   returnType: element.returnType.toRef().toTypeRef(),
+  //   //   parameters: parameterAnalyzer.fromParameterAstNodes(nodes),
+  //   //   docComments: removeDocSlashes(element.documentationComment),
+  //   //   annotations: element.metadata
+  //   //       .where(annotationAnalyzer.isOptionsAnnotation)
+  //   //       .map(annotationAnalyzer.fromElementAnnotation)
+  //   //       .toList(),
+  //   // );
+  // }
+
+  CommandMethodModel fromParameterAstNodes(
+    List<FormalParameter> nodes,
     ExecutableElement element,
   ) {
     const annotationAnalyzer = OptionsAnnotationAnalyzer();
@@ -52,7 +117,7 @@ class CliCommandAnalyzer {
     return CommandMethodModel(
       methodRef: element.toRef(),
       returnType: element.returnType.toRef().toTypeRef(),
-      parameters: parameterAnalyzer.fromExecutableElement(element),
+      parameters: parameterAnalyzer.fromParameterAstNodes(nodes),
       docComments: removeDocSlashes(element.documentationComment),
       annotations: element.metadata
           .where(annotationAnalyzer.isOptionsAnnotation)

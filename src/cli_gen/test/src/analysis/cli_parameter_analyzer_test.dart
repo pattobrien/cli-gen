@@ -1,7 +1,11 @@
+// ignore_for_file: unnecessary_import
+
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/src/dart/ast/utilities.dart';
 import 'package:checks/checks.dart';
 import 'package:cli_gen/src/analysis/parameters/cli_parameter_analyzer.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
@@ -12,12 +16,12 @@ import 'package:test/test.dart';
 void main() async {
   final root = Directory.current;
   final testFilePath = '${root.path}/test/example_usage/args_example.dart';
-  final unit = await resolveFile2(path: testFilePath);
-  if (unit is! ResolvedUnitResult) {
+  final resolvedUnitResult = await resolveFile2(path: testFilePath);
+  if (resolvedUnitResult is! ResolvedUnitResult) {
     throw Exception('Failed to resolve unit');
   }
 
-  final functions = unit.unit.declaredElement!.functions;
+  final functions = resolvedUnitResult.unit.declaredElement!.functions;
 
   final paramAnalyzer = CliParameterAnalyzer();
 
@@ -27,7 +31,20 @@ void main() async {
     group('End to end parameter analyzer validation', () {
       test('e2e test', () {
         final executable = functions.first;
-        final parameters = paramAnalyzer.fromExecutableElement(executable);
+        final parameterElements = executable.parameters;
+        List<FormalParameter> nodes = [];
+        for (final param in parameterElements) {
+          NodeLocator nodeLocator = NodeLocator(
+            param.nameOffset,
+            param.nameOffset + param.nameLength,
+          );
+          AstNode? node = nodeLocator.searchWithin(resolvedUnitResult.unit);
+          if (node is! FormalParameter) {
+            throw Exception('Failed to find parameter node');
+          }
+          nodes.add(node);
+        }
+        final parameters = paramAnalyzer.fromParameterAstNodes(nodes);
 
         check(parameters).has((p0) => p0.length, 'length').equals(1);
 
@@ -49,7 +66,11 @@ void main() async {
     group('Types (Primatives):', () {
       final executable =
           functions.firstWhere((e) => e.name == 'primativeTypes');
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
+      final functionNode = NodeLocator(
+        executable.nameOffset,
+        executable.nameOffset + executable.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('String Literal', () {
         final param =
@@ -77,7 +98,12 @@ void main() async {
 
     group('Types (User-defined):', () {
       final executable = functions.firstWhere((e) => e.name == 'userTypes');
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
+      // final parameters = paramAnalyzer.fromExecutableElement(executable);
+      final functionNode = NodeLocator(
+        executable.nameOffset,
+        executable.nameOffset + executable.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('Implicit allowed options from Enum constants', () {
         final param =
@@ -115,7 +141,12 @@ void main() async {
 
       final executable =
           functions.firstWhere((e) => e.name == 'annotatedParams');
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
+      // final parameters = paramAnalyzer.fromExecutableElement(executable);
+      final functionNode = NodeLocator(
+        executable.nameOffset,
+        executable.nameOffset + executable.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       // print('params: $parameters');
       test(
@@ -136,7 +167,12 @@ void main() async {
 
     group('Multi-select (from Iterables):', () {
       final executable = functions.firstWhere((e) => e.name == 'multiSelect');
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
+      // final parameters = paramAnalyzer.fromExecutableElement(executable);
+      final functionNode = NodeLocator(
+        executable.nameOffset,
+        executable.nameOffset + executable.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('List<String> supports multiple values', () {
         final param =
@@ -167,10 +203,19 @@ void main() async {
       // TODO: doc comment using annotations
 
       test('Constructors', () {
-        final classes = unit.unit.declaredElement!.classes;
+        final classes = resolvedUnitResult.unit.declaredElement!.classes;
         final classElement = classes.firstWhere((e) => e.name == 'DocComments');
         final constructor = classElement.constructors.first;
-        final parameters = paramAnalyzer.fromExecutableElement(constructor);
+        // final parameters = paramAnalyzer.fromExecutableElement(constructor);
+        final constructorIdentifier = NodeLocator(
+          constructor.nameOffset,
+          constructor.nameOffset + constructor.nameLength,
+        ).searchWithin(resolvedUnitResult.unit) as SimpleIdentifier;
+        final constructorNode =
+            constructorIdentifier.parent as ConstructorDeclaration;
+
+        final parameters =
+            paramAnalyzer.fromConstructorDeclaration(constructorNode);
 
         check(parameters.single.docComments).equals('The message to display.');
       });
@@ -178,7 +223,13 @@ void main() async {
 
     group('Default values:', () {
       final executable = functions.firstWhere((e) => e.name == 'defaultValues');
-      final parameters = paramAnalyzer.fromExecutableElement(executable);
+      // final parameters = paramAnalyzer.fromExecutableElement(executable);
+      final functionNode = NodeLocator(
+        executable.nameOffset,
+        executable.nameOffset + executable.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('String', () {
         final param =
@@ -211,7 +262,12 @@ void main() async {
 
     group('Named parameters:', () {
       final namedFunction = functions.firstWhere((e) => e.name == 'named');
-      final namedParams = paramAnalyzer.fromExecutableElement(namedFunction);
+      // final namedParams = paramAnalyzer.fromExecutableElement(namedFunction);
+      final functionNode = NodeLocator(
+        namedFunction.nameOffset,
+        namedFunction.nameOffset + namedFunction.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+      final namedParams = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('All 3 parameters are named', () {
         check(namedParams)
@@ -246,7 +302,13 @@ void main() async {
     group('Positional parameters:', () {
       final positionalFunc =
           functions.firstWhere((e) => e.name == 'positional');
-      final parameters = paramAnalyzer.fromExecutableElement(positionalFunc);
+      // final parameters = paramAnalyzer.fromExecutableElement(positionalFunc);
+      final functionNode = NodeLocator(
+        positionalFunc.nameOffset,
+        positionalFunc.nameOffset + positionalFunc.nameLength,
+      ).searchWithin(resolvedUnitResult.unit) as FunctionDeclaration;
+
+      final parameters = paramAnalyzer.fromFunctionDeclaration(functionNode);
 
       test('All 3 parameters are positional', () {
         check(parameters)

@@ -9,7 +9,7 @@ part of 'stash.dart';
 class _$StashSubcommand extends Command {
   _$StashSubcommand() {
     final upcastedType = (this as StashSubcommand);
-    addSubcommand(MyCustomCommand(upcastedType.myCustomCommand));
+    addSubcommand(PushCommand(upcastedType.push));
     addSubcommand(ApplyCommand(upcastedType.apply));
   }
 
@@ -20,89 +20,30 @@ class _$StashSubcommand extends Command {
   String get description => 'Commands for managing a stack of stashed changes.';
 }
 
-class MyCustomCommand extends Command {
-  MyCustomCommand(this.userMethod) {
-    argParser
-      ..addOption(
-        'name',
-        mandatory: true,
-      )
-      ..addOption(
-        'age',
-        mandatory: false,
-      )
-      ..addOption(
-        'default-path',
-        defaultsTo: '~/',
-        mandatory: false,
-      )
-      ..addOption(
-        'some-documented-parameter',
-        mandatory: false,
-      )
-      ..addOption(
-        'custom-parameter',
-        help: 'A custom help message for the parameter',
-        defaultsTo: '42',
-        mandatory: false,
-      );
-  }
+class PushCommand extends Command {
+  PushCommand(this.userMethod);
 
-  final Function({
-    required String name,
-    int? age,
-    String defaultPath,
-    String? someDocumentedParameter,
-    int? customParameter,
-  }) userMethod;
+  final Function({String message}) userMethod;
 
   @override
-  String get name => 'my-custom-command';
+  String get name => 'push';
 
   @override
   String get description => 'Save your local modifications to a new stash.';
 
-  // @override
-  // ArgParser get argParser => ArgParser()
-  //   ..addOption(
-  //     'name',
-  //     mandatory: true,
-  //   )
-  //   ..addOption(
-  //     'age',
-  //     mandatory: false,
-  //   )
-  //   ..addOption(
-  //     'default-path',
-  //     defaultsTo: '~/',
-  //     mandatory: false,
-  //   )
-  //   ..addOption(
-  //     'some-documented-parameter',
-  //     mandatory: false,
-  //   )
-  //   ..addOption(
-  //     'custom-parameter',
-  //     help: 'A custom help message for the parameter',
-  //     defaultsTo: '42',
-  //     mandatory: false,
-  //   );
+  @override
+  ArgParser get argParser => ArgParser()
+    ..addOption(
+      'message',
+      defaultsTo: 'WIP',
+      mandatory: false,
+    );
 
   @override
   Future<void> run() {
     final results = argResults!;
     return userMethod(
-      name: results['name'],
-      age: results['age'] != null ? int.parse(results['age']) : null,
-      defaultPath:
-          results['default-path'] != null ? results['default-path'] : '~/',
-      someDocumentedParameter: results['some-documented-parameter'] != null
-          ? results['some-documented-parameter']
-          : null,
-      customParameter: results['custom-parameter'] != null
-          ? int.parse(results['custom-parameter'])
-          : null,
-    );
+        message: results['message'] != null ? results['message'] : 'WIP');
   }
 }
 
