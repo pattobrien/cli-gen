@@ -41,14 +41,14 @@ Build CLI applications from plain Dart classes and functions.
   - [Type Safe Argument Parsing](#type-safe-argument-parsing)
     - [Supported Types](#supported-types)
     - [Collection Types](#collection-types)
-    - [Named and Positional Parameters](#named-and-positional-parameters)
     - [Enums and Allowed Values](#enums-and-allowed-values)
   - [Help Text Inference (--help)](#help-text-inference---help)
     - [Parameter Help Text](#parameter-help-text)
-    - [Command Help Text](#command-help-text)
+    - [Command Descriptions](#command-descriptions)
   - [Name Formatting](#name-formatting)
-- [Under the Hood](#under-the-hood)
+  - [Named and Positional Parameters](#named-and-positional-parameters)
 - [Design Goals](#design-goals)
+- [Under the Hood](#under-the-hood)
 - [Inspiration](#inspiration)
 - [License](#license)
 
@@ -179,23 +179,6 @@ Usage: git-runner merge [arguments]
 Run "git-runner help" to see global options.
 ```
 
-## Under the Hood
-
-`cli-gen` generates code that uses `package:args` classes and utilities to manage command hierarchies and help text generation. The annotations included with this package are a 1:1 mapping to similar or identical concepts included with `package:args`, for example:
-
-- `@cliRunner`
-  - generates a `CommandRunner` class
-  - has a `run` method that should be passed args and run from your `main` function
-  - mounts any nested commands as subcommands via `CommandRunner.addCommand`
-- `@cliCommand`
-  - generates a `Command` class
-  - overrides the `run` method with a call to your method or function
-- `@cliSubcommand`
-  - generates a `Command` class
-  - adds all nested commands as subcommands via `Command.addSubcommand`
-
-Examples of generated code can be found in the `example` project, within their respective `.g.dart` files.
-
 ## Features
 
 ### Type-Safe Argument Parsing
@@ -229,20 +212,6 @@ The Collection types `List`, `Set`, and `Iterable` are also supported, and can b
 @cliCommand
 Future<void> myCustomCommand({
   List<Uri>? inputFiles,
-}) async {
-  // ...
-}
-```
-
-#### Named and Positional Parameters
-
-`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit.
-
-```dart
-@cliCommand
-Future<void> myCustomCommand(
-  int? positionalParam, {
-  String? namedParam,
 }) async {
   // ...
 }
@@ -292,7 +261,7 @@ Usage: git stash my-custom-command [arguments]
 Run "git help" to see global options.
 ```
 
-#### Command Help Text
+#### Command Descriptions
 
 You can also generate descriptions for your commands and the entire application by using doc comments on the annotated classes and methods.
 
@@ -345,6 +314,37 @@ Using the above `Values` enum as a parameter to a `cliCommand` will generate the
 For example, a method named `stashChanges` will be translated to `stash-changes`, and a parameter named `outputFile` will be translated to `--output-file`.
 
 To override the default behavior, simply provide a `name` to the respective annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and `@Option`).
+
+### Named and Positional Parameters
+
+`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit.
+
+```dart
+@cliCommand
+Future<void> myCustomCommand(
+  int? positionalParam, {
+  String? namedParam,
+}) async {
+  // ...
+}
+```
+
+## Under the Hood
+
+`cli-gen` generates code that uses `package:args` classes and utilities to manage command hierarchies and help text generation. The annotations included with this package are a 1:1 mapping to similar or identical concepts included with `package:args`, for example:
+
+- `@cliRunner`
+  - generates a `CommandRunner` class
+  - has a `run` method that should be passed args and run from your `main` function
+  - mounts any nested commands as subcommands via `CommandRunner.addCommand`
+- `@cliCommand`
+  - generates a `Command` class
+  - overrides the `run` method with a call to your method or function
+- `@cliSubcommand`
+  - generates a `Command` class
+  - adds all nested commands as subcommands via `Command.addSubcommand`
+
+Examples of generated code can be found in the `example` project, within their respective `.g.dart` files.
 
 ## Design Goals
 
