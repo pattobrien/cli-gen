@@ -12,20 +12,31 @@ class CommandParameterModel {
     required this.optionType,
     String? docComments,
     String? computedDefaultValue,
+    required String? defaultValueAsCode,
     this.annotations = const [],
     this.availableOptions,
     required Expression? parser,
   })  : _parser = parser,
         _computedDefaultValue = computedDefaultValue,
-        _docComments = docComments;
+        _docComments = docComments,
+        _defaultValueAsCode = defaultValueAsCode;
 
   final Expression? _parser;
   final String? _computedDefaultValue;
+  final String? _defaultValueAsCode;
   final String? _docComments;
 
   final OptionType optionType;
 
   final Reference name;
+
+  Expression? get defaultValueAsCode {
+    final annotationValue = annotations.map((e) => e.defaultsTo).firstOrNull;
+    return annotationValue ??
+        (_defaultValueAsCode != null
+            ? CodeExpression(Code(_defaultValueAsCode!))
+            : null);
+  }
 
   Expression? get parser {
     return annotations.map((e) => e.parser).firstOrNull ?? _parser;

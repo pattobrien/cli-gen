@@ -25,6 +25,7 @@ class MergeCommand extends Command {
     required String branch,
     bool? commit,
     List<int>? options,
+    List<int> message,
   }) userMethod;
 
   @override
@@ -46,6 +47,11 @@ class MergeCommand extends Command {
     ..addOption(
       'options',
       mandatory: false,
+    )
+    ..addOption(
+      'message',
+      defaultsTo: '1, 2',
+      mandatory: false,
     );
 
   @override
@@ -57,6 +63,9 @@ class MergeCommand extends Command {
       options: results['options'] != null
           ? List<String>.from(results['options']).map(int.parse).toList()
           : null,
+      message: results['message'] != null
+          ? List<String>.from(results['message']).map(int.parse).toList()
+          : const <int>[1, 2],
     );
   }
 }

@@ -41,6 +41,7 @@ class CliParameterAnalyzer {
       isNamed: element.isNamed,
       optionType: optionType,
       availableOptions: availableOptions,
+      defaultValueAsCode: defaultValBuilder.getDefaultValueAsCode(element),
       parser: parserBuilder.getParserForParameter(element, element.type),
       computedDefaultValue: defaultValBuilder.getDefaultConstantValue(element),
       docComments: cleanedUpComments,

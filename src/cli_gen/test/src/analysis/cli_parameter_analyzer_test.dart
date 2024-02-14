@@ -190,14 +190,12 @@ void main() async {
       test('Boolean', () {
         final param =
             parameters.firstWhere((p) => p.name.symbol == 'booleanVal');
-        // check(param.defaultValueCode).equals('true');
         check(param).hasDefaultBooleanValueOf(true);
       });
 
       test('Integer', () {
         final param =
             parameters.firstWhere((p) => p.name.symbol == 'integerVal');
-        // check(param.defaultValueCode).equals('42');
         check(param).hasDefaultValueOf(42);
       });
 

@@ -10,6 +10,11 @@ import 'package:source_gen/source_gen.dart';
 class DefaultValueCodeBuilder {
   const DefaultValueCodeBuilder();
 
+  /// Returns the source code of the default value, with no computation.
+  String? getDefaultValueAsCode(ParameterElement element) {
+    return element.defaultValueCode;
+  }
+
   /// Returns the default value for the given [element] as a string or null
   /// if no default value is present.
   String? getDefaultConstantValue(ParameterElement element) {

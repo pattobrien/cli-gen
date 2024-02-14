@@ -38,6 +38,7 @@ MethodInvocation generateUserMethodCallExp({
           optionType: isIterable ? OptionType.multi : OptionType.single,
           annotations: [],
           computedDefaultValue: computedDefaultValue,
+          defaultValueAsCode: defaultValueCode,
           docComments: null,
           availableOptions: [],
         ),
