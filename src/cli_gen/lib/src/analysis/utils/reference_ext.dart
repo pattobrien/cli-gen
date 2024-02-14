@@ -62,10 +62,6 @@ extension ExecutableElementToRefExt on ExecutableElement {
         typeParameters.map((e) => refer(e.name, librarySource.uri.toString())),
       );
     });
-    // return refer(
-    //   name,
-    //   librarySource.uri.toString(),
-    // );
   }
 }
 
@@ -113,20 +109,8 @@ extension InterfaceTypeExt on InterfaceType {
         typeArguments.map((e) => e.toRef()),
       );
     });
-    // return refer(
-    //   element.name,
-    //   element.librarySource.uri.toString(),
-    // );
   }
 }
-
-// extension FunctionTypeExt on FunctionType {
-//   Reference toRef() {
-//     return refer(
-//       getDisplayString(withNullability: false),
-//     );
-//   }
-// }
 
 extension InterfaceElementExt on InterfaceElement {
   Reference toRef() {

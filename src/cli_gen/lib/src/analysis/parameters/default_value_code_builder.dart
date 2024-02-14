@@ -3,9 +3,15 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Generates a string that can be used to represent the default value
+/// of a given parameter.
+///
+/// See [getDefaultConstantValue] for more details.
 class DefaultValueCodeBuilder {
   const DefaultValueCodeBuilder();
 
+  /// Returns the default value for the given [element] as a string or null
+  /// if no default value is present.
   String? getDefaultConstantValue(ParameterElement element) {
     final hasDefaultValue = element.defaultValueCode != null;
     if (!hasDefaultValue) return null;
@@ -92,6 +98,8 @@ class DefaultValueCodeBuilder {
       );
     }
 
-    return [];
+    throw InvalidGenerationSourceError(
+      'Unexpected type for constant value: $thisType',
+    );
   }
 }

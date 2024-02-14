@@ -5,6 +5,9 @@ import 'package:source_gen/source_gen.dart';
 
 import '../../types/identifiers.dart';
 
+/// Generates an expression for a String -> [paramType] parse method.
+///
+/// See [getParserForParameter] for usage details.
 class TypeParserExpressionBuilder {
   const TypeParserExpressionBuilder();
 
