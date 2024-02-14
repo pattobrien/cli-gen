@@ -188,39 +188,7 @@ Examples of generated code can be found in the `example` project, within their r
 
 ## Features
 
-- [ ] Arg parser generation from Parameters
-
-  - [ ] Generate from a Constructor or Method/Function signature
-  - Auto Argument Parsing (convert a String/bool argument into the expected Dart type, without using annotations to tell the builder what parser to use):
-
-    - [x] Primatives: String, int, double, bool, Uri, DateTime
-    - [x] Collections: List, Set, Iterable
-      - [ ] Map
-    - [x] User-Defined types: Enums
-      - [ ] Classes
-      - [ ] Extension Types
-
-  - [x] Multi-Select arguments:
-
-    - [x] List of primative values
-    - [x] enums for a finite list of values
-
-  - `help` comments from doc comments
-
-- Annotations to guide the generator and override default behavior
-
-  - [ ] `@cliCommand` to override the generated command name
-  - [ ] `@cliSubcommand` to override the generated subcommand name
-  - [ ] `@cliRunner` to override the generated runner name
-  - [ ] `@mount` to mount a subcommand to a parent command
-  - [ ] `@cliOption` to provide access to `package:args` options
-
-- Command generation
-
-  - [x] Generate a `Command` class using a `@cliCommand` Method or Function annotation
-  - [x] Generate a `Subcommand` class using a `@cliSubcommand` Class annotation
-  - [x] Generate a `CommandRunner` using a `@cliRunner` Class annotation
-    - [x] Allow mounting nested subcommands using a `@mount` annotation on a Getter or Method
+TODO: sections for each feature with short descriptions and examples, if necessary.
 
 ## Design Goals
 
