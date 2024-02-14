@@ -2,8 +2,9 @@
 
 [![Build Pipeline](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml/badge.svg)](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml)
 [![CodeCoverage](https://codecov.io/gh/pattobrien/cli-gen/branch/main/graph/badge.svg)](https://codecov.io/gh/pattobrien/cli-gen)
-[![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations)
 [![pub package](https://img.shields.io/pub/v/cli_gen.svg)](https://pub.dartlang.org/packages/cli_gen)
+
+<!-- [![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations) -->
 
 <blockquote>
   🚧 This package is in early preview and is subject to API changes.
@@ -49,7 +50,7 @@ The ability to quickly whip up a command line script or application is a powerfu
 - [Motivation](#motivation)
 - [Quick Start](#quick-start)
 - [Features](#features)
-  - [Type-Safe Argument Parsing](#type-safe-argument-parsing)
+  - [Type Safe Argument Parsing](#type-safe-argument-parsing)
     - [Supported Types](#supported-types)
     - [Collection Types](#collection-types)
     - [Named and Positional Parameters](#named-and-positional-parameters)
@@ -58,7 +59,6 @@ The ability to quickly whip up a command line script or application is a powerfu
     - [Parameter Help Text](#parameter-help-text)
     - [Command Help Text](#command-help-text)
   - [Name Formatting](#name-formatting)
-  - [Proper Error Handling](#proper-error-handling)
 - [Under the Hood](#under-the-hood)
 - [Design Goals](#design-goals)
 - [Inspiration](#inspiration)
@@ -248,10 +248,6 @@ Future<void> myCustomCommand(
 }
 ```
 
-#### Enums and Allowed Values
-
-TODO
-
 ### Help Text Inference (--help)
 
 CLI applications typically provide a `--help` option that displays a list of available commands and their parameters, to help users understand how they can interact with the application.
@@ -328,6 +324,20 @@ Available commands:
 Run "git help" to see global options.
 ```
 
+#### Enums and Allowed Values
+
+Enums are special in that they define a set of allowable values, and `cli-gen` can use that information to generate a list of allowed values in the help text.
+
+```dart
+enum Values { a, b, c }
+```
+
+Using the above `Values` enum as a parameter to a `cliCommand` will generate the following help text:
+
+```bash
+--values (allowed: a, b, c)
+```
+
 ### Name Formatting
 
 `cli-gen` translates Dart class, method and parameter names to kebab-case, which is the convention for CLI commands and flags.
@@ -336,13 +346,9 @@ For example, a method named `stashChanges` will be translated to `stash-changes`
 
 To override the default behavior, simply provide a `name` to the respective annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and `@Option`).
 
-### Proper Error Handling
-
-TODO
-
 ## Design Goals
 
-TODO: write a little blurb about the goals (incl. what `cli-gen` is and what it is not).
+TODO: a little blurb about the project goals (incl. what `cli-gen` is and what it is not).
 
 ## Inspiration
 
