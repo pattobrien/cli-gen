@@ -43,10 +43,10 @@ class PushCommand extends Command {
     )
     ..addFlag(
       'include-untracked',
-      negatable: false,
       abbr: 'u',
-      defaultsTo: false,
       help: 'Whether to include untracked files.',
+      defaultsTo: false,
+      negatable: false,
     );
 
   @override
@@ -77,8 +77,8 @@ class ApplyCommand extends Command {
   ArgParser get argParser => ArgParser()
     ..addOption(
       'stash-ref',
-      mandatory: false,
       defaultsTo: '0',
+      mandatory: false,
     );
 
   @override

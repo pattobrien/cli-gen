@@ -7,7 +7,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
-import '../analysis/cli_runner_analyzer.dart';
+import '../analysis/commands/cli_runner_analyzer.dart';
 import '../code/command/runner_builder.dart';
 
 /// A [Generator] that generates `CommandRunner` classes.

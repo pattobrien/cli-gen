@@ -1,9 +1,9 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 
-import '../code/models/runner_model.dart';
+import '../../code/models/runner_model.dart';
+import '../utils/remove_doc_slashes.dart';
 import 'cli_command_analyzer.dart';
-import 'utils/remove_doc_slashes.dart';
 
 class CliRunnerAnalyzer {
   const CliRunnerAnalyzer();

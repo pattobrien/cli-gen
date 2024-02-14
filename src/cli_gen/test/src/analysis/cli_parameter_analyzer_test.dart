@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:checks/checks.dart';
-import 'package:cli_gen/src/analysis/cli_parameter_analyzer.dart';
+import 'package:cli_gen/src/analysis/parameters/cli_parameter_analyzer.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:test/test.dart';

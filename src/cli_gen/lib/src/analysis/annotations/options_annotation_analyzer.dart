@@ -5,8 +5,8 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
 import 'package:source_gen/source_gen.dart';
 
-import '../code/models/annotation_model.dart';
-import 'utils/reference_ext.dart';
+import '../../code/models/annotation_model.dart';
+import '../utils/reference_ext.dart';
 
 /// Converts an analyzer representation of a `cli_gen` annotation into a Model representation.
 class OptionsAnnotationAnalyzer {

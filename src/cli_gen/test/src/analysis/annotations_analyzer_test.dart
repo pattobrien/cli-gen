@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:checks/checks.dart';
-import 'package:cli_gen/src/analysis/options_annotation_analyzer.dart';
+import 'package:cli_gen/src/analysis/annotations/options_annotation_analyzer.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:test/test.dart';
 

@@ -1,10 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
 
-import '../code/models/command_method_model.dart';
-import 'cli_parameter_analyzer.dart';
-import 'options_annotation_analyzer.dart';
-import 'utils/reference_ext.dart';
-import 'utils/remove_doc_slashes.dart';
+import '../../code/models/command_method_model.dart';
+import '../annotations/options_annotation_analyzer.dart';
+import '../parameters/cli_parameter_analyzer.dart';
+import '../utils/reference_ext.dart';
+import '../utils/remove_doc_slashes.dart';
 
 /// Extacts information from any executable element and creates a [CommandMethodModel].
 ///
