@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart' hide Block;
 import 'package:cli_gen/src/code/arg_parser/arg_parser_instance_builder.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
+import 'package:code_builder/code_builder.dart' as code;
 import 'package:code_builder/code_builder.dart' hide Expression;
 
 import 'common.dart';
@@ -14,15 +15,18 @@ List<Expression> generateOptionArguments({
   TypeReference? type,
   bool isRequired = true,
   bool isNamed = false,
-  // String? defaultValue,
   String? computedDefaultValue,
+  bool isBoolean = false,
   String? docComment = 'The message to display.',
 }) {
   final cascadeExp = generateArgParserCascaseExp(
     paramName: paramName,
     type: type,
-    // defaultValueCode: defaultValue,
-    computedDefaultValue: computedDefaultValue,
+    computedDefaultValue: computedDefaultValue != null
+        ? isBoolean
+            ? literalBool(bool.parse(computedDefaultValue))
+            : literalString(computedDefaultValue)
+        : null,
     isRequired: isRequired,
     docComments: docComment,
     isNamed: isNamed,
@@ -44,7 +48,7 @@ CascadeExpression generateArgParserCascaseExp({
   bool isNamed = false,
   OptionType optionType = OptionType.single,
   List<String>? availableOptions,
-  String? computedDefaultValue,
+  code.Expression? computedDefaultValue,
   String? parser,
   bool isIterable = false,
 }) {

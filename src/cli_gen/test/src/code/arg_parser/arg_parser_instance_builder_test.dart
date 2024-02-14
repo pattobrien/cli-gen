@@ -145,6 +145,7 @@ void main() {
         final arguments = generateOptionArguments(
           type: TestTypes.bool,
           computedDefaultValue: 'true',
+          isBoolean: true,
         );
         check(arguments).any(
           (argument) => argument.isA<NamedExpression>()

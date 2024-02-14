@@ -11,7 +11,7 @@ class CommandParameterModel {
     required this.isRequired,
     required this.optionType,
     String? docComments,
-    String? computedDefaultValue,
+    Expression? computedDefaultValue,
     required String? defaultValueAsCode,
     this.annotations = const [],
     this.availableOptions,
@@ -22,7 +22,7 @@ class CommandParameterModel {
         _defaultValueAsCode = defaultValueAsCode;
 
   final Expression? _parser;
-  final String? _computedDefaultValue;
+  final Expression? _computedDefaultValue;
   final String? _defaultValueAsCode;
   final String? _docComments;
 
@@ -44,11 +44,7 @@ class CommandParameterModel {
 
   Expression? get computedDefault {
     return annotations.map((e) => e.defaultsTo).firstOrNull ??
-        (_computedDefaultValue != null
-            ? type.symbol == 'bool'
-                ? literalBool(bool.parse(_computedDefaultValue!))
-                : literalString(_computedDefaultValue!)
-            : null);
+        _computedDefaultValue;
   }
 
   String? get docComments {

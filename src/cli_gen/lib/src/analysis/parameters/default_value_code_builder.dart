@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Generates a string that can be used to represent the default value
@@ -17,7 +18,7 @@ class DefaultValueCodeBuilder {
 
   /// Returns the default value for the given [element] as a string or null
   /// if no default value is present.
-  String? getDefaultConstantValue(ParameterElement element) {
+  Expression? getDefaultConstantValue(ParameterElement element) {
     final hasDefaultValue = element.defaultValueCode != null;
     if (!hasDefaultValue) return null;
 
@@ -32,7 +33,20 @@ class DefaultValueCodeBuilder {
     // note: we need to supply the enumType, since `getSingleValueForObject`
     // doesn't have access to the typeProvider.
     final enumType = element.library!.typeProvider.enumElement!.thisType;
-    return getSingleValueForObject(constant, enumType);
+
+    if (thisType.isDartCoreBool) {
+      return literalBool(reader.boolValue);
+    }
+
+    if (thisType.isDartCoreList || thisType.isDartCoreSet) {
+      return literalList(
+        getMultiValuesForObject(constant, enumType),
+      );
+    }
+
+    return literalString(
+      getSingleValueForObject(constant, enumType),
+    );
   }
 
   String getSingleValueForObject(

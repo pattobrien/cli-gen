@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart' hide Block;
 import 'package:cli_gen/src/code/command/user_method_call_builder.dart';
 import 'package:cli_gen/src/code/models/command_method_model.dart';
 import 'package:cli_gen/src/code/models/command_parameter_model.dart';
+import 'package:code_builder/code_builder.dart' as code;
 import 'package:code_builder/code_builder.dart' hide Expression;
 
 import 'common.dart';
@@ -15,7 +16,7 @@ MethodInvocation generateUserMethodCallExp({
   String paramName = 'message',
   TypeReference? paramType,
   String? defaultValueCode,
-  String? computedDefaultValue,
+  code.Expression? computedDefaultValue,
   bool isRequired = true,
   bool isNamed = false,
   String? parser,

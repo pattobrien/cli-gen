@@ -54,9 +54,16 @@ class ArgParserInstanceExp {
     final boolRef = Identifiers.dart.bool;
     final type = param.type;
     final isFlag = type.symbol == boolRef.symbol && type.url == boolRef.url;
-    final methodName = isFlag ? 'addFlag' : 'addOption';
+    final isMultiOption = param.optionType == OptionType.multi;
+    final isSingleOption = !isFlag && !isMultiOption;
 
-    final isNegatable = false; // TODO: implement negatable
+    final methodName = isFlag
+        ? 'addFlag'
+        : isMultiOption
+            ? 'addMultiOption'
+            : 'addOption';
+
+    final isNegatable = true; // TODO: implement negatable
 
     return argParserInstance.cascade(methodName).call([
       literalString(param.cliArgumentName),
@@ -69,7 +76,7 @@ class ArgParserInstanceExp {
 
       if (isFlag) 'negatable': literalBool(isNegatable),
 
-      if (!isFlag) 'mandatory': literalBool(param.isRequired),
+      if (isSingleOption) 'mandatory': literalBool(param.isRequired),
       if (!isFlag && param.valueHelp != null) 'valueHelp': param.valueHelp!,
       // if (!isFlag) 'allowed': literalList([]),
     });

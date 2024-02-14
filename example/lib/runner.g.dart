@@ -24,8 +24,8 @@ class MergeCommand extends Command {
   final Function({
     required String branch,
     bool? commit,
-    List<int>? options,
-    List<int> message,
+    Set<int> message,
+    bool squash,
   }) userMethod;
 
   @override
@@ -42,16 +42,19 @@ class MergeCommand extends Command {
     )
     ..addFlag(
       'commit',
-      negatable: false,
+      negatable: true,
     )
-    ..addOption(
-      'options',
-      mandatory: false,
-    )
-    ..addOption(
+    ..addMultiOption(
       'message',
-      defaultsTo: '1, 2',
-      mandatory: false,
+      defaultsTo: [
+        '1',
+        '2',
+      ],
+    )
+    ..addFlag(
+      'squash',
+      defaultsTo: true,
+      negatable: true,
     );
 
   @override
@@ -60,12 +63,10 @@ class MergeCommand extends Command {
     return userMethod(
       branch: results['branch'],
       commit: results['commit'] != null ? results['commit'] : null,
-      options: results['options'] != null
-          ? List<String>.from(results['options']).map(int.parse).toList()
-          : null,
       message: results['message'] != null
-          ? List<String>.from(results['message']).map(int.parse).toList()
-          : const <int>[1, 2],
+          ? List<String>.from(results['message']).map(int.parse).toSet()
+          : const {1, 2},
+      squash: results['squash'] != null ? results['squash'] : true,
     );
   }
 }
