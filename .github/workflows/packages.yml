@@ -45,7 +45,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: pattobrien/cli-gen
-          directory: ./src/cli_gen/coverage/reports/
+          directory: ${{ matrix.package }}/coverage/
           verbose: true
 
   # dependency_bot:
