@@ -13,7 +13,7 @@ A package for building cli applications using code generation and macros.
 
 The ability to quickly whip up a CLI application is a powerful skill for a developer to have. Yet the boilerplate of `cli` Dart libraries like `package:args` leave a lot to desire in terms of quickly getting a script up and running.
 
-`cli-gen` aims to be a quality-of-life improvement for creating CLI apps, by providing the following benefits:
+`cli-gen` aims to be a quality-of-life improvement for building and maintaining CLI apps, by providing the following benefits:
 
 - type-safe arguments
 - `help` text generation from doc comments and Types

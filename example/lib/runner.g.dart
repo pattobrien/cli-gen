@@ -16,16 +16,6 @@ class _$GitRunner extends CommandRunner {
     addCommand(MergeCommand(upcastedType.merge));
     addCommand(upcastedType.stash);
   }
-
-  @override
-  Future run(Iterable<String> args) async {
-    try {
-      return super.run(args);
-    } on UsageException catch (e) {
-      print(e);
-      return 64;
-    }
-  }
 }
 
 class MergeCommand extends Command {

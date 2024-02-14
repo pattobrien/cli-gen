@@ -40,6 +40,12 @@ jobs:
       - name: Code coverage
         run: dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --report-on=lib
         working-directory: ${{ matrix.package }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: pattobrien/cli-gen
+          directory: ./src/cli_gen/coverage/reports/
 
   # dependency_bot:
   #   runs-on: ubuntu-latest
