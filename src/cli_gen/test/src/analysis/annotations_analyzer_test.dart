@@ -8,7 +8,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:test/test.dart';
 
 void main() async {
-  final exampleProjectPath = 'test/example_project/lib/example_project.dart';
+  final exampleProjectPath = 'test/example_usage/option_annotations.dart';
   final thisDir = Directory.current.path;
   final fullPath = '$thisDir/$exampleProjectPath';
   final collection = AnalysisContextCollection(includedPaths: [fullPath]);

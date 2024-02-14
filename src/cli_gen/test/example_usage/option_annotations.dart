@@ -8,6 +8,4 @@ void myFunction(
     parser: int.parse,
   )
   int numericValue,
-) {
-  throw UnimplementedError();
-}
+) {}
