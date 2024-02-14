@@ -42,10 +42,11 @@ jobs:
         working-directory: ${{ matrix.package }}
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
-        env:
+        with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: pattobrien/cli-gen
           directory: ./src/cli_gen/coverage/reports/
+          verbose: true
 
   # dependency_bot:
   #   runs-on: ubuntu-latest
