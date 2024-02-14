@@ -155,6 +155,8 @@ void main() {
             .equals('addFlag');
       });
 
+      /// NOTE: `bool` parameter types are the only case where the defaultsTo
+      /// is not a string value
       test('`defaultsTo` should be a boolean literal, not a string', () {
         final arguments = generateOptionArguments(
           type: TestTypes.bool,
@@ -162,7 +164,6 @@ void main() {
           defaultValue: 'true',
           computedDefaultValue: 'true',
         );
-        // note: this is the only case where the defaultsTo is not a string value
         check(arguments).any(
           (argument) => argument.isA<NamedExpression>()
             ..has((p0) => p0.name.label.name, 'name').equals('defaultsTo')

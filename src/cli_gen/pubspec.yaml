@@ -25,8 +25,6 @@ dependencies:
   source_gen: ^1.5.0
 
 dev_dependencies:
-  example_project:
-    path: test/example_project
   checks: ^0.3.0
   lints: ^3.0.0
   test: ^1.24.0

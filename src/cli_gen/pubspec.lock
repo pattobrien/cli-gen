@@ -128,13 +128,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.4"
-  example_project:
-    dependency: "direct dev"
-    description:
-      path: "test/example_project"
-      relative: true
-    source: path
-    version: "1.0.0"
   file:
     dependency: transitive
     description:

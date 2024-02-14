@@ -2,5 +2,3 @@
 dependency_overrides:
   cli_annotations:
     path: ../cli_annotations
-  example_project:
-    path: test/example_project
