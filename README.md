@@ -3,6 +3,7 @@
 [![Build Pipeline](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml/badge.svg)](https://github.com/pattobrien/cli-gen/actions/workflows/packages.yml)
 [![CodeCoverage](https://codecov.io/gh/pattobrien/cli-gen/branch/main/graph/badge.svg)](https://codecov.io/gh/pattobrien/cli-gen)
 [![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations)
+[![pub package](https://img.shields.io/pub/v/cli_gen.svg)](https://pub.dartlang.org/packages/cli_gen)
 
 <blockquote>
   🚧 This package is in early preview and is subject to API changes.
@@ -32,12 +33,12 @@ The ability to quickly whip up a command line script or application is a powerfu
 
 <!--  screenshots are located in docs/before_and_after/screenshots/** (before.png and after.png) -->
 
-[![Before](docs/before_and_after/screenshots/before.png)](docs/before_and_after/screenshots/before.png)
+[![Before](https://raw.githubusercontent.com/pattobrien/cli-gen/main/docs/before_and_after/screenshots/before.png)](https://raw.githubusercontent.com/pattobrien/cli-gen/main/docs/before_and_after/screenshots/before.png)
 
 </td>
 <td valign="top">
 
-[![After](docs/before_and_after/screenshots/after.png)](docs/before_and_after/screenshots/after.png)
+[![After](https://raw.githubusercontent.com/pattobrien/cli-gen/main/docs/before_and_after/screenshots/after.png)](https://raw.githubusercontent.com/pattobrien/cli-gen/main/docs/before_and_after/screenshots/after.png)
 
 </td>
 </tr>
