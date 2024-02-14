@@ -43,8 +43,6 @@ class PushCommand extends Command {
     )
     ..addFlag(
       'include-untracked',
-      abbr: 'u',
-      help: 'Whether to include untracked files.',
       defaultsTo: false,
     );
 

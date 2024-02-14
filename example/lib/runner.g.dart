@@ -25,9 +25,6 @@ class MergeCommand extends Command {
     required String branch,
     MergeStrategy strategy,
     bool? commit,
-    Duration? uri,
-    int? ff,
-    Set<int> someSet,
   }) userMethod;
 
   @override
@@ -55,29 +52,7 @@ class MergeCommand extends Command {
         'subtree',
       ],
     )
-    ..addFlag('commit')
-    ..addOption(
-      'uri',
-      hide: true,
-      mandatory: false,
-    )
-    ..addOption(
-      'ff',
-      mandatory: false,
-      allowed: [
-        '1',
-        '2',
-        '3',
-      ],
-    )
-    ..addMultiOption(
-      'some-set',
-      defaultsTo: [
-        '1',
-        '2',
-        '3',
-      ],
-    );
+    ..addFlag('commit');
 
   @override
   Future<void> run() {
@@ -88,12 +63,6 @@ class MergeCommand extends Command {
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
           : MergeStrategy.ort,
       commit: results['commit'] != null ? results['commit'] : null,
-      uri:
-          results['uri'] != null ? specialDurationParser(results['uri']) : null,
-      ff: results['ff'] != null ? int.parse(results['ff']) : null,
-      someSet: results['some-set'] != null
-          ? List<String>.from(results['some-set']).map(int.parse).toSet()
-          : const {1, 2, 3},
     );
   }
 }

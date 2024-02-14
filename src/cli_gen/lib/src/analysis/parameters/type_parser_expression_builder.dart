@@ -91,16 +91,17 @@ class TypeParserExpressionBuilder {
     // if the element is a extension type, get the extension type erasure
     // to get the underlying type, then get the corresponding parser
     // by calling `getParserForParameter` recursively.
-    final isExtensionType = paramType.extensionTypeErasure != paramType;
-    if (isExtensionType) {
-      // final erasure = type.extensionTypeErasure;
-      // return getParserForParameter(element, erasure);
-      throw InvalidGenerationSource(
-        'Extension types are not supported by `cli-gen` yet.',
-        element: element,
-        todo: 'Please use a supported type',
-      );
-    }
+    // final isExtensionType = paramType.extensionTypeErasure != paramType;
+    // if (isExtensionType) {
+    //   // example: if `FooExtensionType` has an actualType of `int`,
+    //   // then the parser would be `FooExtensionType.parse`.
+
+    //   // throw InvalidGenerationSource(
+    //   //   'Extension types are not supported by `cli-gen` yet.',
+    //   //   element: element,
+    //   //   todo: 'Please use a supported type',
+    //   // );
+    // }
 
     throw InvalidGenerationSource(
       '`${paramType.element!.name}` is not a supported type for arg parsing.',

@@ -1,5 +1,9 @@
 include: package:lints/recommended.yaml
 
+analyzer:
+  enable-experiment:
+    - inline-class
+
 linter:
   rules:
     prefer_relative_imports: true

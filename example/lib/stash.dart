@@ -13,7 +13,7 @@ class StashSubcommand extends _$StashSubcommand {
   @cliCommand
   Future<void> push(
     String message, {
-    @Option(help: 'Whether to include untracked files.', abbr: 'u')
+    /// Whether to include untracked files.
     bool includeUntracked = false,
   }) async {
     print('Stashing changes with message: $message');
