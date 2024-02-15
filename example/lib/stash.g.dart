@@ -9,7 +9,7 @@ part of 'stash.dart';
 class _$StashSubcommand<T extends dynamic> extends Command<dynamic> {
   _$StashSubcommand() {
     final upcastedType = (this as StashSubcommand);
-    addSubcommand(MyCustomCommand(upcastedType.myCustomCommand));
+    addSubcommand(PushCommand(upcastedType.push));
     addSubcommand(ApplyCommand(upcastedType.apply));
   }
 
@@ -20,19 +20,19 @@ class _$StashSubcommand<T extends dynamic> extends Command<dynamic> {
   String get description => 'Commands for managing a stack of stashed changes.';
 }
 
-class MyCustomCommand extends Command<void> {
-  MyCustomCommand(this.userMethod);
+class PushCommand extends Command<void> {
+  PushCommand(this.userMethod);
 
   final Function({
     required String name,
-    int? age,
+    int age,
     String defaultPath,
-    String? someDocumentedParameter,
-    int? customParameter,
+    String someDocumentedParameter,
+    int customParameter,
   }) userMethod;
 
   @override
-  String get name => 'my-custom-command';
+  String get name => 'push';
 
   @override
   String get description => 'Save your local modifications to a new stash.';
@@ -68,15 +68,13 @@ class MyCustomCommand extends Command<void> {
     final results = argResults!;
     return userMethod(
       name: results['name'],
-      age: results['age'] != null ? int.parse(results['age']) : null,
+      age: int.parse(results['age']),
       defaultPath:
           results['default-path'] != null ? results['default-path'] : '~/',
-      someDocumentedParameter: results['some-documented-parameter'] != null
-          ? results['some-documented-parameter']
-          : null,
+      someDocumentedParameter: results['some-documented-parameter'],
       customParameter: results['custom-parameter'] != null
           ? int.parse(results['custom-parameter'])
-          : null,
+          : '42',
     );
   }
 }

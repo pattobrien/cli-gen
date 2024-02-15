@@ -36,10 +36,12 @@ extension TypeAnnotationToRefExt on TypeAnnotation {
 extension TypeRefExt on Reference {
   TypeReference toTypeRef({
     List<Reference> typeArguments = const [],
+    bool? isNullable,
   }) {
     final typeRef = type as TypeReference;
     return typeRef.rebuild((b) {
       b.types.addAll(typeArguments);
+      b.isNullable = isNullable;
     });
   }
 }

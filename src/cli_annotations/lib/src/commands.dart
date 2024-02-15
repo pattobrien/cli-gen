@@ -74,10 +74,22 @@ class CliRunner {
   @experimental
   final List<Type> subCommands;
 
+  /// Whether to display stack traces when a command usage is incorrect.
+  ///
+  /// By default, package:args will print the stack trace of a [UsageException]
+  /// to the user, which is often not desirable since usage exceptions can be
+  /// considered normal behavior.
+  ///
+  /// By default, `cli-gen` will catch [UsageException] and print the message
+  /// to the user, without the stack trace. If you want to display the stack
+  /// trace, set this to `true`.
+  final bool displayStackTrace;
+
   const CliRunner({
     this.name,
     this.description,
     this.subCommands = const [],
+    this.displayStackTrace = false,
   });
 }
 

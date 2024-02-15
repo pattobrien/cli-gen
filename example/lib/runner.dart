@@ -12,7 +12,7 @@ class GitRunner extends _$GitRunner<void> {
 
   /// Join two or more development histories together.
   @cliCommand
-  Future<void> mergeFoo({
+  Future<void> merge({
     /// The name of the branch to be merged into the current branch.
     required String branch,
 

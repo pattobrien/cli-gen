@@ -14,9 +14,13 @@ class CommandMethodModel {
   }) : _docComments = docComments;
 
   final Reference methodRef;
+
   final String? _docComments;
+
   final List<CommandAnnotationModel> annotations;
+
   final List<CommandParameterModel> parameters;
+
   final TypeReference returnType;
 
   bool get isAsync => returnType.isAsync;

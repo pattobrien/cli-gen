@@ -13,22 +13,32 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
           'A command-line interface for version control.',
         ) {
     final upcastedType = (this as GitRunner);
-    addCommand(MergeFooCommand(upcastedType.mergeFoo));
+    addCommand(MergeCommand(upcastedType.merge));
     addCommand(upcastedType.stash);
+  }
+
+  @override
+  Future<void> runCommand(ArgResults topLevelResults) async {
+    try {
+      return await super.runCommand(topLevelResults);
+    } on UsageException catch (e) {
+      stdout.writeln('${e.message}\n');
+      stdout.writeln(e.usage);
+    }
   }
 }
 
-class MergeFooCommand extends Command<void> {
-  MergeFooCommand(this.userMethod);
+class MergeCommand extends Command<void> {
+  MergeCommand(this.userMethod);
 
   final Function({
     required String branch,
     MergeStrategy strategy,
-    bool? commit,
+    bool commit,
   }) userMethod;
 
   @override
-  String get name => 'merge-foo';
+  String get name => 'merge';
 
   @override
   String get description => 'Join two or more development histories together.';
@@ -62,7 +72,7 @@ class MergeFooCommand extends Command<void> {
       strategy: results['strategy'] != null
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
           : MergeStrategy.ort,
-      commit: results['commit'] != null ? results['commit'] : null,
+      commit: results['commit'],
     );
   }
 }

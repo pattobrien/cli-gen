@@ -6,11 +6,13 @@ class CommandAnnotationModel {
   final String? description;
   final String? category;
   final Reference type;
+  final bool displayStackTrace;
 
   const CommandAnnotationModel({
     required this.name,
     required this.description,
     required this.category,
     required this.type,
+    required this.displayStackTrace,
   });
 }

@@ -18,9 +18,14 @@ void main() async {
   arguments = ['merge', '--branch', 'main', '--commit'];
   await runner.run(arguments);
 
+  // print('\n----------------------------------------');
+  // print('Executing stash push...\n');
+  // arguments = ['stash', 'push', '--message', 'WIP'];
+  // await runner.run(arguments);
+
   print('\n----------------------------------------');
-  print('Executing stash push...\n');
-  arguments = ['stash', 'push', '--message', 'WIP'];
+  print('Executing a wrong command...\n');
+  arguments = ['wrong-command'];
   await runner.run(arguments);
 
   print('\n----------------------------------------');

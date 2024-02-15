@@ -1,3 +1,5 @@
+export 'dart:io' show stdout;
+
 export 'package:args/args.dart' show ArgParser, ArgParserException, ArgResults;
 export 'package:args/command_runner.dart'
     show CommandRunner, Command, UsageException;

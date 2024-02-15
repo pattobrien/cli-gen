@@ -65,6 +65,53 @@ class RunnerBuilder {
           builder.body = bodyBuilder.buildSubcommandConstructorBody(model);
         }),
       );
+
+      // modifies the return type as a nullable, then wraps it in a Future
+      final runReturnType = TypeReference((builder) {
+        builder.symbol = Identifiers.dart.future.symbol;
+        builder.url = Identifiers.dart.future.url;
+        final nestedType = (model.bound ?? Identifiers.dart.dynamic);
+        builder.types.add(
+          nestedType.toTypeRef(
+            isNullable: nestedType.symbol == 'void' ? null : true,
+          ),
+        );
+      });
+
+      if (model.annotations.every((e) => !e.displayStackTrace)) {
+        builder.methods.add(
+          generateRunMethod(runReturnType),
+        );
+      }
+    });
+  }
+
+  /// Generates the `runCommand` method for the CommandRunner class.
+  ///
+  /// This method overrides the default `runCommand` method to provide custom
+  /// error handling behavior.
+  Method generateRunMethod(
+    TypeReference returnType,
+  ) {
+    return Method((builder) {
+      builder.name = 'runCommand';
+      builder.returns = returnType;
+      builder.annotations.add(Identifiers.dart.override);
+      builder.requiredParameters.add(Parameter((builder) {
+        builder.name = 'topLevelResults';
+        builder.type = Identifiers.args.argResults.toTypeRef();
+      }));
+      builder.modifier = MethodModifier.async;
+      builder.body = Block((builder) {
+        builder.statements.add(Code('''
+          try {
+            return await super.runCommand(topLevelResults);
+          } on UsageException catch (e) {
+            stdout.writeln('\${e.message}\\n');
+            stdout.writeln(e.usage);
+          }
+        '''));
+      });
     });
   }
 }
