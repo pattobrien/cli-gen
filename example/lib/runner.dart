@@ -11,7 +11,7 @@ class GitRunner extends _$GitRunner {
   Command get stash => StashSubcommand();
 
   /// Join two or more development histories together.
-  @CliCommand()
+  @CliCommand(category: 'asdf')
   Future<void> mergeFoo({
     /// The name of the branch to be merged into the current branch.
     required String branch,

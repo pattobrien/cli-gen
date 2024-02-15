@@ -92,6 +92,17 @@ class CommandBuilder {
           builder.annotations.add(Identifiers.dart.override);
         }),
 
+        // -- Command category getter --
+        // `String get category => 'Git';`
+        if (model.category != null)
+          Method((builder) {
+            builder.name = 'category';
+            builder.returns = Identifiers.dart.string;
+            builder.body = literalString(model.category!).code;
+            builder.type = MethodType.getter;
+            builder.annotations.add(Identifiers.dart.override);
+          }),
+
         // -- Command ArgParser getter --
         Method((builder) {
           builder.name = 'argParser';

@@ -50,6 +50,8 @@ class CommandMethodModel {
   /// method will be used.
   String? get docComments =>
       annotations.map((e) => e.description).firstOrNull ?? _docComments;
+
+  String? get category => annotations.map((e) => e.category).firstOrNull;
 }
 
 extension IsAsync on Reference {

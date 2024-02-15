@@ -29,6 +29,8 @@ class SubcommandModel with GeneratedClassNames {
   String? get docComments =>
       annotations.map((e) => e.description).firstOrNull ?? _docComments;
 
+  String? get category => annotations.map((e) => e.category).firstOrNull;
+
   @override
   final String userClassName;
 }

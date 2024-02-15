@@ -32,6 +32,10 @@ class CliCommand {
 
   final String? description;
 
+  /// The command's category.
+  ///
+  /// Displayed in [parent]'s [CommandRunner.usage]. Commands with categories
+  /// will be grouped together, and displayed after commands without a category.
   final String? category;
 
   const CliCommand({

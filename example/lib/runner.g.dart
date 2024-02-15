@@ -33,6 +33,9 @@ class MergeFooCommand extends Command {
   String get description => 'Join two or more development histories together.';
 
   @override
+  String get category => 'asdf';
+
+  @override
   ArgParser get argParser => ArgParser()
     ..addOption(
       'branch',
