@@ -1,4 +1,5 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:code_builder/code_builder.dart';
 
 import '../../code/models/runner_model.dart';
 import '../annotations/command_annotation_analyzer.dart';
@@ -11,8 +12,9 @@ class CliRunnerAnalyzer {
 
   /// Extracts ClassElement info required to build the CommandRunner into a [RunnerModel].
   RunnerModel fromClassElement(
-    ClassElement element,
+    ClassDeclaration node,
   ) {
+    final element = node.declaredElement!;
     const commandMethodAnalyzer = CliCommandAnalyzer();
     const commandAnnotationAnalyzer = CommandAnnotationAnalyzer();
 
@@ -28,6 +30,13 @@ class CliRunnerAnalyzer {
           .toList(),
       docComments: removeDocSlashes(element.documentationComment),
       userClassName: element.name,
+      bound: getTypeBound(node),
     );
+  }
+
+  Reference? getTypeBound(ClassDeclaration node) {
+    final superclass = node.extendsClause?.superclass;
+    final bound = superclass?.typeArguments?.arguments.firstOrNull;
+    return bound?.toTypeRef();
   }
 }

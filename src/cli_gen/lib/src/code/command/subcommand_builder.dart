@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 
+import '../../analysis/utils/reference_ext.dart';
 import '../../types/identifiers.dart';
 import '../models/subcommand_model.dart';
 import 'command_builder.dart';
@@ -33,11 +34,16 @@ class SubcommandBuilder {
   Class buildSubcommandClass(SubcommandModel model) {
     return Class((builder) {
       builder.name = model.generatedClassName;
-      builder.extend = Identifiers.args.command;
-      // builder.extend = Identifiers.args.command.toTypeRef(
-      //   typeArguments: [refer('T')],
-      // );
-      // builder.types.add(refer('T'));
+      // builder.extend = Identifiers.args.command;
+      builder.extend = Identifiers.args.command.toTypeRef(
+        typeArguments: [
+          model.bound ?? Identifiers.dart.dynamic,
+        ],
+      );
+      builder.types.add(TypeReference((builder) {
+        builder.bound = Identifiers.dart.dynamic;
+        builder.symbol = 'T';
+      }));
 
       // -- class constructor --
       builder.constructors.add(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:cli_annotations/cli_annotations.dart';
@@ -16,16 +17,23 @@ class SubcommandGenerator extends GeneratorForAnnotation<CliSubcommand> {
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) {
+  ) async {
     if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
         'The `@CliSubcommand` annotation can only be used on classes.',
         element: element,
       );
     }
-
+    final resolver = buildStep.resolver;
+    final classNode = await resolver.astNodeFor(element, resolve: true);
+    if (classNode is! ClassDeclaration) {
+      throw InvalidGenerationSourceError(
+        'The `@CliSubcommand` annotation can only be used on classes.',
+        element: element,
+      );
+    }
     const subcommandAnalyzer = CliSubcommandAnalyzer();
-    final model = subcommandAnalyzer.fromClassElement(element);
+    final model = subcommandAnalyzer.fromClassElement(classNode);
 
     final library = Library((builder) {
       const subcommandBuilder = SubcommandBuilder();

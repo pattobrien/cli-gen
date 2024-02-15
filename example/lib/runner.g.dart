@@ -6,7 +6,7 @@ part of 'runner.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
-class _$GitRunner extends CommandRunner {
+class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
   _$GitRunner()
       : super(
           'git',
@@ -32,9 +32,6 @@ class MergeFooCommand extends Command<void> {
 
   @override
   String get description => 'Join two or more development histories together.';
-
-  @override
-  String get category => 'asdf';
 
   @override
   ArgParser get argParser => ArgParser()

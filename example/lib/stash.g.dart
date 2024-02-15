@@ -6,7 +6,7 @@ part of 'stash.dart';
 // SubcommandGenerator
 // **************************************************************************
 
-class _$StashSubcommand extends Command {
+class _$StashSubcommand<T extends dynamic> extends Command<dynamic> {
   _$StashSubcommand() {
     final upcastedType = (this as StashSubcommand);
     addSubcommand(MyCustomCommand(upcastedType.myCustomCommand));

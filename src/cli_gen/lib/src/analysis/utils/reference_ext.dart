@@ -20,7 +20,7 @@ extension TypeAnnotationToRefExt on TypeAnnotation {
       case NamedType():
         return TypeReference((builder) {
           builder.symbol = thisNode.name2.lexeme;
-          builder.url = thisNode.element!.librarySource!.uri.toString();
+          builder.url = thisNode.element?.librarySource?.uri.toString();
 
           final args = thisNode.typeArguments?.arguments ?? <TypeAnnotation>[];
           builder.types.addAll(args.map((e) => e.toTypeRef()));

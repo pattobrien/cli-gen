@@ -1,3 +1,8 @@
+## 0.1.0-dev.4
+
+- feat: Support for adding a generic type to `Command` and `CommandRunner`
+- feat: Override the generated command name, description, or category via any command annotation (`@cliCommand`, `@cliRunner`, `@cliSubcommand`)
+
 ## 0.1.0-dev.3
 
 - docs: Documented public annotations.

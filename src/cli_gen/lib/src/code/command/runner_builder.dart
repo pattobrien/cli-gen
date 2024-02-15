@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 
+import '../../analysis/utils/reference_ext.dart';
 import '../../types/identifiers.dart';
 import '../models/runner_model.dart';
 import 'command_builder.dart';
@@ -37,11 +38,16 @@ class RunnerBuilder {
   Class buildRunnerClass(RunnerModel model) {
     return Class((builder) {
       builder.name = model.generatedClassName;
-      builder.extend = Identifiers.args.commandRunner;
-      // builder.extend = Identifiers.args.commandRunner.toTypeRef(
-      //   typeArguments: [refer('T')],
-      // );
-      // builder.types.add(refer('T'));
+      builder.extend = Identifiers.args.commandRunner.toTypeRef(
+        typeArguments: [
+          model.bound ?? Identifiers.dart.dynamic,
+        ],
+      );
+      builder.types.add(TypeReference((builder) {
+        builder.bound = Identifiers.dart.dynamic;
+        builder.symbol = 'T';
+      }));
+
       builder.constructors.add(
         Constructor((builder) {
           // -- super initializer --

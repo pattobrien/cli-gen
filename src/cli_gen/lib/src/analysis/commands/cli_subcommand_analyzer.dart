@@ -1,8 +1,9 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:code_builder/code_builder.dart';
 
 import '../../code/models/subcommand_model.dart';
 import '../annotations/command_annotation_analyzer.dart';
+import '../utils/reference_ext.dart';
 import '../utils/remove_doc_slashes.dart';
 import 'cli_command_analyzer.dart';
 
@@ -10,8 +11,9 @@ class CliSubcommandAnalyzer {
   const CliSubcommandAnalyzer();
 
   SubcommandModel fromClassElement(
-    ClassElement element,
+    ClassDeclaration node,
   ) {
+    final element = node.declaredElement!;
     const commandMethodAnalyzer = CliCommandAnalyzer();
     const commandAnnotationAnalyzer = CommandAnnotationAnalyzer();
 
@@ -27,6 +29,13 @@ class CliSubcommandAnalyzer {
           .toList(),
       docComments: removeDocSlashes(element.documentationComment),
       userClassName: element.name,
+      bound: getTypeBound(node),
     );
+  }
+
+  Reference? getTypeBound(ClassDeclaration node) {
+    final superclass = node.extendsClause?.superclass;
+    final bound = superclass?.typeArguments?.arguments.firstOrNull;
+    return bound?.toTypeRef();
   }
 }

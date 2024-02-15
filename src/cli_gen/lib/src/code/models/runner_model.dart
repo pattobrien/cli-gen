@@ -7,5 +7,6 @@ class RunnerModel extends SubcommandModel {
     required super.docComments,
     required super.userClassName,
     required super.annotations,
+    required super.bound,
   });
 }

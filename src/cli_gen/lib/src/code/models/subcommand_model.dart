@@ -11,9 +11,26 @@ class SubcommandModel with GeneratedClassNames {
     required String? docComments,
     required this.userClassName,
     required this.annotations,
+    required this.bound,
   }) : _docComments = docComments;
 
   final List<CommandMethodModel> commandMethods;
+
+  /// The Command generic type bound.
+  ///
+  /// For example, if the user's Subcommand class extends the generated
+  /// class with type `foo`, then  bound will be that type.
+  ///
+  /// #### Example
+  /// ```dart
+  /// @cliSubcommand
+  /// class StashSubcommand extends _$StashSubcommand<void> {
+  ///  // ...
+  /// }
+  /// ```
+  ///
+  /// In the above case, `bound` will be `void`.
+  final Reference? bound;
 
   @override
   final List<CommandAnnotationModel> annotations;

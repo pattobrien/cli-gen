@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:cli_annotations/cli_annotations.dart';
@@ -17,15 +18,25 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) {
+  ) async {
     if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
         'The `@CliSubcommand` annotation can only be used on classes.',
         element: element,
       );
     }
-    // Creates a model from the annotated ClassElement.
-    final model = runnerAnalyzer.fromClassElement(element);
+
+    final resolver = buildStep.resolver;
+    final node = await resolver.astNodeFor(element, resolve: true);
+    if (node is! ClassDeclaration) {
+      throw InvalidGenerationSourceError(
+        'The `@CliRunner` annotation can only be used on classes.',
+        element: element,
+      );
+    }
+    // Creates a model from the annotated Class.
+
+    final model = runnerAnalyzer.fromClassElement(node);
 
     // Generates code from the model.
     final library = Library((builder) {
