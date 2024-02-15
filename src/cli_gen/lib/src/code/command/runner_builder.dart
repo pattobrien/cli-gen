@@ -38,7 +38,10 @@ class RunnerBuilder {
     return Class((builder) {
       builder.name = model.generatedClassName;
       builder.extend = Identifiers.args.commandRunner;
-
+      // builder.extend = Identifiers.args.commandRunner.toTypeRef(
+      //   typeArguments: [refer('T')],
+      // );
+      // builder.types.add(refer('T'));
       builder.constructors.add(
         Constructor((builder) {
           // -- super initializer --

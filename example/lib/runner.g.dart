@@ -14,10 +14,11 @@ class _$GitRunner extends CommandRunner {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeFooCommand(upcastedType.mergeFoo));
+    addCommand(upcastedType.stash);
   }
 }
 
-class MergeFooCommand extends Command {
+class MergeFooCommand extends Command<void> {
   MergeFooCommand(this.userMethod);
 
   final Function({

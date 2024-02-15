@@ -33,8 +33,9 @@ class CliCommandAnalyzer {
     return element.metadata.any(
       (annotation) {
         final annotationType = annotation.computeConstantValue()!.type!;
+        final mountTypes = ['SubcommandMount', 'CliMount'];
         // ignore: deprecated_member_use
-        return annotationType.name == 'SubcommandMount';
+        return mountTypes.contains(annotationType.name);
       },
     );
   }

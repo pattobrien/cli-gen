@@ -34,6 +34,10 @@ class SubcommandBuilder {
     return Class((builder) {
       builder.name = model.generatedClassName;
       builder.extend = Identifiers.args.command;
+      // builder.extend = Identifiers.args.command.toTypeRef(
+      //   typeArguments: [refer('T')],
+      // );
+      // builder.types.add(refer('T'));
 
       // -- class constructor --
       builder.constructors.add(

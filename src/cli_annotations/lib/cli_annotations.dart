@@ -8,7 +8,7 @@ export 'src/commands.dart'
         CliCommand,
         CliSubcommand,
         CliRunner,
-        CliSubcommandMount,
+        SubcommandMount,
         mount,
         cliMount,
         cliCommand,

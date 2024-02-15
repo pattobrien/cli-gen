@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 
+import '../../analysis/utils/reference_ext.dart';
 import '../../types/identifiers.dart';
 import '../arg_parser/arg_parser_instance_builder.dart';
 import '../models/command_method_model.dart';
@@ -16,7 +17,14 @@ class CommandBuilder {
   Class buildCommandClass(CommandMethodModel model) {
     return Class((builder) {
       builder.name = model.generatedCommandClassName;
-      builder.extend = Identifiers.args.command;
+      final nonAsyncReturnType = model.isAsync
+          ? model.returnType.types.singleOrNull
+          : model.returnType;
+      builder.extend = Identifiers.args.command.toTypeRef(
+        typeArguments: [
+          if (nonAsyncReturnType != null) nonAsyncReturnType,
+        ],
+      );
 
       // -- unnamed constructor --
       builder.constructors.add(

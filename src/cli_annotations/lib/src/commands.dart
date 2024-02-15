@@ -146,7 +146,7 @@ const cliMount = CliMount();
 const mount = cliMount;
 
 @Deprecated('Use CliMount instead')
-class CliSubcommandMount extends CliMount {
+class SubcommandMount extends CliMount {
   @Deprecated('Use CliMount() instead')
-  const CliSubcommandMount();
+  const SubcommandMount();
 }

@@ -20,7 +20,7 @@ class _$StashSubcommand extends Command {
   String get description => 'Commands for managing a stack of stashed changes.';
 }
 
-class MyCustomCommand extends Command {
+class MyCustomCommand extends Command<void> {
   MyCustomCommand(this.userMethod);
 
   final Function({
@@ -81,7 +81,7 @@ class MyCustomCommand extends Command {
   }
 }
 
-class ApplyCommand extends Command {
+class ApplyCommand extends Command<void> {
   ApplyCommand(this.userMethod);
 
   final Function({String stashRef}) userMethod;
