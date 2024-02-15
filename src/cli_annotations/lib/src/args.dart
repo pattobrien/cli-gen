@@ -1,3 +1,4 @@
+import 'package:args/args.dart';
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
 
@@ -15,7 +16,9 @@ const cliArgs = CliArgs();
 
 /// Defines an option that takes a value.
 ///
-/// This adds an [BaseOption] with the given properties to [options].
+/// {@template cliCommand}
+/// Each argument is added to the argument of the same name in the generated
+/// [ArgParser].
 ///
 /// The [abbr] argument is a single-character string that can be used as a
 /// shorthand for this option. For example, `abbr: "a"` will allow the user to
@@ -47,6 +50,7 @@ const cliArgs = CliArgs();
 ///
 /// * There is already an option with name [name].
 /// * There is already an option using abbreviation [abbr].
+/// {@endtemplate}
 @Target({TargetKind.field, TargetKind.parameter})
 sealed class BaseOption<T> {
   final String? abbr;
@@ -76,6 +80,9 @@ sealed class BaseOption<T> {
   });
 }
 
+/// Defines a non-boolean option that takes a single value.
+///
+/// {@macro cliCommand}
 @Target({TargetKind.field, TargetKind.parameter})
 class Option<T> extends BaseOption<T> {
   const Option({
@@ -93,6 +100,12 @@ class Option<T> extends BaseOption<T> {
   final T Function(String)? parser;
 }
 
+/// Defines a non-boolean option that can take multiple values.
+///
+/// Should be used on a parameter that has any Collection type, such as [List],
+/// [Set], or [Iterable].
+///
+/// {@macro cliCommand}
 @Target({TargetKind.field, TargetKind.parameter})
 class MultiOption<T> extends BaseOption<T> {
   const MultiOption({
@@ -111,6 +124,9 @@ class MultiOption<T> extends BaseOption<T> {
   final List<T> Function(List<String>)? parser;
 }
 
+/// Defines a boolean option that can be negated.
+///
+/// {@macro cliCommand}
 @Target({TargetKind.field, TargetKind.parameter})
 class Flag<T> extends BaseOption<T> {
   const Flag({

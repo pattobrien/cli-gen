@@ -19,6 +19,14 @@
       "args": ["build", "--delete-conflicting-outputs"]
     },
     {
+      "name": "workspace (build runner)",
+      "program": ".dart_tool/build/entrypoint/build.dart",
+      "request": "launch",
+      "type": "dart",
+      "vmAdditionalArgs": ["--observe", "--pause-isolates-on-exit"],
+      "args": ["build", "--delete-conflicting-outputs"]
+    },
+    {
       "name": "cli_annotations",
       "cwd": "src/cli_annotations",
       "request": "launch",

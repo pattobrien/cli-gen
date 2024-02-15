@@ -18,7 +18,7 @@ packages:
     source: hosted
     version: "6.4.1"
   args:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: args
       sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
@@ -116,14 +116,14 @@ packages:
   cli_annotations:
     dependency: "direct main"
     description:
-      path: "../src/cli_annotations"
+      path: "../../src/cli_annotations"
       relative: true
     source: path
     version: "0.1.0-dev.2"
   cli_gen:
     dependency: "direct dev"
     description:
-      path: "../src/cli_gen"
+      path: "../../src/cli_gen"
       relative: true
     source: path
     version: "0.1.0-dev.2"
@@ -544,4 +544,4 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.2.0 <4.0.0"
+  dart: ">=3.4.0-132.0.dev <4.0.0"

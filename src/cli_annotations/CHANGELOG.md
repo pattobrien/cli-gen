@@ -1,3 +1,10 @@
+## 0.1.0-dev.3
+
+- docs: Documented public annotations.
+- docs: Added an example.
+- refactor: Tightened the APIs exposed to the user.
+- api: Renamed mount to `cliMount` and deprecated `mount`.
+
 ## 0.1.0-dev.2
 
 - fix: Images in README.md should now be displayed correctly.

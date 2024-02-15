@@ -25,14 +25,12 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
       );
     }
     // Creates a model from the annotated ClassElement.
-    const subcommandAnalyzer = CliRunnerAnalyzer();
-    final model = subcommandAnalyzer.fromClassElement(element);
+    final model = runnerAnalyzer.fromClassElement(element);
 
     // Generates code from the model.
     final library = Library((builder) {
-      const subcommandBuilder = RunnerBuilder();
       builder.body.addAll(
-        subcommandBuilder.buildRunnerClassAndUserMethods(model),
+        runnerBuilder.buildRunnerClassAndUserMethods(model),
       );
     });
 
@@ -41,4 +39,8 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
 
     return formatter.format('${library.accept(emitter)}');
   }
+
+  static const runnerAnalyzer = CliRunnerAnalyzer();
+
+  static const runnerBuilder = RunnerBuilder();
 }

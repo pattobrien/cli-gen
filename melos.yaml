@@ -3,6 +3,7 @@ repository: https://github.com/pattobrien/cli-gen
 
 packages:
   - example
+  - docs/pub_example
   - src/cli_annotations
   - src/cli_gen
   - src/cli_gen/test/**
@@ -10,6 +11,10 @@ packages:
 scripts:
   analyze:
     exec: dart analyze .
+
+  # to publish to pub.dev:
+  # melos publish --no-dry-run
+
   publish:
     exec: dart publish --dry-run
   test:

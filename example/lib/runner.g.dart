@@ -14,7 +14,6 @@ class _$GitRunner extends CommandRunner {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeCommand(upcastedType.merge));
-    addCommand(upcastedType.stash);
   }
 }
 

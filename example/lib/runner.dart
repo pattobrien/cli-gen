@@ -7,7 +7,7 @@ part 'runner.g.dart';
 /// A command-line interface for version control.
 @cliRunner
 class GitRunner extends _$GitRunner {
-  @mount
+  @cliMount
   Command get stash => StashSubcommand();
 
   /// Join two or more development histories together.

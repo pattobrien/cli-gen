@@ -1,6 +1,17 @@
-export 'package:args/args.dart' hide Option, OptionType;
-export 'package:args/command_runner.dart';
+export 'package:args/args.dart' show ArgParser, ArgParserException, ArgResults;
+export 'package:args/command_runner.dart'
+    show CommandRunner, Command, UsageException;
 
-export 'src/args.dart' hide CliArgs, cliArgs;
-export 'src/commands.dart';
-export 'src/enum_utils.dart';
+export 'src/args.dart' show Option, MultiOption, BaseOption, Flag;
+export 'src/commands.dart'
+    show
+        CliCommand,
+        CliSubcommand,
+        CliRunner,
+        CliSubcommandMount,
+        mount,
+        cliMount,
+        cliCommand,
+        cliSubcommand,
+        cliRunner;
+export 'src/enum_utils.dart' show EnumParser;
