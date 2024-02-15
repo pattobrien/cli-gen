@@ -1,7 +1,7 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:recase/recase.dart';
 
-import 'annotation_model.dart';
+import 'option_annotation_model.dart';
 
 class CommandParameterModel {
   const CommandParameterModel({
@@ -70,7 +70,7 @@ class CommandParameterModel {
 
   final bool isRequired;
 
-  final List<AnnotationModel> annotations;
+  final List<OptionAnnotationModel> annotations;
 
   String? get abbr => annotations.map((e) => e.abbr).firstOrNull;
 

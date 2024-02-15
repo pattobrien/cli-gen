@@ -14,11 +14,21 @@ scripts:
 
   # to publish to pub.dev:
   # melos publish --no-dry-run
+  # melos publish --dry-run
 
   publish:
-    exec: dart publish --dry-run
+    exec: dart publish
+
   test:
     exec: dart test
+
+    packageFilters:
+      published: true
+  build:
+    run: dart run build_runner build -d
+
+  watch:
+    run: dart run build_runner watch -d
 
 ide:
   intellij:

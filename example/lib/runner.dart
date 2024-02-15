@@ -5,14 +5,14 @@ import 'stash.dart';
 part 'runner.g.dart';
 
 /// A command-line interface for version control.
-@cliRunner
+@CliRunner()
 class GitRunner extends _$GitRunner {
   @cliMount
   Command get stash => StashSubcommand();
 
   /// Join two or more development histories together.
-  @cliCommand
-  Future<void> merge({
+  @CliCommand()
+  Future<void> mergeFoo({
     /// The name of the branch to be merged into the current branch.
     required String branch,
 

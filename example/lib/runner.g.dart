@@ -13,12 +13,12 @@ class _$GitRunner extends CommandRunner {
           'A command-line interface for version control.',
         ) {
     final upcastedType = (this as GitRunner);
-    addCommand(MergeCommand(upcastedType.merge));
+    addCommand(MergeFooCommand(upcastedType.mergeFoo));
   }
 }
 
-class MergeCommand extends Command {
-  MergeCommand(this.userMethod);
+class MergeFooCommand extends Command {
+  MergeFooCommand(this.userMethod);
 
   final Function({
     required String branch,
@@ -27,7 +27,7 @@ class MergeCommand extends Command {
   }) userMethod;
 
   @override
-  String get name => 'merge';
+  String get name => 'merge-foo';
 
   @override
   String get description => 'Join two or more development histories together.';

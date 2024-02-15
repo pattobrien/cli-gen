@@ -1,5 +1,4 @@
 import 'package:code_builder/code_builder.dart';
-import 'package:recase/recase.dart';
 
 import '../../types/identifiers.dart';
 import '../arg_parser/arg_parser_instance_builder.dart';
@@ -76,7 +75,7 @@ class CommandBuilder {
         Method((builder) {
           builder.name = 'name';
           builder.returns = Identifiers.dart.string;
-          builder.body = literalString(model.methodRef.symbol!.paramCase).code;
+          builder.body = literalString(model.executableName).code;
           builder.type = MethodType.getter;
           builder.annotations.add(
             Identifiers.dart.override,
@@ -90,9 +89,7 @@ class CommandBuilder {
           builder.returns = Identifiers.dart.string;
           builder.body = literalString(model.docComments ?? '').code;
           builder.type = MethodType.getter;
-          builder.annotations.add(
-            Identifiers.dart.override,
-          );
+          builder.annotations.add(Identifiers.dart.override);
         }),
 
         // -- Command ArgParser getter --
@@ -103,9 +100,7 @@ class CommandBuilder {
           builder.body =
               argParserBuilder.buildArgParserInstance(model.parameters).code;
           builder.type = MethodType.getter;
-          builder.annotations.add(
-            Identifiers.dart.override,
-          );
+          builder.annotations.add(Identifiers.dart.override);
         }),
 
         // -- Command.run() overriden method --

@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 
 import '../../code/models/command_method_model.dart';
+import '../annotations/command_annotation_analyzer.dart';
 import '../annotations/options_annotation_analyzer.dart';
 import '../parameters/cli_parameter_analyzer.dart';
 import '../utils/reference_ext.dart';
@@ -46,7 +47,7 @@ class CliCommandAnalyzer {
   CommandMethodModel fromExecutableElement(
     ExecutableElement element,
   ) {
-    const annotationAnalyzer = OptionsAnnotationAnalyzer();
+    const annotationAnalyzer = CommandAnnotationAnalyzer();
     const parameterAnalyzer = CliParameterAnalyzer();
 
     return CommandMethodModel(
@@ -54,10 +55,7 @@ class CliCommandAnalyzer {
       returnType: element.returnType.toRef().toTypeRef(),
       parameters: parameterAnalyzer.fromExecutableElement(element),
       docComments: removeDocSlashes(element.documentationComment),
-      annotations: element.metadata
-          .where(annotationAnalyzer.isOptionsAnnotation)
-          .map(annotationAnalyzer.fromElementAnnotation)
-          .toList(),
+      annotations: annotationAnalyzer.annotationsForElement(element),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
 import 'package:source_gen/source_gen.dart';
 
-import '../../code/models/annotation_model.dart';
+import '../../code/models/option_annotation_model.dart';
 import '../parameters/default_value_code_builder.dart';
 import '../utils/reference_ext.dart';
 
@@ -13,7 +13,7 @@ import '../utils/reference_ext.dart';
 class OptionsAnnotationAnalyzer {
   const OptionsAnnotationAnalyzer();
 
-  Iterable<AnnotationModel> annotationsForElement(Element element) {
+  Iterable<OptionAnnotationModel> annotationsForElement(Element element) {
     return element.metadata
         .where(isOptionsAnnotation)
         .map(fromElementAnnotation);
@@ -32,7 +32,7 @@ class OptionsAnnotationAnalyzer {
     return isMatch;
   }
 
-  AnnotationModel fromElementAnnotation(ElementAnnotation annotation) {
+  OptionAnnotationModel fromElementAnnotation(ElementAnnotation annotation) {
     final constantObject = annotation.computeConstantValue();
     if (constantObject == null) {
       throw ArgumentError(
@@ -81,7 +81,7 @@ class OptionsAnnotationAnalyzer {
       constantReader,
     );
 
-    return AnnotationModel(
+    return OptionAnnotationModel(
       type: annotation.toRef().toTypeRef(),
       abbr: getAbbr(namedArgs['abbr']),
       help: getHelp(namedArgs['help']),

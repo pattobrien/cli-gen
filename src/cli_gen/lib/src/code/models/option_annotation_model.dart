@@ -1,6 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 
-class AnnotationModel {
+class OptionAnnotationModel {
   final TypeReference type;
 
   // final List<Object?> unNamedArgs;
@@ -28,7 +28,7 @@ class AnnotationModel {
   final bool? splitCommas;
   final Expression? parser;
 
-  const AnnotationModel({
+  const OptionAnnotationModel({
     required this.type,
     this.abbr,
     this.help,

@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
-import '../../code/models/annotation_model.dart';
 import '../../code/models/command_parameter_model.dart';
+import '../../code/models/option_annotation_model.dart';
 import '../annotations/options_annotation_analyzer.dart';
 import '../utils/reference_ext.dart';
 import '../utils/remove_doc_slashes.dart';
@@ -63,7 +63,7 @@ class CliParameterAnalyzer {
   }
 
   /// Returns a list of annotations for the given [element].
-  List<AnnotationModel> getAnnotations(ParameterElement element) {
+  List<OptionAnnotationModel> getAnnotations(ParameterElement element) {
     const annotationAnalyzer = OptionsAnnotationAnalyzer();
     return _getAnnotationsForParameter(element)
         .where(annotationAnalyzer.isOptionsAnnotation)
