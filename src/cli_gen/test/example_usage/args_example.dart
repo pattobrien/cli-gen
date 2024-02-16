@@ -68,18 +68,6 @@ void defaultValues({
   Set<int> setVal = const {1, 2, 3},
 }) {}
 
-// -- DOC COMMENTS --
-
-@CliCommand()
-class DocComments {
-  const DocComments({
-    required this.message,
-  });
-
-  /// The message to display.
-  final String message;
-}
-
 // -- MULTI-SELECT TESTS --
 
 @CliCommand()
