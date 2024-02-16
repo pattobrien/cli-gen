@@ -7,9 +7,7 @@ part of 'runner.dart';
 // **************************************************************************
 
 class _$BarCommand<T extends dynamic> extends Command<dynamic> {
-  _$BarCommand() {
-    final upcastedType = (this as BarCommand);
-  }
+  _$BarCommand();
 
   @override
   String get name => 'bar';
@@ -64,7 +62,6 @@ class FooCommand extends Command<void> {
 
   @override
   void run() {
-    final results = argResults!;
     return userMethod();
   }
 }

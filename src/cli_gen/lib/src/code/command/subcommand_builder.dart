@@ -48,12 +48,15 @@ class SubcommandBuilder {
       // -- class constructor --
       builder.constructors.add(
         Constructor((constructor) {
-          constructor.body = Block((block) {
-            final constructorBodyBuilder = SubcommandConstructorBodyBuilder();
-            block.statements.add(
-              constructorBodyBuilder.buildSubcommandConstructorBody(model),
-            );
-          });
+          if (model.commandMethods.isNotEmpty ||
+              model.mountedSubcommands.isNotEmpty) {
+            constructor.body = Block((block) {
+              final constructorBodyBuilder = SubcommandConstructorBodyBuilder();
+              block.statements.add(
+                constructorBodyBuilder.buildSubcommandConstructorBody(model),
+              );
+            });
+          }
         }),
       );
 

@@ -127,11 +127,11 @@ class CommandBuilder {
 
             builder.statements.addAll([
               // -- declare a `results` variable --
-              // if (model.parameters.isNotEmpty)
-              declareFinal('results')
-                  .assign(refer('argResults'))
-                  .nullChecked
-                  .statement,
+              if (model.parameters.isNotEmpty)
+                declareFinal('results')
+                    .assign(refer('argResults'))
+                    .nullChecked
+                    .statement,
 
               // -- call the user method --
               userMethodCallBuilder.buildInlineCallStatement(model),
