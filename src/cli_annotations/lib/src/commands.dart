@@ -26,7 +26,7 @@ import 'package:meta/meta_meta.dart';
 /// }
 /// ```
 /// {@endtemplate}
-@Target({TargetKind.method, TargetKind.function, TargetKind.classType})
+@Target({TargetKind.method, TargetKind.function})
 class CliCommand {
   final String? name;
 

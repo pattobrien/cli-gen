@@ -48,6 +48,11 @@ class RunnerBuilder {
         builder.symbol = 'T';
       }));
 
+      builder.docs.addAll([
+        if (model.docComments != null) '/// ${model.docComments}\n///',
+        _classDocComments,
+      ]);
+
       builder.constructors.add(
         Constructor((builder) {
           // -- super initializer --
@@ -60,9 +65,12 @@ class RunnerBuilder {
           );
 
           // -- the constructor body --
-          // adds nested commands and `@mount` subcommands to the CommandRunner
-          final bodyBuilder = SubcommandConstructorBodyBuilder();
-          builder.body = bodyBuilder.buildSubcommandConstructorBody(model);
+          if (model.commandMethods.isNotEmpty ||
+              model.mountedSubcommands.isNotEmpty) {
+            // adds nested commands and `@mount` subcommands to the CommandRunner
+            final bodyBuilder = SubcommandConstructorBodyBuilder();
+            builder.body = bodyBuilder.buildSubcommandConstructorBody(model);
+          }
         }),
       );
 
@@ -70,11 +78,15 @@ class RunnerBuilder {
       final runReturnType = TypeReference((builder) {
         builder.symbol = Identifiers.dart.future.symbol;
         builder.url = Identifiers.dart.future.url;
-        final nestedType = (model.bound ?? Identifiers.dart.dynamic);
+        final nestedType =
+            (model.bound ?? Identifiers.dart.dynamic).toTypeRef();
+        // `void?` and `dynamic?` are not valid, but any other type should be
+        // nullable (according to `args``CommandRunner.run` return type)
+        final isNullable =
+            nestedType.symbol != 'void' && nestedType.symbol != 'dynamic';
+
         builder.types.add(
-          nestedType.toTypeRef(
-            isNullable: nestedType.symbol == 'void' ? null : true,
-          ),
+          nestedType.toTypeRef(isNullable: isNullable),
         );
       });
 
@@ -115,3 +127,10 @@ class RunnerBuilder {
     });
   }
 }
+
+const _classDocComments = '''
+/// A class for invoking [Command]s based on raw command-line arguments.
+///
+/// The type argument `T` represents the type returned by [Command.run] and
+/// [CommandRunner.run]; it can be ommitted if you're not using the return
+/// values.''';

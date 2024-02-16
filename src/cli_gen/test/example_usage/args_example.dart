@@ -70,7 +70,8 @@ void defaultValues({
 
 // -- DOC COMMENTS --
 
-@CliCommand()
+// ignore: invalid_annotation_target
+@cliCommand
 class DocComments {
   const DocComments({
     required this.message,
@@ -79,7 +80,6 @@ class DocComments {
   /// The message to display.
   final String message;
 }
-
 // -- MULTI-SELECT TESTS --
 
 @CliCommand()

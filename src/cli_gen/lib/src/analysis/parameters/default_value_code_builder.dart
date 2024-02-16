@@ -131,7 +131,7 @@ class DefaultValueCodeBuilder {
     }
 
     throw InvalidGenerationSourceError(
-      'Invalid type for constant value: $thisType',
+      'Unknown type for constant value: $thisType',
     );
   }
 

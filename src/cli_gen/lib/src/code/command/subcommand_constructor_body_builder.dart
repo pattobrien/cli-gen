@@ -8,8 +8,9 @@ class SubcommandConstructorBodyBuilder {
   const SubcommandConstructorBodyBuilder();
 
   Block buildSubcommandConstructorBody(
-    SubcommandModel model,
-  ) {
+    SubcommandModel model, {
+    bool isRunner = true,
+  }) {
     final addCommandRef = switch (model) {
       RunnerModel() => Identifiers.args.addCommand,
       SubcommandModel() => Identifiers.args.addSubcommand,
@@ -39,7 +40,7 @@ class SubcommandConstructorBodyBuilder {
       // -- add `@mount` subcommands via `addCommand()` --
       block.statements.addAll(
         model.mountedSubcommands.map(
-          (e) => Identifiers.args.addCommand.call([
+          (e) => addCommandRef.call([
             refer('upcastedType').property(e.symbol!),
           ]).statement,
         ),

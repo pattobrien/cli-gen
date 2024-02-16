@@ -1,3 +1,7 @@
+## 0.1.0-dev.5
+
+- feat: Warning on `cliCommand` use on a class, rather than a method/function
+
 ## 0.1.0-dev.4
 
 - feat: Support for adding a generic type to `Command` and `CommandRunner`

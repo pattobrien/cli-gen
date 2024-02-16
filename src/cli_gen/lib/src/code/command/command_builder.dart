@@ -36,10 +36,12 @@ class CommandBuilder {
             }),
           );
 
-          const argParserBuilder = ArgParserInstanceExp();
-          builder.body = argParserBuilder
-              .buildArgParserCascadeFromRef(model.parameters)
-              .statement;
+          if (model.parameters.isNotEmpty) {
+            const argParserBuilder = ArgParserInstanceExp();
+            builder.body = argParserBuilder
+                .buildArgParserCascadeFromRef(model.parameters)
+                .statement;
+          }
         }),
       );
 
@@ -52,6 +54,7 @@ class CommandBuilder {
         builder.modifier = FieldModifier.final$;
 
         builder.type = FunctionType((builder) {
+          builder.returnType = model.returnType;
           final requiredPositionalParams =
               model.parameters.where((e) => !e.isNamed && e.isRequired);
           builder.requiredParameters.addAll(
@@ -127,10 +130,11 @@ class CommandBuilder {
 
             builder.statements.addAll([
               // -- declare a `results` variable --
-              declareFinal('results')
-                  .assign(refer('argResults'))
-                  .nullChecked
-                  .statement,
+              if (model.parameters.isNotEmpty)
+                declareFinal('results')
+                    .assign(refer('argResults'))
+                    .nullChecked
+                    .statement,
 
               // -- call the user method --
               userMethodCallBuilder.buildInlineCallStatement(model),
