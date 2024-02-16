@@ -31,7 +31,6 @@ class GitRunner extends _$GitRunner<void> {
     int? fooWithDefault,
 
     /// Perform the merge and commit the result.
-
     bool? commit,
   }) async {
     print('Merging branch $branch');

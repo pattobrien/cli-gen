@@ -91,6 +91,11 @@ class UserTypesCommand extends Command<void> {
         ],
       )
       ..addOption(
+        'email-value2',
+        defaultsTo: 'foo',
+        mandatory: false,
+      )
+      ..addOption(
         'const-var',
         defaultsTo: '42',
         mandatory: false,
@@ -99,14 +104,20 @@ class UserTypesCommand extends Command<void> {
         'custom-parser-option',
         defaultsTo: '0',
         mandatory: false,
+      )
+      ..addOption(
+        'product-id',
+        mandatory: false,
       );
   }
 
   final void Function(
     MyFooEnum, {
     MyFooEnum enumValue2,
+    Email emailValue2,
     int constVar,
     int customParserOption,
+    ProductId productId,
   }) userMethod;
 
   @override
@@ -123,12 +134,16 @@ class UserTypesCommand extends Command<void> {
       enumValue2: results['enum-value2'] != null
           ? EnumParser(MyFooEnum.values).parse(results['enum-value2'])
           : MyFooEnum.value1,
+      emailValue2: results['email-value2'] != null
+          ? Email.fromString(results['email-value2'])
+          : const Email('foo'),
       constVar: results['const-var'] != null
           ? int.parse(results['const-var'])
           : someConstant,
       customParserOption: results['custom-parser-option'] != null
           ? customParser(results['custom-parser-option'])
           : 0,
+      productId: ProductId.fromString(results['product-id']),
     );
   }
 }

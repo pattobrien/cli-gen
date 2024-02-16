@@ -13,13 +13,12 @@ class Types extends _$Types {
 
   @cliCommand
   void userTypes(
-    MyFooEnum enumValue,
-    // Email emailValue,
-    {
+    MyFooEnum enumValue, {
     MyFooEnum enumValue2 = MyFooEnum.value1,
-    // Email emailValue2 = const Email('foo'),
+    @Option(parser: Email.fromString) Email emailValue2 = const Email('foo'),
     int constVar = someConstant,
     @Option(parser: customParser) int customParserOption = 0,
+    @Option(parser: ProductId.fromString) ProductId? productId,
   }) {}
 }
 
@@ -29,4 +28,13 @@ const someConstant = 42;
 
 int customParser(String value) => int.parse(value);
 
-// ---
+extension type const Email(String value) {
+  factory Email.fromString(String value) => Email(value);
+}
+
+class ProductId {
+  final String value;
+  const ProductId(this.value);
+
+  factory ProductId.fromString(String value) => ProductId(value);
+}
