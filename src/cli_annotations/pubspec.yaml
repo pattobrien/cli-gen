@@ -1,6 +1,6 @@
 name: cli_annotations
 description: Annotations for generating CLI applications using `package:cli_gen`.
-version: 0.1.0-dev.3
+version: 0.1.0-dev.4
 homepage: https://github.com/pattobrien/cli-gen
 repository: https://github.com/pattobrien/cli-gen
 issue_tracker: https://github.com/pattobrien/cli-gen/issues
