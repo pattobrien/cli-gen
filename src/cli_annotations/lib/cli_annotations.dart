@@ -10,7 +10,9 @@ export 'src/commands.dart'
         CliCommand,
         CliSubcommand,
         CliRunner,
+        // ignore: deprecated_member_use_from_same_package
         SubcommandMount,
+        // ignore: deprecated_member_use_from_same_package
         mount,
         cliMount,
         cliCommand,
