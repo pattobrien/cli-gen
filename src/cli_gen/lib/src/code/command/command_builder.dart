@@ -36,10 +36,12 @@ class CommandBuilder {
             }),
           );
 
-          const argParserBuilder = ArgParserInstanceExp();
-          builder.body = argParserBuilder
-              .buildArgParserCascadeFromRef(model.parameters)
-              .statement;
+          if (model.parameters.isNotEmpty) {
+            const argParserBuilder = ArgParserInstanceExp();
+            builder.body = argParserBuilder
+                .buildArgParserCascadeFromRef(model.parameters)
+                .statement;
+          }
         }),
       );
 

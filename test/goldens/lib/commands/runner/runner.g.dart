@@ -48,9 +48,7 @@ class _$FooBarRunner<T extends dynamic> extends CommandRunner<dynamic> {
 }
 
 class FooCommand extends Command<void> {
-  FooCommand(this.userMethod) {
-    argParser;
-  }
+  FooCommand(this.userMethod);
 
   final void Function() userMethod;
 

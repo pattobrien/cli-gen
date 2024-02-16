@@ -21,9 +21,7 @@ class _$FooBarSubcommand<T extends dynamic> extends Command<int> {
 }
 
 class FooCommand extends Command<int> {
-  FooCommand(this.userMethod) {
-    argParser;
-  }
+  FooCommand(this.userMethod);
 
   final int Function() userMethod;
 
@@ -40,9 +38,7 @@ class FooCommand extends Command<int> {
 }
 
 class BarCommand extends Command<int> {
-  BarCommand(this.userMethod) {
-    argParser;
-  }
+  BarCommand(this.userMethod);
 
   final int Function() userMethod;
 
