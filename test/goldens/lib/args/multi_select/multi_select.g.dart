@@ -16,7 +16,11 @@ class _$MultiSelect<T extends dynamic> extends CommandRunner<dynamic> {
       : super(
           'multi-select',
           '',
-        );
+        ) {
+    final upcastedType = (this as MultiSelect);
+    addCommand(MultiValuesCommand(upcastedType.multiValues));
+    addCommand(SingleValuesCommand(upcastedType.singleValues));
+  }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {

@@ -62,7 +62,7 @@ class RunnerBuilder {
           );
 
           // -- the constructor body --
-          if (model.commandMethods.isNotEmpty &&
+          if (model.commandMethods.isNotEmpty ||
               model.mountedSubcommands.isNotEmpty) {
             // adds nested commands and `@mount` subcommands to the CommandRunner
             final bodyBuilder = SubcommandConstructorBodyBuilder();

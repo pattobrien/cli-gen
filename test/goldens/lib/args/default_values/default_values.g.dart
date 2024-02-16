@@ -16,7 +16,13 @@ class _$DefaultValues<T extends dynamic> extends CommandRunner<dynamic> {
       : super(
           'default-values',
           '',
-        );
+        ) {
+    final upcastedType = (this as DefaultValues);
+    addCommand(DefaultValuesCommand(upcastedType.defaultValues));
+    addCommand(
+        DefaultIterableValuesCommand(upcastedType.defaultIterableValues));
+    addCommand(AnnotatedParamsCommand(upcastedType.annotatedParams));
+  }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {

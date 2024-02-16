@@ -12,7 +12,11 @@ class _$Types<T extends dynamic> extends CommandRunner<dynamic> {
       : super(
           'types',
           '',
-        );
+        ) {
+    final upcastedType = (this as Types);
+    addCommand(PrimativeTypesCommand(upcastedType.primativeTypes));
+    addCommand(UserTypesCommand(upcastedType.userTypes));
+  }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {

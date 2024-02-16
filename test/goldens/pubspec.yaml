@@ -1,17 +1,21 @@
 name: goldens
 version: 1.0.0
+publish_to: none
 
 environment:
   sdk: ^3.3.0
 
 dependencies:
-  cli_annotations: ^0.1.0-dev.4
+  # cli_annotations: ^0.1.0-dev.4
+  cli_annotations:
+    path: ../../src/cli_annotations
   test: ^1.25.2
 
 dev_dependencies:
   build: ^2.4.1
   build_runner: ^2.4.8
   build_test: ^2.2.2
-  cli_gen: ^0.1.0-dev.4
+  cli_gen:
+    path: ../../src/cli_gen
   lints: ^3.0.0
   path: ^1.9.0

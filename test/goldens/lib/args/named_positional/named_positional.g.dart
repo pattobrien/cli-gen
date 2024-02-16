@@ -16,7 +16,11 @@ class _$NamedPositional<T extends dynamic> extends CommandRunner<dynamic> {
       : super(
           'named-positional',
           '',
-        );
+        ) {
+    final upcastedType = (this as NamedPositional);
+    addCommand(PositionalCommand(upcastedType.positional));
+    addCommand(NamedCommand(upcastedType.named));
+  }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {

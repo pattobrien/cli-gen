@@ -127,6 +127,7 @@ class CommandBuilder {
 
             builder.statements.addAll([
               // -- declare a `results` variable --
+              // if (model.parameters.isNotEmpty)
               declareFinal('results')
                   .assign(refer('argResults'))
                   .nullChecked
