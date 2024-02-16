@@ -12,26 +12,10 @@ class StashSubcommand extends _$StashSubcommand {
   /// Save your local modifications to a new stash.
   @cliCommand
   Future<void> push({
-    // Required parameters will be shown to the user as `mandatory`
-    required String name,
-
-    // Optional and/or nullable parameters are not `mandatory`
-    int? age,
-
-    // Default values are also shown in the help text
-    String defaultPath = '~/',
-
-    /// Use doc comments (i.e. 3 slashes) to display a description of the parameter
-    String? someDocumentedParameter,
-
-    // You can override any generated values using `@Option`
-    @Option(
-      help: 'A custom help message for the parameter',
-      defaultsTo: 42,
-    )
-    int? customParameter,
+    @Option(help: 'Include untracked files in the stash.')
+    bool includeUntracked = false,
+    String? message,
   }) async {
-    Type;
     // print('Stashing changes with message: $message');
     // await Future.delayed(const Duration(seconds: 1));
   }
@@ -39,7 +23,7 @@ class StashSubcommand extends _$StashSubcommand {
   /// Apply the stash at the given [stashRef] to the working directory.
   @cliCommand
   Future<void> apply({
-    String stashRef = '0',
+    @Option(help: 'The stash to apply') String stashRef = '0',
   }) async {
     print('Applying stash $stashRef');
     await Future.delayed(const Duration(seconds: 1));

@@ -34,9 +34,10 @@ class DefaultValueCodeBuilder {
   }
 
   Expression? getDefaultConstantValue2(
-    ConstantReader reader,
+    ConstantReader? reader,
     InterfaceType enumType,
   ) {
+    if (reader == null) return null;
     final object = reader.objectValue;
     final thisType = reader.objectValue.type!;
 

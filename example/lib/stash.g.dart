@@ -21,14 +21,22 @@ class _$StashSubcommand<T extends dynamic> extends Command<dynamic> {
 }
 
 class PushCommand extends Command<void> {
-  PushCommand(this.userMethod);
+  PushCommand(this.userMethod) {
+    argParser
+      ..addFlag(
+        'include-untracked',
+        help: 'Include untracked files in the stash.',
+        defaultsTo: false,
+      )
+      ..addOption(
+        'message',
+        mandatory: false,
+      );
+  }
 
   final Function({
-    required String name,
-    int age,
-    String defaultPath,
-    String someDocumentedParameter,
-    int customParameter,
+    bool includeUntracked,
+    String message,
   }) userMethod;
 
   @override
@@ -38,49 +46,26 @@ class PushCommand extends Command<void> {
   String get description => 'Save your local modifications to a new stash.';
 
   @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'name',
-      mandatory: true,
-    )
-    ..addOption(
-      'age',
-      mandatory: false,
-    )
-    ..addOption(
-      'default-path',
-      defaultsTo: '~/',
-      mandatory: false,
-    )
-    ..addOption(
-      'some-documented-parameter',
-      mandatory: false,
-    )
-    ..addOption(
-      'custom-parameter',
-      help: 'A custom help message for the parameter',
-      defaultsTo: '42',
-      mandatory: false,
-    );
-
-  @override
   Future<void> run() {
     final results = argResults!;
     return userMethod(
-      name: results['name'],
-      age: int.parse(results['age']),
-      defaultPath:
-          results['default-path'] != null ? results['default-path'] : '~/',
-      someDocumentedParameter: results['some-documented-parameter'],
-      customParameter: results['custom-parameter'] != null
-          ? int.parse(results['custom-parameter'])
-          : 42,
+      includeUntracked: results['include-untracked'] != null
+          ? results['include-untracked']
+          : false,
+      message: results['message'],
     );
   }
 }
 
 class ApplyCommand extends Command<void> {
-  ApplyCommand(this.userMethod);
+  ApplyCommand(this.userMethod) {
+    argParser.addOption(
+      'stash-ref',
+      help: 'The stash to apply',
+      defaultsTo: '0',
+      mandatory: false,
+    );
+  }
 
   final Function({String stashRef}) userMethod;
 
@@ -90,14 +75,6 @@ class ApplyCommand extends Command<void> {
   @override
   String get description =>
       'Apply the stash at the given [stashRef] to the working directory.';
-
-  @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'stash-ref',
-      defaultsTo: '0',
-      mandatory: false,
-    );
 
   @override
   Future<void> run() {

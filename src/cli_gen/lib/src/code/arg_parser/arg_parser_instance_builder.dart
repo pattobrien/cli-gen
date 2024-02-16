@@ -33,6 +33,18 @@ class ArgParserInstanceExp {
     return argParserInstance;
   }
 
+  Expression buildArgParserCascadeFromRef(
+    List<CommandParameterModel> parameters,
+  ) {
+    Expression argParserInstance = refer('argParser');
+
+    for (final parameter in parameters) {
+      argParserInstance = generateArgOption(argParserInstance, parameter);
+    }
+
+    return argParserInstance;
+  }
+
   /// Generates a single `addOption` or `addFlag` method call on the given
   /// [argParserInstance].
   ///

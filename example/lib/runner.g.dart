@@ -29,7 +29,34 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
 }
 
 class MergeCommand extends Command<void> {
-  MergeCommand(this.userMethod);
+  MergeCommand(this.userMethod) {
+    argParser
+      ..addOption(
+        'branch',
+        mandatory: true,
+      )
+      ..addOption(
+        'strategy',
+        help: 'The merge strategy to use',
+        defaultsTo: 'recursive',
+        mandatory: false,
+        allowed: [
+          'ort',
+          'recursive',
+          'resolve',
+          'octopus',
+          'ours',
+          'subtree',
+        ],
+      )
+      ..addOption(
+        'foo-with-default',
+        help: 'Perform the merge and commit the result.',
+        defaultsTo: '42',
+        mandatory: false,
+      )
+      ..addFlag('commit');
+  }
 
   final Function({
     required String branch,
@@ -43,34 +70,6 @@ class MergeCommand extends Command<void> {
 
   @override
   String get description => 'Join two or more development histories together.';
-
-  @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'branch',
-      mandatory: true,
-    )
-    ..addOption(
-      'strategy',
-      help: 'The merge strategy to use',
-      defaultsTo: 'recursive',
-      mandatory: false,
-      allowed: [
-        'ort',
-        'recursive',
-        'resolve',
-        'octopus',
-        'ours',
-        'subtree',
-      ],
-    )
-    ..addOption(
-      'foo-with-default',
-      help: 'Perform the merge and commit the result.',
-      defaultsTo: '42',
-      mandatory: false,
-    )
-    ..addFlag('commit');
 
   @override
   Future<void> run() {

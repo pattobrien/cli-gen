@@ -35,6 +35,11 @@ class CommandBuilder {
               builder.toThis = true;
             }),
           );
+
+          const argParserBuilder = ArgParserInstanceExp();
+          builder.body = argParserBuilder
+              .buildArgParserCascadeFromRef(model.parameters)
+              .statement;
         }),
       );
 
@@ -110,17 +115,6 @@ class CommandBuilder {
             builder.type = MethodType.getter;
             builder.annotations.add(Identifiers.dart.override);
           }),
-
-        // -- Command ArgParser getter --
-        Method((builder) {
-          builder.name = 'argParser';
-          builder.returns = Identifiers.args.argParser;
-          const argParserBuilder = ArgParserInstanceExp();
-          builder.body =
-              argParserBuilder.buildArgParserInstance(model.parameters).code;
-          builder.type = MethodType.getter;
-          builder.annotations.add(Identifiers.dart.override);
-        }),
 
         // -- Command.run() overriden method --
         Method((builder) {

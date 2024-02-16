@@ -56,10 +56,10 @@ class OptionsAnnotationAnalyzer {
     final defaultValueBuilder = DefaultValueCodeBuilder();
     final enumType = annotation.library!.typeProvider.enumElement!.thisType;
     final defaultValue = defaultValueBuilder.getDefaultConstantValue2(
-      constantReader.read('defaultsTo'),
+      constantReader.peek('defaultsTo'),
       enumType,
     );
-    final object = constantReader.read('defaultsTo').objectValue;
+    final object = constantReader.peek('defaultsTo')?.objectValue;
 
     return OptionAnnotationModel(
       type: annotation.toRef().toTypeRef(),
@@ -72,7 +72,8 @@ class OptionsAnnotationAnalyzer {
 
       // -- generic type args --
       parser: parserRef,
-      defaultAsSourceCode: recreateValueExpression(object),
+      defaultAsSourceCode:
+          object != null ? recreateValueExpression(object) : null,
       stringifiedDefaultValue: defaultValue,
       allowed: readAllowedArg(annotation),
       allowedHelp: readAllowedHelpArg(annotation),
