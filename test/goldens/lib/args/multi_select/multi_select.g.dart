@@ -48,7 +48,7 @@ class MultiValuesCommand extends Command<void> {
       ..addMultiOption('multi-enum');
   }
 
-  final Function({
+  final void Function({
     required List<String> multiString,
     Set<int> multiInt,
     Iterable<MyFooEnum> multiEnum,
@@ -83,7 +83,7 @@ class SingleValuesCommand extends Command<void> {
     );
   }
 
-  final Function({int multiInt}) userMethod;
+  final void Function({int multiInt}) userMethod;
 
   @override
   String get name => 'single-values';

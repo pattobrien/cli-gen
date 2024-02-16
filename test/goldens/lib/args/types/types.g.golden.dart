@@ -43,7 +43,7 @@ class PrimativeTypesCommand extends Command<void> {
       ..addFlag('bool-value');
   }
 
-  final Function(
+  final void Function(
     String,
     int,
     bool,
@@ -98,7 +98,7 @@ class UserTypesCommand extends Command<void> {
       );
   }
 
-  final Function(
+  final void Function(
     MyFooEnum, {
     MyFooEnum enumValue2,
     int constVar,

@@ -34,7 +34,7 @@ class PushCommand extends Command<void> {
       );
   }
 
-  final Function({
+  final Future<void> Function({
     bool includeUntracked,
     String message,
   }) userMethod;
@@ -67,7 +67,7 @@ class ApplyCommand extends Command<void> {
     );
   }
 
-  final Function({String stashRef}) userMethod;
+  final Future<void> Function({String stashRef}) userMethod;
 
   @override
   String get name => 'apply';

@@ -19,9 +19,9 @@ class SubcommandBuilder {
     const commandBuilder = CommandBuilder();
     final subcommandClass = buildSubcommandClass(model);
 
-    final subcommands = model.commandMethods.map((e) {
-      return commandBuilder.buildCommandClass(e);
-    });
+    final subcommands = model.commandMethods.map(
+      commandBuilder.buildCommandClass,
+    );
 
     return [subcommandClass, ...subcommands];
   }

@@ -68,7 +68,7 @@ class DefaultValuesCommand extends Command<void> {
       );
   }
 
-  final Function({
+  final void Function({
     String strVal,
     int intVal,
     bool boolVal,
@@ -126,7 +126,7 @@ class DefaultIterableValuesCommand extends Command<void> {
       );
   }
 
-  final Function({
+  final void Function({
     List<String> listVal,
     Set<int> setVal,
     Set<MyFooEnum> multiEnumVal,
@@ -171,7 +171,7 @@ class AnnotatedParamsCommand extends Command<void> {
       );
   }
 
-  final Function({
+  final void Function({
     int numericValue,
     bool flagVal,
   }) userMethod;

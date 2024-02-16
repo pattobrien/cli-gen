@@ -52,6 +52,7 @@ class CommandBuilder {
         builder.modifier = FieldModifier.final$;
 
         builder.type = FunctionType((builder) {
+          builder.returnType = model.returnType;
           final requiredPositionalParams =
               model.parameters.where((e) => !e.isNamed && e.isRequired);
           builder.requiredParameters.addAll(

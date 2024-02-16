@@ -63,7 +63,7 @@ class MergeCommand extends Command<void> {
       ..addFlag('commit');
   }
 
-  final Function({
+  final Future<void> Function({
     required String branch,
     MergeStrategy strategy,
     int fooWithDefault,

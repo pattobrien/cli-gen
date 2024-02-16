@@ -52,7 +52,7 @@ class FooCommand extends Command<void> {
     argParser;
   }
 
-  final Function() userMethod;
+  final void Function() userMethod;
 
   @override
   String get name => 'foo';

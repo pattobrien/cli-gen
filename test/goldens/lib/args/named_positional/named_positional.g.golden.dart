@@ -47,7 +47,7 @@ class PositionalCommand extends Command<void> {
       );
   }
 
-  final Function(
+  final void Function(
     String, [
     String,
     String,
@@ -88,7 +88,7 @@ class NamedCommand extends Command<void> {
       );
   }
 
-  final Function({
+  final void Function({
     required String reqValue,
     String optValue,
     String defValue,
