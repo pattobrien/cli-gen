@@ -87,13 +87,12 @@ dependencies:
   cli_annotations: ^0.1.0-dev.1
 
 dev_dependencies:
- build_runner: ^2.4.8
+  build_runner: ^2.4.8
   cli_gen: ^0.1.0-dev.1
 
 # define an executable name (optional)
 executables:
-  dart_git:
-    path: main # file name of `main()` in bin/ directory
+  dart_git: main
 ```
 
 You can optionally define an executable name and activate it using [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).

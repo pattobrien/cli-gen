@@ -6,6 +6,11 @@ part of 'runner.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
+/// A class for invoking [Command]s based on raw command-line arguments.
+///
+/// The type argument `T` represents the type returned by [Command.run] and
+/// [CommandRunner.run]; it can be ommitted if you're not using the return
+/// values.
 class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
   _$GitRunner()
       : super(
