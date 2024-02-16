@@ -4,6 +4,8 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
 
+import '../../types/identifiers.dart';
+
 extension IdentifierToRefExt on Identifier {
   Reference toRef() {
     return refer(
@@ -85,32 +87,48 @@ extension MethodElementToRefExt on MethodElement {
   }
 }
 
-extension DartTypeExt on DartType {
+extension FieldElementToRefExt on FieldElement {
   Reference toRef() {
+    return refer(
+      name,
+      library.source.uri.toString(),
+    );
+  }
+}
+
+extension VariableElementToRefExt on VariableElement {
+  Reference toRef() {
+    return refer(
+      name,
+      library?.source.uri.toString(),
+    );
+  }
+}
+
+extension DartTypeExt on DartType {
+  TypeReference toTypeRef() {
     if (this is InterfaceType) {
-      final ref = (this as InterfaceType).toRef();
-      final isNull = nullabilitySuffix == NullabilitySuffix.question;
-      return ref.rebuild((b) => b.isNullable = isNull);
+      final thisType = this as InterfaceType;
+      final element = thisType.element;
+      return TypeReference((builder) {
+        builder.symbol = element.name;
+        builder.url = element.librarySource.uri.toString();
+        builder.isNullable = nullabilitySuffix == NullabilitySuffix.question;
+        builder.types.addAll(
+          thisType.typeArguments.map((e) => e.toTypeRef()),
+        );
+      });
     }
     if (this is VoidType) {
-      return refer('void');
+      return Identifiers.dart.void_.toTypeRef();
+    }
+    if (this is DynamicType) {
+      return Identifiers.dart.dynamic.toTypeRef();
     }
 
     throw UnimplementedError(
       'Only InterfaceType is supported for DartType.toRef() method.',
     );
-  }
-}
-
-extension InterfaceTypeExt on InterfaceType {
-  TypeReference toRef() {
-    return TypeReference((builder) {
-      builder.symbol = element.name;
-      builder.url = element.librarySource.uri.toString();
-      builder.types.addAll(
-        typeArguments.map((e) => e.toRef()),
-      );
-    });
   }
 }
 

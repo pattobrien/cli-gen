@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart' hide FunctionType;
@@ -47,39 +48,18 @@ class OptionsAnnotationAnalyzer {
           ),
         );
 
-    // final parserReader = namedArgs['parser']?.objectValue.type as FunctionType?;
-    // Expression? parserRef;
-    // if (parserReader != null) {
-    //   final parserName = parserReader.getDisplayString(withNullability: false);
-    //   final x = constantReader.revive().namedArguments['parser'];
-
-    //   final parserSource = x!.toFunctionValue();
-    //   final parserExecutableName = switch (parserSource) {
-    //     MethodElement(:final name, :final enclosingElement) =>
-    //       '${(enclosingElement as ClassElement).name}.$name',
-    //     FunctionElement(:final name) => name,
-    //     ConstructorElement(:final name, :InterfaceElement enclosingElement) =>
-    //       '${enclosingElement.name}.$name',
-    //     _ => throw UnimplementedError(
-    //         'Unsupported parser source: $parserSource',
-    //       ),
-    //   };
-    //   parserRef = refer(
-    //       parserExecutableName, parserSource!.librarySource.uri.toString());
-    //   if (!parserReader.parameters.first.type.isDartCoreString) {
-    //     throw ArgumentError(
-    //       'Parser $parserName must take a single String argument.',
-    //     );
-    //   }
-
-    //   // TODO: check that the parser return type matches the type of the
-    //   // annotated parameter / field element.
-    // }
-
     final parserRef = buildParserExpression(
       namedArgs['parser']?.objectValue.type as FunctionType?,
       constantReader,
     );
+
+    final defaultValueBuilder = DefaultValueCodeBuilder();
+    final enumType = annotation.library!.typeProvider.enumElement!.thisType;
+    final defaultValue = defaultValueBuilder.getDefaultConstantValue2(
+      constantReader.read('defaultsTo'),
+      enumType,
+    );
+    final object = constantReader.read('defaultsTo').objectValue;
 
     return OptionAnnotationModel(
       type: annotation.toRef().toTypeRef(),
@@ -92,9 +72,38 @@ class OptionsAnnotationAnalyzer {
 
       // -- generic type args --
       parser: parserRef,
-      defaultsTo: readDefaultToArg(constantReader),
+      defaultAsSourceCode: recreateValueExpression(object),
+      stringifiedDefaultValue: defaultValue,
       allowed: readAllowedArg(annotation),
       allowedHelp: readAllowedHelpArg(annotation),
+    );
+  }
+
+  /// Recreates the [object] as an expression that can be inserted into code.
+  ///
+  /// For example, if the object is a int, it will be returned as the value `42`.
+  /// If the object is an enum, it will be returned as the value of the entire
+  /// enum, e.g. `MyEnum.value`.
+  Expression recreateValueExpression(DartObject object) {
+    final reader = ConstantReader(object);
+
+    // handle enums
+    final variable = object.variable;
+    if (variable is FieldElement && variable.isEnumConstant) {
+      final enumType = variable.enclosingElement as EnumElement;
+      final enumValue = '${enumType.name}.${variable.name}';
+      return refer(
+        enumValue,
+        enumType.librarySource.uri.toString(),
+      );
+    }
+
+    // else handle literals and Types
+    if (reader.isLiteral) return literal(reader.literalValue);
+    if (reader.isType) return reader.typeValue.toTypeRef();
+
+    throw ArgumentError(
+      'Unsupported constant value type: $object',
     );
   }
 
@@ -187,10 +196,10 @@ class OptionsAnnotationAnalyzer {
 
     final allowedHelpValues = allowedHelpMap.map((key, value) {
       final keyString = key != null
-          ? valueBuilder.getSingleValueForObject(key, enumType)
+          ? valueBuilder.getSingleValueAsString(key, enumType)
           : 'null';
       final valueString = value != null
-          ? valueBuilder.getSingleValueForObject(value, enumType)
+          ? valueBuilder.getSingleValueAsString(value, enumType)
           : 'null';
       return MapEntry(keyString, valueString);
     });
@@ -218,7 +227,7 @@ class OptionsAnnotationAnalyzer {
     final enumType = annotation.library!.typeProvider.enumElement!.thisType;
     final allowedList = allowedReader.listValue;
     final allowedValues = allowedList.map((e) {
-      return valueBuilder.getSingleValueForObject(e, enumType);
+      return valueBuilder.getSingleValueAsString(e, enumType);
     }).toList();
     return allowedValues;
   }
@@ -232,8 +241,8 @@ class OptionsAnnotationAnalyzer {
         final literalValue = ConstantReader(defaultsTo).literalValue;
         if (literalValue is String) return literal(literalValue);
         if (literalValue is! String) {
-          final value = literalValue.toString();
-          final expValue = literalString(value.toString());
+          // final value = literalValue.toString();
+          final expValue = literal(literalValue);
           return expValue;
         }
         throw ArgumentError(

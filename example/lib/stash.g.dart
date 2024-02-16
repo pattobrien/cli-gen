@@ -74,7 +74,7 @@ class PushCommand extends Command<void> {
       someDocumentedParameter: results['some-documented-parameter'],
       customParameter: results['custom-parameter'] != null
           ? int.parse(results['custom-parameter'])
-          : '42',
+          : 42,
     );
   }
 }

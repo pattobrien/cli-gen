@@ -24,6 +24,9 @@ class DartCoreIdentifiers {
   IdentifierPart get future => IdentifierPart('Future', _uri);
   IdentifierPart get futureOr => IdentifierPart('FutureOr', _uri);
   IdentifierPart get stream => IdentifierPart('Stream', _uri);
+  IdentifierPart get symbol => IdentifierPart('Symbol', _uri);
+  IdentifierPart get type => IdentifierPart('Type', _uri);
+  IdentifierPart get void_ => IdentifierPart('void', _uri);
 
   IdentifierPart get print => IdentifierPart('print', _uri);
 

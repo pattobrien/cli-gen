@@ -33,7 +33,8 @@ class CommandParameterModel {
   final Reference name;
 
   Expression? get defaultValueAsCode {
-    final annotationValue = annotations.map((e) => e.defaultsTo).firstOrNull;
+    final annotationValue =
+        annotations.map((e) => e.defaultAsSourceCode).firstOrNull;
     if (annotationValue != null) return annotationValue;
 
     return _defaultValueAsCode != null
@@ -46,7 +47,7 @@ class CommandParameterModel {
   }
 
   Expression? get computedDefault {
-    return annotations.map((e) => e.defaultsTo).firstOrNull ??
+    return annotations.map((e) => e.stringifiedDefaultValue).firstOrNull ??
         _computedDefaultValue;
   }
 

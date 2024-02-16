@@ -12,7 +12,7 @@ class OptionAnnotationModel {
   final bool? negatable;
   final bool? hide;
 
-  /// The default value for the option.
+  /// The default value for the option, after computing the constant.
   ///
   /// Example expressions:
   /// ```
@@ -20,7 +20,10 @@ class OptionAnnotationModel {
   /// defaultsTo: ['foo', 'bar', 'baz'] (multi option)
   /// defaultsTo: true (flag)
   /// ```
-  final Expression? defaultsTo;
+  final Expression? stringifiedDefaultValue;
+
+  /// The source code of the default value, exactly as written by the user.
+  final Expression? defaultAsSourceCode;
 
   final List<String>? allowed;
   final Map<String, String>? allowedHelp;
@@ -30,12 +33,13 @@ class OptionAnnotationModel {
 
   const OptionAnnotationModel({
     required this.type,
+    this.defaultAsSourceCode,
     this.abbr,
     this.help,
     this.valueHelp,
     this.negatable,
     this.hide,
-    this.defaultsTo,
+    this.stringifiedDefaultValue,
     required this.allowed,
     this.allowedHelp,
     this.aliases,

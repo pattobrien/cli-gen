@@ -25,14 +25,22 @@ class DefaultValueCodeBuilder {
     final constant = element.computeConstantValue();
     if (constant == null) return null;
 
-    final reader = ConstantReader(constant);
+    final enumType = element.library!.typeProvider.enumElement!.thisType;
+
+    return getDefaultConstantValue2(
+      ConstantReader(constant),
+      enumType,
+    );
+  }
+
+  Expression? getDefaultConstantValue2(
+    ConstantReader reader,
+    InterfaceType enumType,
+  ) {
+    final object = reader.objectValue;
     final thisType = reader.objectValue.type!;
 
     if (thisType.isDartCoreNull) return null;
-
-    // note: we need to supply the enumType, since `getSingleValueForObject`
-    // doesn't have access to the typeProvider.
-    final enumType = element.library!.typeProvider.enumElement!.thisType;
 
     if (thisType.isDartCoreBool) {
       return literalBool(reader.boolValue);
@@ -40,16 +48,50 @@ class DefaultValueCodeBuilder {
 
     if (thisType.isDartCoreList || thisType.isDartCoreSet) {
       return literalList(
-        getMultiValuesForObject(constant, enumType),
+        getMultiValuesAsStrings(object, enumType),
       );
     }
 
     return literalString(
-      getSingleValueForObject(constant, enumType),
+      getSingleValueAsString(object, enumType).toString(),
     );
   }
 
-  String getSingleValueForObject(
+  Expression? getDefaultAsValue(
+    ConstantReader reader,
+    InterfaceType enumType,
+  ) {
+    final object = reader.objectValue;
+    final thisType = reader.objectValue.type!;
+
+    if (thisType.isDartCoreNull) return null;
+
+    if (thisType.isDartCoreBool) {
+      return literalBool(reader.boolValue);
+    }
+
+    if (thisType.isDartCoreList || thisType.isDartCoreSet) {
+      return literalList(
+        getMultiValuesForObject(object, enumType),
+      );
+    }
+
+    return literal(
+      getSingleValue(object, enumType),
+    );
+  }
+
+  /// Returns an [object] as a string representation of the value.
+  ///
+  /// For example, an int(42) value would return "42" (no quotes).
+  String getSingleValueAsString(
+    DartObject object,
+    InterfaceType enumType,
+  ) {
+    return getSingleValue(object, enumType).toString();
+  }
+
+  Object getSingleValue(
     DartObject object,
     InterfaceType enumType,
   ) {
@@ -69,21 +111,21 @@ class DefaultValueCodeBuilder {
 
     // handle Dart Primative types
     if (thisType.isDartCoreString) return reader.stringValue;
-    if (thisType.isDartCoreInt) return reader.intValue.toString();
-    if (thisType.isDartCoreBool) return reader.boolValue.toString();
-    if (thisType.isDartCoreDouble) return reader.doubleValue.toString();
+    if (thisType.isDartCoreInt) return reader.intValue;
+    if (thisType.isDartCoreBool) return reader.boolValue;
+    if (thisType.isDartCoreDouble) return reader.doubleValue;
     if (thisType.isDartCoreList) {
       // TODO: we should allow `computedDefaultValue` to be a
       // list of strings, not just a single string.
       return reader.listValue
-          .map((e) => getSingleValueForObject(e, enumType))
+          .map((e) => getSingleValueAsString(e, enumType))
           .join(', ');
     }
     if (thisType.isDartCoreSet) {
       // TODO: we should allow `computedDefaultValue` to be a
       // list of strings, not just a single string.
       return reader.setValue
-          .map((e) => getSingleValueForObject(e, enumType))
+          .map((e) => getSingleValueAsString(e, enumType))
           .join(', ');
     }
 
@@ -92,7 +134,14 @@ class DefaultValueCodeBuilder {
     );
   }
 
-  Iterable<String> getMultiValuesForObject(
+  Iterable<String> getMultiValuesAsStrings(
+    DartObject object,
+    InterfaceType enumType,
+  ) {
+    return getMultiValuesForObject(object, enumType).map((e) => e.toString());
+  }
+
+  Iterable<Object> getMultiValuesForObject(
     DartObject object,
     InterfaceType enumType,
   ) {
@@ -105,10 +154,10 @@ class DefaultValueCodeBuilder {
     }
 
     if (thisType.isDartCoreList) {
-      return reader.listValue.map((e) => getSingleValueForObject(e, enumType));
+      return reader.listValue.map((e) => getSingleValueAsString(e, enumType));
     }
     if (thisType.isDartCoreSet) {
-      return reader.setValue.map((e) => getSingleValueForObject(e, enumType));
+      return reader.setValue.map((e) => getSingleValueAsString(e, enumType));
     }
     if (thisType.isDartCoreMap) {
       // TODO: handle this case

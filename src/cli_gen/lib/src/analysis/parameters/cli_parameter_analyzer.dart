@@ -36,7 +36,7 @@ class CliParameterAnalyzer {
 
     return CommandParameterModel(
       name: element.toRef(),
-      type: element.type.toRef().toTypeRef(),
+      type: element.type.toTypeRef().toTypeRef(),
       isRequired: element.isRequired,
       isNamed: element.isNamed,
       optionType: optionType,

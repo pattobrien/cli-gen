@@ -34,7 +34,7 @@ class RunnerBuilder {
   /// This class is responsible for three things:
   /// - mounting `@mount` subcommands or command methods in the user subclass
   /// - supplying the executable name and description to `CommandRunner`
-  /// - TODO: overriding the `run()` method to provide custom error handling
+  /// - overrides the `runCommand()` method to provide custom error handling
   Class buildRunnerClass(RunnerModel model) {
     return Class((builder) {
       builder.name = model.generatedClassName;

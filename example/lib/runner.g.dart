@@ -34,6 +34,7 @@ class MergeCommand extends Command<void> {
   final Function({
     required String branch,
     MergeStrategy strategy,
+    int fooWithDefault,
     bool commit,
   }) userMethod;
 
@@ -51,7 +52,8 @@ class MergeCommand extends Command<void> {
     )
     ..addOption(
       'strategy',
-      defaultsTo: 'ort',
+      help: 'The merge strategy to use',
+      defaultsTo: 'recursive',
       mandatory: false,
       allowed: [
         'ort',
@@ -62,6 +64,12 @@ class MergeCommand extends Command<void> {
         'subtree',
       ],
     )
+    ..addOption(
+      'foo-with-default',
+      help: 'Perform the merge and commit the result.',
+      defaultsTo: '42',
+      mandatory: false,
+    )
     ..addFlag('commit');
 
   @override
@@ -71,7 +79,10 @@ class MergeCommand extends Command<void> {
       branch: results['branch'],
       strategy: results['strategy'] != null
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
-          : MergeStrategy.ort,
+          : MergeStrategy.recursive,
+      fooWithDefault: results['foo-with-default'] != null
+          ? int.parse(results['foo-with-default'])
+          : 42,
       commit: results['commit'],
     );
   }

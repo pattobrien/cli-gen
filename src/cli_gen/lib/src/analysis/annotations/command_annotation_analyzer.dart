@@ -44,7 +44,7 @@ class CommandAnnotationAnalyzer {
         name: reader.peek('name')?.stringValue,
         description: reader.peek('description')?.stringValue,
         category: reader.peek('category')?.stringValue,
-        type: objectType.toRef(),
+        type: objectType.toTypeRef(),
         displayStackTrace: reader.peek('displayStackTrace')?.boolValue ?? false,
       );
     }).toList();

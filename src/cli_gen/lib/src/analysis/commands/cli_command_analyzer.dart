@@ -53,7 +53,7 @@ class CliCommandAnalyzer {
 
     return CommandMethodModel(
       methodRef: element.toRef(),
-      returnType: element.returnType.toRef().toTypeRef(),
+      returnType: element.returnType.toTypeRef().toTypeRef(),
       parameters: parameterAnalyzer.fromExecutableElement(element),
       docComments: removeDocSlashes(element.documentationComment),
       annotations: annotationAnalyzer.annotationsForElement(element),

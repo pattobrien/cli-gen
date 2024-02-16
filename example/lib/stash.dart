@@ -31,6 +31,7 @@ class StashSubcommand extends _$StashSubcommand {
     )
     int? customParameter,
   }) async {
+    Type;
     // print('Stashing changes with message: $message');
     // await Future.delayed(const Duration(seconds: 1));
   }
