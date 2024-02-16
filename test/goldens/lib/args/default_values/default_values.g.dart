@@ -86,9 +86,9 @@ class DefaultValuesCommand extends Command<void> {
   void run() {
     final results = argResults!;
     return userMethod(
-      strVal: results['str-val'] != null ? results['str-val'] : 'default',
+      strVal: (results['str-val'] as String?) ?? 'default',
       intVal: results['int-val'] != null ? int.parse(results['int-val']) : 42,
-      boolVal: results['bool-val'] != null ? results['bool-val'] : true,
+      boolVal: (results['bool-val'] as bool?) ?? true,
       enumVal: results['enum-val'] != null
           ? EnumParser(MyFooEnum.values).parse(results['enum-val'])
           : MyFooEnum.value1,
@@ -189,7 +189,7 @@ class AnnotatedParamsCommand extends Command<void> {
       numericValue: results['numeric-value'] != null
           ? int.parse(results['numeric-value'])
           : 123,
-      flagVal: results['flag-val'] != null ? results['flag-val'] : true,
+      flagVal: (results['flag-val'] as bool?) ?? true,
     );
   }
 }

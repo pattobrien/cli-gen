@@ -65,7 +65,8 @@ class UserMethodCallBuilder {
     // b) whether the parameter is iterable and needs to call `.map` on the result
     Expression parserExpression;
     final isIterable = param.optionType == OptionType.multi;
-    if (isIterable && param.parser != null) {
+    final hasParser = param.parser != null;
+    if (isIterable && hasParser) {
       parserExpression = refer('List')
           .toTypeRef(typeArguments: [refer('String')])
           .property('from')
@@ -88,18 +89,36 @@ class UserMethodCallBuilder {
 
     switch ((isNullable, hasDefault)) {
       case (true, _):
-        return resultKeyValue.notEqualTo(literalNull).conditional(
-              parserExpression,
-              literalNull,
-            );
+        if (hasParser || isIterable) {
+          return resultKeyValue.notEqualTo(literalNull).conditional(
+                parserExpression,
+                literalNull,
+              );
+        } else {
+          return parserExpression
+              .asA(
+                param.type.toTypeRef(isNullable: true),
+              )
+              .ifNullThen(literalNull);
+        }
       case (false, true):
         // in this case, we need to copy the defaultValueCode into the elseThen
         // expression of the conditional, because otherwise we're passing a null
         // value into a non-nullable parameter.
-        return resultKeyValue.notEqualTo(literalNull).conditional(
-              parserExpression,
-              param.defaultValueAsCode!,
-            );
+        if (hasParser || isIterable) {
+          return resultKeyValue.notEqualTo(literalNull).conditional(
+                parserExpression,
+                param.defaultValueAsCode!,
+              );
+        } else {
+          return parserExpression
+              .asA(
+                param.type.toTypeRef(isNullable: true),
+              )
+              .ifNullThen(
+                param.defaultValueAsCode!,
+              );
+        }
       case (false, false):
         return parserExpression;
     }

@@ -49,9 +49,7 @@ class PushCommand extends Command<void> {
   Future<void> run() {
     final results = argResults!;
     return userMethod(
-      includeUntracked: results['include-untracked'] != null
-          ? results['include-untracked']
-          : false,
+      includeUntracked: (results['include-untracked'] as bool?) ?? false,
       message: results['message'],
     );
   }
@@ -79,7 +77,6 @@ class ApplyCommand extends Command<void> {
   @override
   Future<void> run() {
     final results = argResults!;
-    return userMethod(
-        stashRef: results['stash-ref'] != null ? results['stash-ref'] : '0');
+    return userMethod(stashRef: (results['stash-ref'] as String?) ?? '0');
   }
 }

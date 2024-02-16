@@ -6,6 +6,8 @@ part of 'runner.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
+/// A command-line interface for version control.
+///
 /// A class for invoking [Command]s based on raw command-line arguments.
 ///
 /// The type argument `T` represents the type returned by [Command.run] and

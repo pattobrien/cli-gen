@@ -69,7 +69,7 @@ class PositionalCommand extends Command<void> {
     return userMethod(
       results['req-value'],
       results['opt-value'],
-      results['def-value'] != null ? results['def-value'] : 'default',
+      (results['def-value'] as String?) ?? 'default',
     );
   }
 }
@@ -110,7 +110,7 @@ class NamedCommand extends Command<void> {
     return userMethod(
       reqValue: results['req-value'],
       optValue: results['opt-value'],
-      defValue: results['def-value'] != null ? results['def-value'] : 'default',
+      defValue: (results['def-value'] as String?) ?? 'default',
     );
   }
 }
