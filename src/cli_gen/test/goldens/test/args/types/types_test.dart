@@ -11,25 +11,25 @@ import 'package:test/test.dart';
 
 Future<void> main() async {
   final dirPath = Directory.current.path;
-  final userFilePath = 'lib/args/default_values/default_values.dart';
-  final genFilePath = 'lib/args/default_values/default_values.g.dart';
+  final userFilePath = 'lib/args/types/types.dart';
+  final genFilePath = 'lib/args/types/types.g.dart';
 
-  final goldenPath = 'lib/args/default_values/default_values.g.golden.dart';
+  final goldenPath = 'lib/args/types/types.g.golden.dart';
 
   final fileContents = File(p.join(dirPath, userFilePath)).readAsStringSync();
   final genFileContents = File(p.join(dirPath, genFilePath)).readAsStringSync();
   final goldenContents = File(p.join(dirPath, goldenPath)).readAsStringSync();
 
-  group('default values golden tests -', () {
+  group('types golden tests -', () {
     test('standard values', () async {
       await testBuilder(
         cliGenerator(BuilderOptions({})),
         {
-          'a|foo/default_values.dart': fileContents,
+          'a|foo/example.dart': fileContents,
         },
         reader: await PackageAssetReader.currentIsolate(),
         outputs: {
-          'a|foo/default_values.cli_generator.g.part': goldenContents,
+          'a|foo/example.cli_generator.g.part': goldenContents,
         },
       );
     });
