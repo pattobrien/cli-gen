@@ -15,3 +15,14 @@ class FooBarRunner extends _$FooBarRunner {
 
 @cliSubcommand
 class BarCommand extends _$BarCommand {}
+
+/// Some runner description from doc comment.
+@CliRunner(
+  name: 'some-runner',
+  description: 'Some runner description from annotation.',
+  displayStackTrace: true,
+)
+class Runner extends _$Runner {
+  @cliMount
+  BarCommand get fooBar => BarCommand();
+}

@@ -48,7 +48,10 @@ class RunnerBuilder {
         builder.symbol = 'T';
       }));
 
-      builder.docs.addAll([_classDocComments]);
+      builder.docs.addAll([
+        if (model.docComments != null) '/// ${model.docComments}\n///',
+        _classDocComments,
+      ]);
 
       builder.constructors.add(
         Constructor((builder) {
