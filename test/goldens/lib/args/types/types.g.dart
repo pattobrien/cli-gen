@@ -1,3 +1,7 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'types.dart';
+
 // **************************************************************************
 // CliRunnerGenerator
 // **************************************************************************
@@ -86,6 +90,11 @@ class UserTypesCommand extends Command<void> {
         'const-var',
         defaultsTo: '42',
         mandatory: false,
+      )
+      ..addOption(
+        'custom-parser-option',
+        defaultsTo: '0',
+        mandatory: false,
       );
   }
 
@@ -93,6 +102,7 @@ class UserTypesCommand extends Command<void> {
     MyFooEnum, {
     MyFooEnum enumValue2,
     int constVar,
+    int customParserOption,
   }) userMethod;
 
   @override
@@ -112,6 +122,9 @@ class UserTypesCommand extends Command<void> {
       constVar: results['const-var'] != null
           ? int.parse(results['const-var'])
           : someConstant,
+      customParserOption: results['custom-parser-option'] != null
+          ? customParser(results['custom-parser-option'])
+          : 0,
     );
   }
 }

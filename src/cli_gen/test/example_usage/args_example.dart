@@ -68,6 +68,18 @@ void defaultValues({
   Set<int> setVal = const {1, 2, 3},
 }) {}
 
+// -- DOC COMMENTS --
+
+// ignore: invalid_annotation_target
+@cliCommand
+class DocComments {
+  const DocComments({
+    required this.message,
+  });
+
+  /// The message to display.
+  final String message;
+}
 // -- MULTI-SELECT TESTS --
 
 @CliCommand()

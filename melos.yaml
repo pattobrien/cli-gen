@@ -7,6 +7,7 @@ packages:
   - src/cli_annotations
   - src/cli_gen
   - src/cli_gen/test/**
+  - test/goldens
 
 scripts:
   analyze:
@@ -23,7 +24,7 @@ scripts:
     exec: dart test
 
     packageFilters:
-      published: true
+      dirExists: test
   build:
     run: dart run build_runner build -d
 

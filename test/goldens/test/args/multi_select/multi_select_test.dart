@@ -25,11 +25,11 @@ Future<void> main() async {
       await testBuilder(
         cliGenerator(BuilderOptions({})),
         {
-          'a|foo/example.dart': fileContents,
+          'a|foo/multi_select.dart': fileContents,
         },
         reader: await PackageAssetReader.currentIsolate(),
         outputs: {
-          'a|foo/example.cli_generator.g.part': goldenContents,
+          'a|foo/multi_select.cli_generator.g.part': goldenContents,
         },
       );
     });
