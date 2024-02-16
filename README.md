@@ -84,11 +84,11 @@ environment:
   sdk: ^3.0.0
 
 dependencies:
-  cli_annotations: ^0.1.0-dev.1
+  cli_annotations: ^0.1.0-dev.4
 
 dev_dependencies:
   build_runner: ^2.4.8
-  cli_gen: ^0.1.0-dev.1
+  cli_gen: ^0.1.0-dev.4
 
 # define an executable name (optional)
 executables:
@@ -120,7 +120,7 @@ class GitRunner extends _$GitRunner {
 
 ### Define a Command
 
-Create a `Command` by simply creating a method on the class; any type can be used as a parameter.
+Inside the `CommandRunner` class, create a `Command` by creating a method and annotating it with `@cliCommand`. See the [Features](#features) section for more information on the supported types and features.
 
 ```dart
 @cliRunner
@@ -136,14 +136,35 @@ class GitRunner extends _$GitRunner {
 }
 ```
 
+You can create as many commands inside the `CommandRunner` class as you'd like:
+
+```dart
+@cliRunner
+class GitRunner extends _$GitRunner {
+  @cliCommand
+  Future<void> merge({
+    required String branch,
+    MergeStrategy strategy = MergeStrategy.ort,
+    bool? commit,
+  }) async { /* ... */ }
+
+  @cliCommand
+  Future<void> stashPush() async { /* ... */ }
+
+  @cliCommand
+  Future<void> stashPop() async { /* ... */ }
+
+  // ...
+}
+```
+
 ### Define a Subcommand
 
 As your application grows, you may want to separate your commands into their own groups.
 
-You can create a `Subcommand` by annotating a class with `@cliSubcommand` and extending the generated superclass.
+To do so, create a `Subcommand` class by annotating the class with `@cliSubcommand` and extending the generated superclass.
 
 ```dart
-// Create your subcommand
 @cliSubcommand
 class StashSubcommand extends _$StashSubcommand {
   @cliCommand
@@ -153,11 +174,15 @@ class StashSubcommand extends _$StashSubcommand {
   Future<void> pop() async { /* ... */ }
 }
 
-// Then mount it to your `CommandRunner` or a parent `Subcommand`
+```
+
+Subcommands can then be connected to the main `CommandRunner` class, or to another `Subcommand` class, by using the `@cliMount` annotation.
+
+```dart
 @cliRunner
 class GitRunner extends _$GitRunner {
-  @mount
-  Command get stash => StashSubcommand();
+  @cliMount
+  StashSubcommand get stash => StashSubcommand();
 }
 ```
 
