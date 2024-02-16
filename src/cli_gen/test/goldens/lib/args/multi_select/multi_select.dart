@@ -5,10 +5,15 @@ part 'multi_select.g.dart';
 @cliRunner
 class MultiSelect extends _$MultiSelect {
   @cliCommand
-  void defaultValues({
-    List<String> multiString = const [],
-    Set<int> multiInt = const {},
-    Iterable<MyFooEnum> multiEnum = const [],
+  void multiValues({
+    required List<String> multiString,
+    Set<int>? multiInt = const {1, 5, 7},
+    Iterable<MyFooEnum>? multiEnum,
+  }) {}
+
+  @cliCommand
+  void singleValues({
+    int multiInt = 1,
   }) {}
 }
 
