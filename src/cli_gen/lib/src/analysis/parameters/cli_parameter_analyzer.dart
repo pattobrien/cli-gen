@@ -33,10 +33,10 @@ class CliParameterAnalyzer {
 
     final defaultValBuilder = DefaultValueCodeBuilder();
     final parserBuilder = TypeParserExpressionBuilder();
-
+    final type = element.type.toTypeRef();
     return CommandParameterModel(
       name: element.toRef(),
-      type: element.type.toTypeRef().toTypeRef(),
+      type: type,
       isRequired: element.isRequired,
       isNamed: element.isNamed,
       optionType: optionType,

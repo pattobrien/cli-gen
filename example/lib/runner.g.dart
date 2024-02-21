@@ -68,8 +68,8 @@ class MergeCommand extends Command<void> {
   final Future<void> Function({
     required String branch,
     MergeStrategy strategy,
-    int fooWithDefault,
-    bool commit,
+    int? fooWithDefault,
+    bool? commit,
   }) userMethod;
 
   @override
@@ -88,8 +88,8 @@ class MergeCommand extends Command<void> {
           : MergeStrategy.recursive,
       fooWithDefault: results['foo-with-default'] != null
           ? int.parse(results['foo-with-default'])
-          : 42,
-      commit: results['commit'],
+          : null,
+      commit: (results['commit'] as bool?) ?? null,
     );
   }
 }

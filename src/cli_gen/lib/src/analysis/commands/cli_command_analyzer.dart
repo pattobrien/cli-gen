@@ -50,10 +50,10 @@ class CliCommandAnalyzer {
   ) {
     const annotationAnalyzer = CommandAnnotationAnalyzer();
     const parameterAnalyzer = CliParameterAnalyzer();
-
+    final returnType = element.returnType.toTypeRef();
     return CommandMethodModel(
       methodRef: element.toRef(),
-      returnType: element.returnType.toTypeRef().toTypeRef(),
+      returnType: returnType,
       parameters: parameterAnalyzer.fromExecutableElement(element),
       docComments: removeDocSlashes(element.documentationComment),
       annotations: annotationAnalyzer.annotationsForElement(element),

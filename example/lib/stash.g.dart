@@ -36,7 +36,7 @@ class PushCommand extends Command<void> {
 
   final Future<void> Function({
     bool includeUntracked,
-    String message,
+    String? message,
   }) userMethod;
 
   @override
@@ -50,7 +50,7 @@ class PushCommand extends Command<void> {
     final results = argResults!;
     return userMethod(
       includeUntracked: (results['include-untracked'] as bool?) ?? false,
-      message: results['message'],
+      message: (results['message'] as String?) ?? null,
     );
   }
 }
