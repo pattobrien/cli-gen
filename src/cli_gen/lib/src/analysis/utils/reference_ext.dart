@@ -127,7 +127,7 @@ extension DartTypeExt on DartType {
     }
 
     throw UnimplementedError(
-      'Only InterfaceType is supported for DartType.toRef() method.',
+      'Unknown type passed to DartType.toRef() method.',
     );
   }
 }
