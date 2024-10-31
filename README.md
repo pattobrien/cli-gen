@@ -369,7 +369,7 @@ To override the default behavior, simply provide a `name` to the respective anno
 
 ### Named and Positional Parameters
 
-`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit.
+`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit:
 
 ```dart
 @cliCommand
