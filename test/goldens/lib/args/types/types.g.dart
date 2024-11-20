@@ -117,7 +117,7 @@ class UserTypesCommand extends Command<void> {
     Email emailValue2,
     int constVar,
     int customParserOption,
-    ProductId productId,
+    ProductId? productId,
   }) userMethod;
 
   @override
@@ -143,7 +143,9 @@ class UserTypesCommand extends Command<void> {
       customParserOption: results['custom-parser-option'] != null
           ? customParser(results['custom-parser-option'])
           : 0,
-      productId: ProductId.fromString(results['product-id']),
+      productId: results['product-id'] != null
+          ? ProductId.fromString(results['product-id'])
+          : null,
     );
   }
 }

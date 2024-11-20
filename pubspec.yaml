@@ -2,7 +2,7 @@ name: workspace
 description: The workspace for the cli_gen package.
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.3.0
 
 dependencies:
   analyzer: ^6.4.1
