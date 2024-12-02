@@ -35,7 +35,7 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
   @override
   Future<void> runCommand(ArgResults topLevelResults) async {
     try {
-      if (topLevelResults['version'] != null) {
+      if (topLevelResults['version'] == true) {
         return showVersion();
       }
 

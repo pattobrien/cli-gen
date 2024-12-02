@@ -158,7 +158,7 @@ class RunnerBuilder {
       builder.modifier = MethodModifier.async;
       builder.body = Block((builder) {
         final versionLogic = '''
-            if (topLevelResults['version'] != null) {
+            if (topLevelResults['version'] == true) {
               return showVersion();
             }\n''';
         builder.statements.add(Code('''
