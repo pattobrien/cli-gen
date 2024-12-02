@@ -10,9 +10,12 @@ import 'package:source_gen/source_gen.dart';
 
 import '../analysis/commands/cli_runner_analyzer.dart';
 import '../code/command/runner_builder.dart';
+import 'version_parser.dart';
 
 /// A [Generator] that generates `CommandRunner` classes.
 class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
+  const CliRunnerGenerator();
+
   @override
   FutureOr<String> generateForAnnotatedElement(
     Element element,
@@ -26,6 +29,15 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
       );
     }
 
+    final libraryElement = element.library;
+    final allClasses = libraryElement.units.expand((unit) => unit.classes);
+    final checker = TypeChecker.fromRuntime(CliRunner);
+    final annotatedClasses = allClasses.where(checker.hasAnnotationOfExact);
+    // checks if [element] is the first class annotated with `@CliRunner`.
+    final isThisFirstAnnotatedElement = element == annotatedClasses.first;
+
+    final shouldGenerateVersion = isThisFirstAnnotatedElement;
+
     final resolver = buildStep.resolver;
     final node = await resolver.astNodeFor(element, resolve: true);
     if (node is! ClassDeclaration) {
@@ -37,11 +49,19 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
     // Creates a model from the annotated Class.
 
     final model = runnerAnalyzer.fromClassElement(node);
+    final versionField = await generateVersionField(buildStep);
+    // log.severe('Version field: $versionField');
 
     // Generates code from the model.
     final library = Library((builder) {
+      if (versionField != null && shouldGenerateVersion) {
+        builder.body.add(versionField);
+      }
       builder.body.addAll(
-        runnerBuilder.buildRunnerClassAndUserMethods(model),
+        runnerBuilder.buildRunnerClassAndUserMethods(
+          model,
+          shouldGenerateVersion: versionField != null,
+        ),
       );
     });
 

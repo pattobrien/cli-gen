@@ -6,6 +6,8 @@ part of 'runner.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
+const String version = '1.0.0';
+
 /// A command-line interface for version control.
 ///
 /// A class for invoking [Command]s based on raw command-line arguments.
@@ -23,16 +25,29 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
     addCommand(MergeCommand(upcastedType.merge));
     addCommand(PushCommand(upcastedType.push));
     addCommand(upcastedType.stash);
+
+    argParser.addFlag(
+      'version',
+      help: 'Reports the version of this tool.',
+    );
   }
 
   @override
   Future<void> runCommand(ArgResults topLevelResults) async {
     try {
+      if (topLevelResults['version'] != null) {
+        return showVersion();
+      }
+
       return await super.runCommand(topLevelResults);
     } on UsageException catch (e) {
       stdout.writeln('${e.message}\n');
       stdout.writeln(e.usage);
     }
+  }
+
+  void showVersion() {
+    return stdout.writeln('git $version');
   }
 }
 
