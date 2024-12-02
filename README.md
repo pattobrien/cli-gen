@@ -51,8 +51,8 @@ Build CLI applications from plain Dart classes and functions.
   - [Help Text Inference (--help)](#help-text-inference---help)
     - [Parameter Help Text](#parameter-help-text)
     - [Command Descriptions](#command-descriptions)
+  - [Positional Parameters](#positional-parameters)
   - [Name Formatting](#name-formatting)
-  - [Named and Positional Parameters](#named-and-positional-parameters)
 - [Design Goals](#design-goals)
 - [Under the Hood](#under-the-hood)
 - [Inspiration](#inspiration)
@@ -359,6 +359,25 @@ Using the above `Values` enum as a parameter to a `cliCommand` will generate the
 
 If you ever need to override the default allowed values, you can do so by providing a list of values to the `allowed` parameter of the `@Option` annotation.
 
+### Positional Parameters
+
+`cli_gen` can handle trailing positional parameters. 
+
+For example, you may have a command that requires a path argument. Rather than define a named flag like `git push --remote="origin"`, you can instead allow users to pass the argument using `git push origin`. 
+
+Positional parameters can be defined using Dart's positional parameter syntax:
+
+```dart
+@cliCommand
+Future<void> push(
+  String remote,      // positional parameter
+  String? branch, {   // positional parameter
+  bool force = false, // named parameter
+}) async {
+  /* ... */
+}
+```
+
 ### Name Formatting
 
 `cli-gen` translates Dart class, method and parameter names to kebab-case, which is the convention for CLI commands and flags.
@@ -367,19 +386,6 @@ For example, a method named `stashChanges` will be translated to `stash-changes`
 
 To override the default behavior, simply provide a `name` to the respective annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and `@Option`).
 
-### Named and Positional Parameters
-
-`cli_gen` can handle parameters no matter if they're positional or named; you're free to mix and match as you see fit:
-
-```dart
-@cliCommand
-Future<void> myCustomCommand(
-  int? positionalParam, {
-  String? namedParam,
-}) async {
-  // ...
-}
-```
 
 ## Under the Hood
 
