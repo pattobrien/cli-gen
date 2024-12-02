@@ -2,13 +2,15 @@ name: pub_example
 publish_to: none
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.5.0
+
+resolution: workspace
 
 dependencies:
-  cli_annotations: ^0.1.0-dev.3
+  cli_annotations: ^0.1.0-dev.6
 
 dev_dependencies:
   build_runner: ^2.4.8
-  cli_gen: ^0.1.0-dev.5
-  lints: ^3.0.0
+  cli_gen: ^0.1.0-dev.6
+  lints: ^5.0.0
   test: ^1.24.0
