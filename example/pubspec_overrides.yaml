@@ -1,6 +1,0 @@
-# melos_managed_dependency_overrides: cli_annotations,cli_gen
-dependency_overrides:
-  cli_annotations:
-    path: ../src/cli_annotations
-  cli_gen:
-    path: ../src/cli_gen

@@ -1,8 +1,0 @@
-builders:
-  subcommand_generator:
-    import: package:cli_gen/builder.dart
-    builder_factories: ["cliGenerator"]
-    build_extensions: { ".dart": ["cli_generator.g.part"] }
-    auto_apply: dependents
-    build_to: cache
-    applies_builders: ["source_gen|combining_builder"]
