@@ -1,3 +1,7 @@
+## 0.1.0-dev.6
+
+- feat: Support positional parameters
+
 ## 0.1.0-dev.5
 
 - feat: Warning on `cliCommand` use on a class, rather than a method/function
