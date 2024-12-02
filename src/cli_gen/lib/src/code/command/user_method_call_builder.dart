@@ -117,7 +117,18 @@ class UserMethodCallBuilder {
     }
 
     switch ((isNullable, hasDefault)) {
-      case (true, _):
+      case (true, true):
+        if (hasParser || isIterable) {
+          return resultKeyValue.notEqualTo(literalNull).conditional(
+                parserExpression,
+                param.defaultValueAsCode!,
+              );
+        } else {
+          return parserExpression
+              .asA(param.type.toTypeRef(isNullable: true))
+              .ifNullThen(param.defaultValueAsCode!);
+        }
+      case (true, false):
         if (hasParser || isIterable) {
           return resultKeyValue.notEqualTo(literalNull).conditional(
                 parserExpression,

@@ -43,11 +43,11 @@ class PrimativeTypesCommand extends Command<void> {
       ..addFlag('bool-value');
   }
 
-  final void Function(
-    String,
-    int,
-    bool,
-  ) userMethod;
+  final void Function({
+    required String stringValue,
+    required int intValue,
+    required bool boolValue,
+  }) userMethod;
 
   @override
   String get name => 'primative-types';
@@ -59,9 +59,9 @@ class PrimativeTypesCommand extends Command<void> {
   void run() {
     final results = argResults!;
     return userMethod(
-      results['string-value'],
-      int.parse(results['int-value']),
-      results['bool-value'],
+      stringValue: results['string-value'],
+      intValue: int.parse(results['int-value']),
+      boolValue: results['bool-value'],
     );
   }
 }
@@ -113,7 +113,7 @@ class UserTypesCommand extends Command<void> {
     Email emailValue2,
     int constVar,
     int customParserOption,
-    ProductId productId,
+    ProductId? productId,
   }) userMethod;
 
   @override
@@ -125,8 +125,9 @@ class UserTypesCommand extends Command<void> {
   @override
   void run() {
     final results = argResults!;
+    var [String enumValue] = results.rest;
     return userMethod(
-      EnumParser(MyFooEnum.values).parse(results['enum-value']),
+      EnumParser(MyFooEnum.values).parse(enumValue),
       enumValue2: results['enum-value2'] != null
           ? EnumParser(MyFooEnum.values).parse(results['enum-value2'])
           : MyFooEnum.value1,
@@ -139,7 +140,9 @@ class UserTypesCommand extends Command<void> {
       customParserOption: results['custom-parser-option'] != null
           ? customParser(results['custom-parser-option'])
           : 0,
-      productId: ProductId.fromString(results['product-id']),
+      productId: results['product-id'] != null
+          ? ProductId.fromString(results['product-id'])
+          : null,
     );
   }
 }

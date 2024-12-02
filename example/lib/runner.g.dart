@@ -89,7 +89,7 @@ class MergeCommand extends Command<void> {
           : MergeStrategy.recursive,
       fooWithDefault: results['foo-with-default'] != null
           ? int.parse(results['foo-with-default'])
-          : null,
+          : 42,
       commit: (results['commit'] as bool?) ?? null,
     );
   }
