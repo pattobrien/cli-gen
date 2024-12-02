@@ -1,10 +1,4 @@
-include: package:lints/recommended.yaml
-
-analyzer:
-  enable-experiment:
-    - inline-class
-
-linter:
-  rules:
-    prefer_relative_imports: true
-    # prefer_if_null_operators: false
+include: ../analysis_options.yaml
+# analyzer:
+#   language:
+#     strict-casts: true

@@ -6,7 +6,7 @@ part of 'example.dart';
 // SubcommandGenerator
 // **************************************************************************
 
-class _$StashSubcommand extends Command {
+class _$StashSubcommand<T extends dynamic> extends Command<dynamic> {
   _$StashSubcommand() {
     final upcastedType = (this as StashSubcommand);
     addSubcommand(MyCustomCommand(upcastedType.myCustomCommand));
@@ -20,15 +20,40 @@ class _$StashSubcommand extends Command {
   String get description => 'Commands for managing a stack of stashed changes.';
 }
 
-class MyCustomCommand extends Command {
-  MyCustomCommand(this.userMethod);
+class MyCustomCommand extends Command<void> {
+  MyCustomCommand(this.userMethod) {
+    argParser
+      ..addOption(
+        'name',
+        mandatory: true,
+      )
+      ..addOption(
+        'age',
+        mandatory: false,
+      )
+      ..addOption(
+        'default-path',
+        defaultsTo: '~/',
+        mandatory: false,
+      )
+      ..addOption(
+        'some-documented-parameter',
+        mandatory: false,
+      )
+      ..addOption(
+        'custom-parameter',
+        help: 'A custom help message for the parameter',
+        defaultsTo: '42',
+        mandatory: false,
+      );
+  }
 
-  final Function({
+  final Future<void> Function({
     required String name,
-    int? age,
+    int age,
     String defaultPath,
-    String? someDocumentedParameter,
-    int? customParameter,
+    String someDocumentedParameter,
+    int customParameter,
   }) userMethod;
 
   @override
@@ -38,53 +63,30 @@ class MyCustomCommand extends Command {
   String get description => 'Save your local modifications to a new stash.';
 
   @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'name',
-      mandatory: true,
-    )
-    ..addOption(
-      'age',
-      mandatory: false,
-    )
-    ..addOption(
-      'default-path',
-      defaultsTo: '~/',
-      mandatory: false,
-    )
-    ..addOption(
-      'some-documented-parameter',
-      mandatory: false,
-    )
-    ..addOption(
-      'custom-parameter',
-      help: 'A custom help message for the parameter',
-      defaultsTo: '42',
-      mandatory: false,
-    );
-
-  @override
   Future<void> run() {
     final results = argResults!;
     return userMethod(
       name: results['name'],
-      age: results['age'] != null ? int.parse(results['age']) : null,
-      defaultPath:
-          results['default-path'] != null ? results['default-path'] : '~/',
-      someDocumentedParameter: results['some-documented-parameter'] != null
-          ? results['some-documented-parameter']
-          : null,
+      age: int.parse(results['age']),
+      defaultPath: (results['default-path'] as String?) ?? '~/',
+      someDocumentedParameter: results['some-documented-parameter'],
       customParameter: results['custom-parameter'] != null
           ? int.parse(results['custom-parameter'])
-          : null,
+          : 42,
     );
   }
 }
 
-class ApplyCommand extends Command {
-  ApplyCommand(this.userMethod);
+class ApplyCommand extends Command<void> {
+  ApplyCommand(this.userMethod) {
+    argParser.addOption(
+      'stash-ref',
+      defaultsTo: '0',
+      mandatory: false,
+    );
+  }
 
-  final Function({String stashRef}) userMethod;
+  final Future<void> Function({String stashRef}) userMethod;
 
   @override
   String get name => 'apply';
@@ -94,18 +96,9 @@ class ApplyCommand extends Command {
       'Apply the stash at the given [stashRef] to the working directory.';
 
   @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'stash-ref',
-      defaultsTo: '0',
-      mandatory: false,
-    );
-
-  @override
   Future<void> run() {
     final results = argResults!;
-    return userMethod(
-        stashRef: results['stash-ref'] != null ? results['stash-ref'] : '0');
+    return userMethod(stashRef: (results['stash-ref'] as String?) ?? '0');
   }
 }
 
@@ -113,7 +106,14 @@ class ApplyCommand extends Command {
 // CliRunnerGenerator
 // **************************************************************************
 
-class _$GitRunner extends CommandRunner {
+/// A command-line interface for version control.
+///
+/// A class for invoking [Command]s based on raw command-line arguments.
+///
+/// The type argument `T` represents the type returned by [Command.run] and
+/// [CommandRunner.run]; it can be ommitted if you're not using the return
+/// values.
+class _$GitRunner<T extends dynamic> extends CommandRunner<dynamic> {
   _$GitRunner()
       : super(
           'git',
@@ -121,16 +121,47 @@ class _$GitRunner extends CommandRunner {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeCommand(upcastedType.merge));
+    addCommand(upcastedType.stash);
+  }
+
+  @override
+  Future<dynamic> runCommand(ArgResults topLevelResults) async {
+    try {
+      return await super.runCommand(topLevelResults);
+    } on UsageException catch (e) {
+      stdout.writeln('${e.message}\n');
+      stdout.writeln(e.usage);
+    }
   }
 }
 
-class MergeCommand extends Command {
-  MergeCommand(this.userMethod);
+class MergeCommand extends Command<void> {
+  MergeCommand(this.userMethod) {
+    argParser
+      ..addOption(
+        'branch',
+        mandatory: true,
+      )
+      ..addOption(
+        'strategy',
+        defaultsTo: 'ort',
+        mandatory: false,
+        allowed: [
+          'ort',
+          'recursive',
+          'resolve',
+          'octopus',
+          'ours',
+          'subtree',
+        ],
+      )
+      ..addFlag('commit');
+  }
 
-  final Function({
+  final Future<void> Function({
     required String branch,
     MergeStrategy strategy,
-    bool? commit,
+    bool commit,
   }) userMethod;
 
   @override
@@ -140,27 +171,6 @@ class MergeCommand extends Command {
   String get description => 'Join two or more development histories together.';
 
   @override
-  ArgParser get argParser => ArgParser()
-    ..addOption(
-      'branch',
-      mandatory: true,
-    )
-    ..addOption(
-      'strategy',
-      defaultsTo: 'ort',
-      mandatory: false,
-      allowed: [
-        'ort',
-        'recursive',
-        'resolve',
-        'octopus',
-        'ours',
-        'subtree',
-      ],
-    )
-    ..addFlag('commit');
-
-  @override
   Future<void> run() {
     final results = argResults!;
     return userMethod(
@@ -168,7 +178,7 @@ class MergeCommand extends Command {
       strategy: results['strategy'] != null
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
           : MergeStrategy.ort,
-      commit: results['commit'] != null ? results['commit'] : null,
+      commit: results['commit'],
     );
   }
 }

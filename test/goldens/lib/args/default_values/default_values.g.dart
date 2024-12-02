@@ -73,7 +73,7 @@ class DefaultValuesCommand extends Command<void> {
     int intVal,
     bool boolVal,
     MyFooEnum enumVal,
-    int intAnnot,
+    int? intAnnot,
   }) userMethod;
 
   @override
@@ -93,7 +93,7 @@ class DefaultValuesCommand extends Command<void> {
           ? EnumParser(MyFooEnum.values).parse(results['enum-val'])
           : MyFooEnum.value1,
       intAnnot:
-          results['int-annot'] != null ? int.parse(results['int-annot']) : 123,
+          results['int-annot'] != null ? int.parse(results['int-annot']) : null,
     );
   }
 }
@@ -172,7 +172,7 @@ class AnnotatedParamsCommand extends Command<void> {
   }
 
   final void Function({
-    int numericValue,
+    int? numericValue,
     bool flagVal,
   }) userMethod;
 
@@ -188,7 +188,7 @@ class AnnotatedParamsCommand extends Command<void> {
     return userMethod(
       numericValue: results['numeric-value'] != null
           ? int.parse(results['numeric-value'])
-          : 123,
+          : null,
       flagVal: (results['flag-val'] as bool?) ?? true,
     );
   }

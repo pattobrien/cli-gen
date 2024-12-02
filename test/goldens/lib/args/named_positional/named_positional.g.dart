@@ -53,7 +53,7 @@ class PositionalCommand extends Command<void> {
 
   final void Function(
     String, [
-    String,
+    String?,
     String,
   ]) userMethod;
 
@@ -68,7 +68,7 @@ class PositionalCommand extends Command<void> {
     final results = argResults!;
     return userMethod(
       results['req-value'],
-      results['opt-value'],
+      (results['opt-value'] as String?) ?? null,
       (results['def-value'] as String?) ?? 'default',
     );
   }
@@ -94,7 +94,7 @@ class NamedCommand extends Command<void> {
 
   final void Function({
     required String reqValue,
-    String optValue,
+    String? optValue,
     String defValue,
   }) userMethod;
 
@@ -109,7 +109,7 @@ class NamedCommand extends Command<void> {
     final results = argResults!;
     return userMethod(
       reqValue: results['req-value'],
-      optValue: results['opt-value'],
+      optValue: (results['opt-value'] as String?) ?? null,
       defValue: (results['def-value'] as String?) ?? 'default',
     );
   }

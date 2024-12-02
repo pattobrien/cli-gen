@@ -1,6 +1,8 @@
 name: cli_gen
-description: Build cli applications using code generation and macros.
-version: 0.1.0-dev.4
+description: |
+  Build CLI applications from plain Dart classes and functions, 
+  with the help of code generation.
+version: 0.1.0-dev.5
 homepage: https://github.com/pattobrien/cli-gen
 repository: https://github.com/pattobrien/cli-gen
 issue_tracker: https://github.com/pattobrien/cli-gen/issues

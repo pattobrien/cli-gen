@@ -43,7 +43,7 @@ extension TypeRefExt on Reference {
     final typeRef = type as TypeReference;
     return typeRef.rebuild((b) {
       b.types.addAll(typeArguments);
-      b.isNullable = isNullable;
+      b.isNullable = isNullable ?? b.isNullable;
     });
   }
 }
@@ -127,7 +127,7 @@ extension DartTypeExt on DartType {
     }
 
     throw UnimplementedError(
-      'Only InterfaceType is supported for DartType.toRef() method.',
+      'Unknown type passed to DartType.toRef() method.',
     );
   }
 }
