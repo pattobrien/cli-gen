@@ -62,10 +62,15 @@ class PositionalCommand extends Command<void> {
   @override
   void run() {
     final results = argResults!;
+    var [
+      String reqValue,
+      String? optValue,
+      String defValue,
+    ] = results.rest;
     return userMethod(
-      results['req-value'],
-      results['opt-value'],
-      results['def-value'] != null ? results['def-value'] : 'default',
+      reqValue,
+      optValue,
+      defValue,
     );
   }
 }

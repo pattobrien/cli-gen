@@ -45,6 +45,35 @@ class UserMethodCallBuilder {
   Expression buildSingleArgParseExp(CommandParameterModel param) {
     // imagine a parser value on param model that provides us with a method
     // reference (e.g. int.parse, UserId.fromString, etc.)
+    if (!param.isNamed) {
+      // handle positional param
+      final positionalVar = refer(param.name.symbol!);
+      final parser = param.parser;
+      final parserExpression = parser?.call([positionalVar]) ?? positionalVar;
+      final isNullable = (param.type.isNullable ?? false) || !param.isRequired;
+
+      final hasDefault = param.defaultValueAsCode != null;
+
+      switch ((isNullable, hasDefault)) {
+        case (true, true):
+          return positionalVar.notEqualTo(literalNull).conditional(
+                parserExpression,
+                param.defaultValueAsCode!,
+              );
+        case (true, false):
+          return positionalVar.notEqualTo(literalNull).conditional(
+                parserExpression,
+                literalNull,
+              );
+        case (false, true):
+          return positionalVar.notEqualTo(literalNull).conditional(
+                parserExpression,
+                param.defaultValueAsCode!,
+              );
+        case (false, false):
+          return parserExpression;
+      }
+    }
     final resultsRef = refer('results');
     // final parser = refer('int.parse');
     final parser = param.parser;

@@ -21,6 +21,7 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeCommand(upcastedType.merge));
+    addCommand(PushCommand(upcastedType.push));
     addCommand(upcastedType.stash);
   }
 
@@ -90,6 +91,50 @@ class MergeCommand extends Command<void> {
           ? int.parse(results['foo-with-default'])
           : null,
       commit: (results['commit'] as bool?) ?? null,
+    );
+  }
+}
+
+class PushCommand extends Command<void> {
+  PushCommand(this.userMethod) {
+    argParser
+      ..addOption(
+        'remote',
+        mandatory: true,
+      )
+      ..addOption(
+        'branch',
+        mandatory: true,
+      )
+      ..addFlag(
+        'force',
+        defaultsTo: false,
+      );
+  }
+
+  final Future<void> Function(
+    String,
+    String?, {
+    bool force,
+  }) userMethod;
+
+  @override
+  String get name => 'push';
+
+  @override
+  String get description => '';
+
+  @override
+  Future<void> run() {
+    final results = argResults!;
+    var [
+      String remote,
+      String? branch,
+    ] = results.rest;
+    return userMethod(
+      remote,
+      branch != null ? branch : null,
+      force: (results['force'] as bool?) ?? false,
     );
   }
 }
