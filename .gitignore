@@ -8,3 +8,5 @@ pubspec.lock
 .env
 .idea/
 
+# FVM Version Cache
+.fvm/

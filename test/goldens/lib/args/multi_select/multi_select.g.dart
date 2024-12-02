@@ -67,7 +67,7 @@ class MultiValuesCommand extends Command<void> {
       multiString: List<String>.from(results['multi-string']),
       multiInt: results['multi-int'] != null
           ? List<String>.from(results['multi-int']).map(int.parse).toSet()
-          : null,
+          : const {1, 5, 7},
       multiEnum: results['multi-enum'] != null
           ? List<String>.from(results['multi-enum'])
               .map(EnumParser(MyFooEnum.values).parse)

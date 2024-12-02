@@ -5,11 +5,11 @@ part 'types.g.dart';
 @cliRunner
 class Types extends _$Types {
   @cliCommand
-  void primativeTypes(
-    String stringValue,
-    int intValue,
-    bool boolValue,
-  ) {}
+  void primativeTypes({
+    required String stringValue,
+    required int intValue,
+    required bool boolValue,
+  }) {}
 
   @cliCommand
   void userTypes(

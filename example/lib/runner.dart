@@ -39,6 +39,15 @@ class GitRunner extends _$GitRunner<void> {
     }
     await Future.delayed(const Duration(seconds: 1));
   }
+
+  @cliCommand
+  Future<void> push(
+    String remote,
+    String? branch, {
+    bool force = false,
+  }) async {
+    //
+  }
 }
 
 enum MergeStrategy { ort, recursive, resolve, octopus, ours, subtree }

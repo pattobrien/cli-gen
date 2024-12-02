@@ -128,6 +128,36 @@ class CommandBuilder {
           builder.body = Block((builder) {
             final userMethodCallBuilder = UserMethodCallBuilder();
 
+            final positionalParams = model.parameters.where((e) => !e.isNamed);
+            // declare positional param variables
+            // e.g:
+            // ```dart
+            // var [String remote, String? branch] = results.rest;
+            // ```
+            Code? varStmt;
+            if (positionalParams.isNotEmpty) {
+              final patternVars = positionalParams.map((e) {
+                final name = e.name.symbol!;
+                final isNullable =
+                    (e.type.isNullable ?? false) || !e.isRequired;
+                final type = TypeReference((b) {
+                  b.isNullable = isNullable;
+                  b.symbol = Identifiers.dart.string.symbol;
+                  b.url = Identifiers.dart.string.url;
+                });
+                return BinaryExpression2(
+                  type,
+                  CodeExpression(Code(name)),
+                  ' ',
+                );
+              }).toList();
+              final varDecl = BinaryExpression2(
+                  CodeExpression(Code('var ')), literalList(patternVars), '');
+
+              final rest = refer('results').property('rest');
+              varStmt = varDecl.assign(rest).statement;
+            }
+
             builder.statements.addAll([
               // -- declare a `results` variable --
               if (model.parameters.isNotEmpty)
@@ -135,6 +165,9 @@ class CommandBuilder {
                     .assign(refer('argResults'))
                     .nullChecked
                     .statement,
+
+              // -- declare positional arg variables --
+              if (varStmt != null) varStmt,
 
               // -- call the user method --
               userMethodCallBuilder.buildInlineCallStatement(model),
@@ -144,4 +177,30 @@ class CommandBuilder {
       ]);
     });
   }
+}
+
+/// Represents two expressions ([left] and [right]) and an [operator].
+class BinaryExpression2 extends Expression implements BinaryExpression {
+  @override
+  final Expression left;
+  @override
+  final Expression right;
+  @override
+  final String operator;
+  @override
+  final bool addSpace;
+  @override
+  final bool isConst;
+
+  const BinaryExpression2(
+    this.left,
+    this.right,
+    this.operator, {
+    this.addSpace = true,
+    this.isConst = false,
+  });
+
+  @override
+  R accept<R>(ExpressionVisitor<R> visitor, [R? context]) =>
+      visitor.visitBinaryExpression(this, context);
 }

@@ -46,8 +46,8 @@ class MultiValuesCommand extends Command<void> {
 
   final void Function({
     required List<String> multiString,
-    Set<int> multiInt,
-    Iterable<MyFooEnum> multiEnum,
+    Set<int>? multiInt,
+    Iterable<MyFooEnum>? multiEnum,
   }) userMethod;
 
   @override
@@ -64,8 +64,10 @@ class MultiValuesCommand extends Command<void> {
       multiInt: results['multi-int'] != null
           ? List<String>.from(results['multi-int']).map(int.parse).toSet()
           : const {1, 5, 7},
-      multiEnum: List<String>.from(results['multi-enum'])
-          .map(EnumParser(MyFooEnum.values).parse),
+      multiEnum: results['multi-enum'] != null
+          ? List<String>.from(results['multi-enum'])
+              .map(EnumParser(MyFooEnum.values).parse)
+          : null,
     );
   }
 }

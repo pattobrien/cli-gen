@@ -1,3 +1,8 @@
+## 0.1.0-dev.6
+
+- feat: Support for positional parameters 
+- feat: Built-in `--version` flag that references a build-time version constant
+
 ## 0.1.0-dev.5
 
 - feat: Warning on `cliCommand` use on a class, rather than a method/function

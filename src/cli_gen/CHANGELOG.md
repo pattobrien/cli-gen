@@ -1,3 +1,8 @@
+## 0.1.0-dev.6
+
+- feat: Support for positional parameters 
+- feat: Built-in `--version` flag that references a build-time version constant
+
 ## 0.1.0-dev.5
 
 - fix: `prefer_if_null_operators` lint issues with generated code.
