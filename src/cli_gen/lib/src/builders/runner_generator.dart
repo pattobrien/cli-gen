@@ -36,8 +36,6 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
     // checks if [element] is the first class annotated with `@CliRunner`.
     final isThisFirstAnnotatedElement = element == annotatedClasses.first;
 
-    final shouldGenerateVersion = isThisFirstAnnotatedElement;
-
     final resolver = buildStep.resolver;
     final node = await resolver.astNodeFor(element, resolve: true);
     if (node is! ClassDeclaration) {
@@ -50,17 +48,19 @@ class CliRunnerGenerator extends GeneratorForAnnotation<CliRunner> {
 
     final model = runnerAnalyzer.fromClassElement(node);
     final versionField = await generateVersionField(buildStep);
-    // log.severe('Version field: $versionField');
+    final shouldGenerateVersionField =
+        isThisFirstAnnotatedElement && versionField != null;
+    final shouldGenerateVersionMethod = versionField != null;
 
     // Generates code from the model.
     final library = Library((builder) {
-      if (versionField != null && shouldGenerateVersion) {
+      if (shouldGenerateVersionField) {
         builder.body.add(versionField);
       }
       builder.body.addAll(
         runnerBuilder.buildRunnerClassAndUserMethods(
           model,
-          shouldGenerateVersion: versionField != null,
+          shouldGenerateVersion: shouldGenerateVersionMethod,
         ),
       );
     });

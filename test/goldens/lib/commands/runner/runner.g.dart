@@ -20,8 +20,6 @@ class _$BarCommand<T extends dynamic> extends Command<dynamic> {
 // CliRunnerGenerator
 // **************************************************************************
 
-const String version = '1.0.0';
-
 /// A class for invoking [Command]s based on raw command-line arguments.
 ///
 /// The type argument `T` represents the type returned by [Command.run] and
@@ -36,29 +34,16 @@ class _$FooBarRunner<T extends dynamic> extends CommandRunner<dynamic> {
     final upcastedType = (this as FooBarRunner);
     addCommand(FooCommand(upcastedType.foo));
     addCommand(upcastedType.bar);
-
-    argParser.addFlag(
-      'version',
-      help: 'Reports the version of this tool.',
-    );
   }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {
     try {
-      if (topLevelResults['version'] != null) {
-        return showVersion();
-      }
-
       return await super.runCommand(topLevelResults);
     } on UsageException catch (e) {
       stdout.writeln('${e.message}\n');
       stdout.writeln(e.usage);
     }
-  }
-
-  void showVersion() {
-    return stdout.writeln('foo-bar $version');
   }
 }
 
@@ -94,10 +79,5 @@ class _$Runner<T extends dynamic> extends CommandRunner<dynamic> {
         ) {
     final upcastedType = (this as Runner);
     addCommand(upcastedType.fooBar);
-
-    argParser.addFlag(
-      'version',
-      help: 'Reports the version of this tool.',
-    );
   }
 }

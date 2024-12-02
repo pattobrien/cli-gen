@@ -21,7 +21,10 @@ class RunnerBuilder {
     bool shouldGenerateVersion = true,
   }) {
     const commandBuilder = CommandBuilder();
-    final commandRunnerClass = buildRunnerClass(model);
+    final commandRunnerClass = buildRunnerClass(
+      model,
+      shouldGenerateVersion: shouldGenerateVersion,
+    );
 
     final generatedCommandClasses = model.commandMethods.map((e) {
       return commandBuilder.buildCommandClass(e);
@@ -38,7 +41,7 @@ class RunnerBuilder {
   /// - overrides the `runCommand()` method to provide custom error handling
   Class buildRunnerClass(
     RunnerModel model, {
-    bool generateVersion = true,
+    bool shouldGenerateVersion = true,
   }) {
     return Class((builder) {
       builder.name = model.generatedClassName;
@@ -71,12 +74,12 @@ class RunnerBuilder {
           // -- the constructor body --
           if (model.commandMethods.isNotEmpty ||
               model.mountedSubcommands.isNotEmpty ||
-              generateVersion) {
+              shouldGenerateVersion) {
             // adds nested commands and `@mount` subcommands to the CommandRunner
             final bodyBuilder = SubcommandConstructorBodyBuilder();
             var ctorBody = bodyBuilder.buildSubcommandConstructorBody(model);
 
-            if (generateVersion) {
+            if (shouldGenerateVersion) {
               final versionOption =
                   refer('argParser').property('addFlag').call([
                 literalString('version'),
@@ -111,8 +114,9 @@ class RunnerBuilder {
 
       if (model.annotations.every((e) => !e.displayStackTrace)) {
         builder.methods.addAll([
-          generateRunMethod(runReturnType),
-          if (generateVersion)
+          generateRunMethod(runReturnType,
+              shouldGenerateVersion: shouldGenerateVersion),
+          if (shouldGenerateVersion)
             generateVersionMethod(
               model.executableName,
             ),

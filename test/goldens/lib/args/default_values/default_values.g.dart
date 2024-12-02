@@ -6,8 +6,6 @@ part of 'default_values.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
-const String version = '1.0.0';
-
 /// A class for invoking [Command]s based on raw command-line arguments.
 ///
 /// The type argument `T` represents the type returned by [Command.run] and
@@ -24,29 +22,16 @@ class _$DefaultValues<T extends dynamic> extends CommandRunner<dynamic> {
     addCommand(
         DefaultIterableValuesCommand(upcastedType.defaultIterableValues));
     addCommand(AnnotatedParamsCommand(upcastedType.annotatedParams));
-
-    argParser.addFlag(
-      'version',
-      help: 'Reports the version of this tool.',
-    );
   }
 
   @override
   Future<dynamic> runCommand(ArgResults topLevelResults) async {
     try {
-      if (topLevelResults['version'] != null) {
-        return showVersion();
-      }
-
       return await super.runCommand(topLevelResults);
     } on UsageException catch (e) {
       stdout.writeln('${e.message}\n');
       stdout.writeln(e.usage);
     }
-  }
-
-  void showVersion() {
-    return stdout.writeln('default-values $version');
   }
 }
 
