@@ -1,0 +1,10 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  # enable-experiment:
+  # - macros
+  # - inline-class
+
+linter:
+  rules:
+    prefer_relative_imports: true

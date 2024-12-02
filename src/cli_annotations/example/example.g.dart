@@ -1,0 +1,1 @@
+../../../docs/pub_example/lib/example.g.dart

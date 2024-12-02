@@ -1,0 +1,8 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    void_checks: false
+    prefer_if_null_operators: false
+  exclude:
+    - "**/*.golden.dart"
