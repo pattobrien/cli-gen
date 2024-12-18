@@ -17,10 +17,14 @@ class RunnerBuilder {
   /// See [buildRunnerClass] and [CommandBuilder.buildCommandClass] for more
   /// details.
   Iterable<Class> buildRunnerClassAndUserMethods(
-    RunnerModel model,
-  ) {
+    RunnerModel model, {
+    bool shouldGenerateVersion = true,
+  }) {
     const commandBuilder = CommandBuilder();
-    final commandRunnerClass = buildRunnerClass(model);
+    final commandRunnerClass = buildRunnerClass(
+      model,
+      shouldGenerateVersion: shouldGenerateVersion,
+    );
 
     final generatedCommandClasses = model.commandMethods.map((e) {
       return commandBuilder.buildCommandClass(e);
@@ -35,7 +39,10 @@ class RunnerBuilder {
   /// - mounting `@mount` subcommands or command methods in the user subclass
   /// - supplying the executable name and description to `CommandRunner`
   /// - overrides the `runCommand()` method to provide custom error handling
-  Class buildRunnerClass(RunnerModel model) {
+  Class buildRunnerClass(
+    RunnerModel model, {
+    bool shouldGenerateVersion = true,
+  }) {
     return Class((builder) {
       builder.name = model.generatedClassName;
       builder.extend = Identifiers.args.commandRunner.toTypeRef(
@@ -66,10 +73,25 @@ class RunnerBuilder {
 
           // -- the constructor body --
           if (model.commandMethods.isNotEmpty ||
-              model.mountedSubcommands.isNotEmpty) {
+              model.mountedSubcommands.isNotEmpty ||
+              shouldGenerateVersion) {
             // adds nested commands and `@mount` subcommands to the CommandRunner
             final bodyBuilder = SubcommandConstructorBodyBuilder();
-            builder.body = bodyBuilder.buildSubcommandConstructorBody(model);
+            var ctorBody = bodyBuilder.buildSubcommandConstructorBody(model);
+
+            if (shouldGenerateVersion) {
+              final versionOption =
+                  refer('argParser').property('addFlag').call([
+                literalString('version'),
+              ], {
+                'help': literalString('Reports the version of this tool.'),
+              }).statement;
+              ctorBody = ctorBody.rebuild((b) {
+                b.statements.add(Code('\n'));
+                b.statements.add(versionOption);
+              });
+            }
+            builder.body = ctorBody;
           }
         }),
       );
@@ -91,10 +113,29 @@ class RunnerBuilder {
       });
 
       if (model.annotations.every((e) => !e.displayStackTrace)) {
-        builder.methods.add(
-          generateRunMethod(runReturnType),
-        );
+        builder.methods.addAll([
+          generateRunMethod(runReturnType,
+              shouldGenerateVersion: shouldGenerateVersion),
+          if (shouldGenerateVersion)
+            generateVersionMethod(
+              model.executableName,
+            ),
+        ]);
       }
+    });
+  }
+
+  Method generateVersionMethod(
+    String executableName,
+  ) {
+    return Method((builder) {
+      builder.name = 'showVersion';
+      builder.returns = Identifiers.dart.void_;
+      builder.body = Block((builder) {
+        builder.statements.add(Code('''
+          return stdout.writeln('$executableName \$version');
+        '''));
+      });
     });
   }
 
@@ -103,8 +144,9 @@ class RunnerBuilder {
   /// This method overrides the default `runCommand` method to provide custom
   /// error handling behavior.
   Method generateRunMethod(
-    TypeReference returnType,
-  ) {
+    TypeReference returnType, {
+    bool shouldGenerateVersion = true,
+  }) {
     return Method((builder) {
       builder.name = 'runCommand';
       builder.returns = returnType;
@@ -115,8 +157,13 @@ class RunnerBuilder {
       }));
       builder.modifier = MethodModifier.async;
       builder.body = Block((builder) {
+        final versionLogic = '''
+            if (topLevelResults['version'] == true) {
+              return showVersion();
+            }\n''';
         builder.statements.add(Code('''
           try {
+            ${shouldGenerateVersion ? versionLogic : ''}
             return await super.runCommand(topLevelResults);
           } on UsageException catch (e) {
             stdout.writeln('\${e.message}\\n');

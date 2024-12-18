@@ -93,7 +93,7 @@ class DefaultValuesCommand extends Command<void> {
           ? EnumParser(MyFooEnum.values).parse(results['enum-val'])
           : MyFooEnum.value1,
       intAnnot:
-          results['int-annot'] != null ? int.parse(results['int-annot']) : null,
+          results['int-annot'] != null ? int.parse(results['int-annot']) : 123,
     );
   }
 }
@@ -188,7 +188,7 @@ class AnnotatedParamsCommand extends Command<void> {
     return userMethod(
       numericValue: results['numeric-value'] != null
           ? int.parse(results['numeric-value'])
-          : null,
+          : 123,
       flagVal: (results['flag-val'] as bool?) ?? true,
     );
   }

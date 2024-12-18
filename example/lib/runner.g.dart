@@ -6,6 +6,8 @@ part of 'runner.dart';
 // CliRunnerGenerator
 // **************************************************************************
 
+const String version = '1.0.0';
+
 /// A command-line interface for version control.
 ///
 /// A class for invoking [Command]s based on raw command-line arguments.
@@ -21,17 +23,31 @@ class _$GitRunner<T extends dynamic> extends CommandRunner<void> {
         ) {
     final upcastedType = (this as GitRunner);
     addCommand(MergeCommand(upcastedType.merge));
+    addCommand(PushCommand(upcastedType.push));
     addCommand(upcastedType.stash);
+
+    argParser.addFlag(
+      'version',
+      help: 'Reports the version of this tool.',
+    );
   }
 
   @override
   Future<void> runCommand(ArgResults topLevelResults) async {
     try {
+      if (topLevelResults['version'] == true) {
+        return showVersion();
+      }
+
       return await super.runCommand(topLevelResults);
     } on UsageException catch (e) {
       stdout.writeln('${e.message}\n');
       stdout.writeln(e.usage);
     }
+  }
+
+  void showVersion() {
+    return stdout.writeln('git $version');
   }
 }
 
@@ -44,8 +60,7 @@ class MergeCommand extends Command<void> {
       )
       ..addOption(
         'strategy',
-        help: 'The merge strategy to use',
-        defaultsTo: 'recursive',
+        defaultsTo: 'ort',
         mandatory: false,
         allowed: [
           'ort',
@@ -56,19 +71,12 @@ class MergeCommand extends Command<void> {
           'subtree',
         ],
       )
-      ..addOption(
-        'foo-with-default',
-        help: 'Perform the merge and commit the result.',
-        defaultsTo: '42',
-        mandatory: false,
-      )
       ..addFlag('commit');
   }
 
   final Future<void> Function({
     required String branch,
     MergeStrategy strategy,
-    int? fooWithDefault,
     bool? commit,
   }) userMethod;
 
@@ -85,11 +93,52 @@ class MergeCommand extends Command<void> {
       branch: results['branch'],
       strategy: results['strategy'] != null
           ? EnumParser(MergeStrategy.values).parse(results['strategy'])
-          : MergeStrategy.recursive,
-      fooWithDefault: results['foo-with-default'] != null
-          ? int.parse(results['foo-with-default'])
-          : null,
+          : MergeStrategy.ort,
       commit: (results['commit'] as bool?) ?? null,
+    );
+  }
+}
+
+class PushCommand extends Command<void> {
+  PushCommand(this.userMethod) {
+    argParser
+      ..addOption(
+        'remote',
+        mandatory: true,
+      )
+      ..addOption(
+        'branch',
+        mandatory: true,
+      )
+      ..addFlag(
+        'force',
+        defaultsTo: false,
+      );
+  }
+
+  final Future<void> Function(
+    String,
+    String?, {
+    bool force,
+  }) userMethod;
+
+  @override
+  String get name => 'push';
+
+  @override
+  String get description => '';
+
+  @override
+  Future<void> run() {
+    final results = argResults!;
+    var [
+      String remote,
+      String? branch,
+    ] = results.rest;
+    return userMethod(
+      remote,
+      branch != null ? branch : null,
+      force: (results['force'] as bool?) ?? false,
     );
   }
 }

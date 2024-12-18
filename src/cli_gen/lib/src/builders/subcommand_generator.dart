@@ -12,6 +12,8 @@ import '../analysis/commands/cli_subcommand_analyzer.dart';
 import '../code/command/subcommand_builder.dart';
 
 class SubcommandGenerator extends GeneratorForAnnotation<CliSubcommand> {
+  const SubcommandGenerator();
+
   @override
   FutureOr<String> generateForAnnotatedElement(
     Element element,
