@@ -19,16 +19,7 @@ class GitRunner extends _$GitRunner<void> {
     required String branch,
 
     /// Pass merge strategy specific option through to the merge strategy.
-    @Option(
-      help: 'The merge strategy to use',
-      defaultsTo: MergeStrategy.recursive,
-    )
     MergeStrategy strategy = MergeStrategy.ort,
-    @Option(
-      help: 'Perform the merge and commit the result.',
-      defaultsTo: foo,
-    )
-    int? fooWithDefault,
 
     /// Perform the merge and commit the result.
     bool? commit,
