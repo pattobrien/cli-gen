@@ -64,11 +64,12 @@ The ability to quickly whip up a command line script or application is a powerfu
 
 `cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by allowing you to generate command line APIs from plain Dart functions. It achives this by providing the following features:
 
-- parsing String arguments to any Dart type
-- `--help` text inference from Method declarations, doc comments, and default values
-- proper error handling, without printing stack traces to the console
+- automatic argument deserialization to primitives, collections, enums, and custom Dart types
+- support for positional parameters
+- `--help` text inference from function declarations, doc comments, and default values
+- other various improvements, such as proper error handling without printing stack traces to the console
 
-`cli-gen` was designed to make writing CLI applications as intuitive as writing any other piece of Dart code.
+`cli-gen` was designed to make writing CLI applications as intuitive as writing any other Dart functions.
 
 ## Quick Start
 
@@ -403,10 +404,6 @@ To override the default behavior, simply provide a `name` to the respective anno
   - adds all nested commands as subcommands via `Command.addSubcommand`
 
 Examples of generated code can be found in the `example` project, within their respective `.g.dart` files.
-
-## Design Goals
-
-TODO: a little blurb about the project goals (incl. what `cli-gen` is and what it is not).
 
 ## Inspiration
 
