@@ -57,22 +57,22 @@ Build CLI applications from plain Dart classes and functions.
 ## Motivation
 
 The ability to quickly whip up a command line script or application is a
-powerful skill for a developer to have. Compared to the Dart language itself,
-which offers a tremendous developer experience when building all kinds of apps,
-cli-based libraries like `package:args` leave something to be desired when it
-comes to easily building and maintaining application logic.
+powerful skill for any developer to have. However, unlike Dart frontend or
+server apps, which typically offer a tremendous developer experience, cli-based
+applications using `package:args` leave something to be desired when it comes to
+easily building and maintaining application logic.
 
 `cli-gen` aims to offer quality-of-life improvements for building and
 maintaining CLI apps, by allowing you to generate command line APIs from plain
-Dart functions. It achives this by providing the following features:
+Dart functions. It achieves this by providing the following features:
 
-- automatic argument deserialization to primitives, collections, enums, and
-  custom Dart types
-- support for positional parameters
+- automatic argument deserialization to primitives, enums, and user-defined
+  types
 - `--help` text inference from function declarations, doc comments, and default
   values
-- other various improvements, such as proper error handling without printing
-  stack traces to the console
+- proper error handling (without printing stack traces to the console),
+  automatic `--version` command generation, positional parameter support, and
+  various other enhancements
 
 `cli-gen` was designed to make writing CLI applications as intuitive as writing
 any other Dart functions.
