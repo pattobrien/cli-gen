@@ -6,10 +6,6 @@
 
 <!-- [![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations) -->
 
-<blockquote>
-  🚧 This package is in early preview and is subject to API changes.
-</blockquote>
-
 Build CLI applications from plain Dart classes and functions.
 
 <table>
@@ -60,22 +56,33 @@ Build CLI applications from plain Dart classes and functions.
 
 ## Motivation
 
-The ability to quickly whip up a command line script or application is a powerful skill for a developer to have. Compared to the Dart language itself, which offers a tremendous developer experience when building all kinds of apps, cli-based libraries like `package:args` leave something to be desired when it comes to easily building and maintaining application logic.
+The ability to quickly whip up a command line script or application is a
+powerful skill for any developer to have. However, unlike Dart frontend or
+server apps, which typically offer a tremendous developer experience, cli-based
+applications using `package:args` leave something to be desired when it comes to
+easily building and maintaining application logic.
 
-`cli-gen` aims to offer quality-of-life improvements for building and maintaining CLI apps, by allowing you to generate command line APIs from plain Dart functions. It achives this by providing the following features:
+`cli-gen` aims to offer quality-of-life improvements for building and
+maintaining CLI apps, by allowing you to generate command line APIs from plain
+Dart functions. It achieves this by providing the following features:
 
-- automatic argument deserialization to primitives, collections, enums, and custom Dart types
-- support for positional parameters
-- `--help` text inference from function declarations, doc comments, and default values
-- other various improvements, such as proper error handling without printing stack traces to the console
+- automatic argument deserialization to primitives, enums, and user-defined
+  types
+- `--help` text inference from function declarations, doc comments, and default
+  values
+- proper error handling (without printing stack traces to the console),
+  automatic `--version` command generation, positional parameter support, and
+  various other enhancements
 
-`cli-gen` was designed to make writing CLI applications as intuitive as writing any other Dart functions.
+`cli-gen` was designed to make writing CLI applications as intuitive as writing
+any other Dart functions.
 
 ## Quick Start
 
 ### Installation
 
-Add `cli_annotations` to your `pubspec` dependencies and `cli_gen` and `build_runner` as dev dependencies.
+Add `cli_annotations` to your `pubspec` dependencies and `cli_gen` and
+`build_runner` as dev dependencies.
 
 ```yaml
 name: dart_git
@@ -96,21 +103,25 @@ executables:
   dart_git: main
 ```
 
-You can optionally define an executable name and activate it using [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
+You can optionally define an executable name and activate it using
+[pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
 
 ### Run Build Runner
 
-Once dependencies are installed, start the `build_runner` to begin code generation.
+Once dependencies are installed, start the `build_runner` to begin code
+generation.
 
 ```bash
- $ dart run build_runner watch -d
+$ dart run build_runner watch -d
 ```
 
 ### Define the Command Runner
 
-Create a `CommandRunner` by annotating a class with `@cliRunner` and extending the generated superclass (using the usual `_$` prefix).
+Create a `CommandRunner` by annotating a class with `@cliRunner` and extending
+the generated superclass (using the usual `_$` prefix).
 
-The generated code contains a single `CommandRunner.run()` method, which is the entry point for your CLI application, to be called from the `main` function.
+The generated code contains a single `CommandRunner.run()` method, which is the
+entry point for your CLI application, to be called from the `main` function.
 
 ```dart
 @cliRunner
@@ -121,7 +132,9 @@ class GitRunner extends _$GitRunner {
 
 ### Define a Command
 
-Inside the `CommandRunner` class, create a `Command` by creating a method and annotating it with `@cliCommand`. See the [Features](#features) section for more information on the supported types and features.
+Inside the `CommandRunner` class, create a `Command` by creating a method and
+annotating it with `@cliCommand`. See the [Features](#features) section for more
+information on the supported types and features.
 
 ```dart
 @cliRunner
@@ -161,9 +174,11 @@ class GitRunner extends _$GitRunner {
 
 ### Define a Subcommand
 
-As your application grows, you may want to separate your commands into their own groups.
+As your application grows, you may want to separate your commands into their own
+groups.
 
-To do so, create a `Subcommand` class by annotating the class with `@cliSubcommand` and extending the generated superclass.
+To do so, create a `Subcommand` class by annotating the class with
+`@cliSubcommand` and extending the generated superclass.
 
 ```dart
 @cliSubcommand
@@ -174,10 +189,10 @@ class StashSubcommand extends _$StashSubcommand {
   @cliCommand
   Future<void> pop() async { /* ... */ }
 }
-
 ```
 
-Subcommands can then be connected to the main `CommandRunner` class, or to another `Subcommand` class, by using the `@cliMount` annotation.
+Subcommands can then be connected to the main `CommandRunner` class, or to
+another `Subcommand` class, by using the `@cliMount` annotation.
 
 ```dart
 @cliRunner
@@ -189,7 +204,8 @@ class GitRunner extends _$GitRunner {
 
 ### Run the Application
 
-Finally, create a `main` function that calls the `run` method on your `CommandRunner`.
+Finally, create a `main` function that calls the `run` method on your
+`CommandRunner`.
 
 ```dart
 void main(List<String> arguments) async {
@@ -200,7 +216,8 @@ void main(List<String> arguments) async {
 
 Your application is ready to go! 🎉
 
-Run a command to test out the generated help text and see the argument parsing in action.
+Run a command to test out the generated help text and see the argument parsing
+in action.
 
 ```bash
 # activate the executable (if executable is defined in `pubspec.yaml`)
@@ -228,11 +245,14 @@ Run "git-runner help" to see global options.
 
 ### Type-Safe Argument Parsing
 
-`cli-gen` automatically parses incoming string arguments into the correct type, and automatically informs your user if they've entered an invalid value.
+`cli-gen` automatically parses incoming string arguments into the correct type,
+and automatically informs your user if they've entered an invalid value.
 
 #### Supported Types
 
-You can define your command methods with any Dart primitive type or enum, and `cli-gen` will **automatically** parse the incoming string arguments into the correct type.
+You can define your command methods with any Dart primitive type or enum, and
+`cli-gen` will **automatically** parse the incoming string arguments into the
+correct type.
 
 ```dart
 @cliCommand
@@ -257,7 +277,8 @@ NOTE: Types that can be automatically parsed are: String, int, double, bool, num
 
 #### Collection Types
 
-The Collection types `List`, `Set`, and `Iterable` are also supported, and can be used in combination with any of the above supported types.
+The Collection types `List`, `Set`, and `Iterable` are also supported, and can
+be used in combination with any of the above supported types.
 
 ```dart
 @cliCommand
@@ -270,9 +291,14 @@ Future<void> myCustomCommand({
 
 ### Help Text Inference (--help)
 
-CLI applications typically provide a `--help` option that displays a list of available commands and descriptions of their parameters, to help users understand how they can interact with the application.
+CLI applications typically provide a `--help` option that displays a list of
+available commands and descriptions of their parameters, to help users
+understand how they can interact with the application.
 
-Rather than manually manitaining these details yourself, `cli-gen` automatically generates help text from your annotated methods, based on the method and parameter names, doc comments, default values, and whether each parameter is required or not.
+Rather than manually manitaining these details yourself, `cli-gen` automatically
+generates help text from your annotated methods, based on the method and
+parameter names, doc comments, default values, and whether each parameter is
+required or not.
 
 #### Parameter Help Text
 
@@ -296,7 +322,8 @@ Future<void> myCustomCommand({
 }
 ```
 
-The above Dart function will generate a cli command with the following help text:
+The above Dart function will generate a cli command with the following help
+text:
 
 ```bash
 $ my-custom-command --help
@@ -314,7 +341,8 @@ Run "git help" to see global options.
 
 #### Command Descriptions
 
-You can also generate descriptions for your commands and the entire application by using doc comments on the annotated classes and methods.
+You can also generate descriptions for your commands and the entire application
+by using doc comments on the annotated classes and methods.
 
 ```dart
 /// A dart implementation of the git CLI.
@@ -346,25 +374,32 @@ Run "git help" to see global options.
 
 #### Enums and Allowed Values
 
-Enums are unique in that they inherently define a finite set of allowable values. `cli-gen` can use that information to generate a list of allowed values in the help text.
+Enums are unique in that they inherently define a finite set of allowable
+values. `cli-gen` can use that information to generate a list of allowed values
+in the help text.
 
 ```dart
 enum Values { a, b, c }
 ```
 
-Using the above `Values` enum as a parameter to a `cliCommand` will generate the following help text:
+Using the above `Values` enum as a parameter to a `cliCommand` will generate the
+following help text:
 
 ```bash
 --values (allowed: a, b, c)
 ```
 
-If you ever need to override the default allowed values, you can do so by providing a list of values to the `allowed` parameter of the `@Option` annotation.
+If you ever need to override the default allowed values, you can do so by
+providing a list of values to the `allowed` parameter of the `@Option`
+annotation.
 
 ### Positional Parameters
 
-`cli_gen` can handle trailing positional parameters. 
+`cli_gen` can handle trailing positional parameters.
 
-For example, you may have a command that requires a path argument. Rather than define a named flag like `git push --remote="origin"`, you can instead allow users to pass the argument using `git push origin`. 
+For example, you may have a command that requires a path argument. Rather than
+define a named flag like `git push --remote="origin"`, you can instead allow
+users to pass the argument using `git push origin`.
 
 Positional parameters can be defined using Dart's positional parameter syntax:
 
@@ -381,20 +416,28 @@ Future<void> push(
 
 ### Name Formatting
 
-`cli-gen` translates Dart class, method and parameter names to kebab-case, which is the convention for CLI commands and flags.
+`cli-gen` translates Dart class, method and parameter names to kebab-case, which
+is the convention for CLI commands and flags.
 
-For example, a method named `stashChanges` will be translated to `stash-changes`, and a parameter named `outputFile` will be translated to `--output-file`.
+For example, a method named `stashChanges` will be translated to
+`stash-changes`, and a parameter named `outputFile` will be translated to
+`--output-file`.
 
-To override the default behavior, simply provide a `name` to the respective annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and `@Option`).
-
+To override the default behavior, simply provide a `name` to the respective
+annotation (supported for `@cliCommand`, `@cliSubcommand`, `@cliRunner`, and
+`@Option`).
 
 ## Under the Hood
 
-`cli-gen` generates code that uses `package:args` classes and utilities to manage command hierarchies and help text generation. The annotations included with this package are a 1:1 mapping to similar or identical concepts included with `package:args`, for example:
+`cli-gen` generates code that uses `package:args` classes and utilities to
+manage command hierarchies and help text generation. The annotations included
+with this package are a 1:1 mapping to similar or identical concepts included
+with `package:args`, for example:
 
 - `@cliRunner`
   - generates a `CommandRunner` class
-  - has a `run` method that should be passed args and run from your `main` function
+  - has a `run` method that should be passed args and run from your `main`
+    function
   - mounts any nested commands as subcommands via `CommandRunner.addCommand`
 - `@cliCommand`
   - generates a `Command` class
@@ -403,11 +446,13 @@ To override the default behavior, simply provide a `name` to the respective anno
   - generates a `Command` class
   - adds all nested commands as subcommands via `Command.addSubcommand`
 
-Examples of generated code can be found in the `example` project, within their respective `.g.dart` files.
+Examples of generated code can be found in the `example` project, within their
+respective `.g.dart` files.
 
 ## Inspiration
 
-Several projects were researched as references of CLI ergonomics and macro libraries, including:
+Several projects were researched as references of CLI ergonomics and macro
+libraries, including:
 
 - [clap](https://docs.rs/clap/latest/clap/) - a declarative CLI parser for Rust
 
