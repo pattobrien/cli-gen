@@ -6,6 +6,10 @@
 
 <!-- [![pub package](https://img.shields.io/pub/v/cli_annotations.svg)](https://pub.dartlang.org/packages/cli_annotations) -->
 
+<blockquote>
+  🚧 This package is in early preview and is subject to API changes.
+</blockquote>
+
 Build CLI applications from plain Dart classes and functions.
 
 <table>
@@ -33,20 +37,9 @@ Build CLI applications from plain Dart classes and functions.
 
 - [Motivation](#motivation)
 - [Quick Start](#quick-start)
-  - [Installation](#installation)
-  - [Run Build Runner](#run-build-runner)
-  - [Define the Command Runner](#define-the-command-runner)
-  - [Define a Command](#define-a-command)
-  - [Define a Subcommand](#define-a-subcommand)
-  - [Run the Application](#run-the-application)
 - [Features](#features)
   - [Type Safe Argument Parsing](#type-safe-argument-parsing)
-    - [Supported Types](#supported-types)
-    - [Collection Types](#collection-types)
-    - [Enums and Allowed Values](#enums-and-allowed-values)
   - [Help Text Inference (--help)](#help-text-inference---help)
-    - [Parameter Help Text](#parameter-help-text)
-    - [Command Descriptions](#command-descriptions)
   - [Positional Parameters](#positional-parameters)
   - [Name Formatting](#name-formatting)
 - [Design Goals](#design-goals)
@@ -57,22 +50,22 @@ Build CLI applications from plain Dart classes and functions.
 ## Motivation
 
 The ability to quickly whip up a command line script or application is a
-powerful skill for any developer to have. However, unlike Dart frontend or
-server apps, which typically offer a tremendous developer experience, cli-based
-applications using `package:args` leave something to be desired when it comes to
-easily building and maintaining application logic.
+powerful skill for a developer to have. Compared to the Dart language itself,
+which offers a tremendous developer experience when building all kinds of apps,
+cli-based libraries like `package:args` leave something to be desired when it
+comes to easily building and maintaining application logic.
 
 `cli-gen` aims to offer quality-of-life improvements for building and
 maintaining CLI apps, by allowing you to generate command line APIs from plain
-Dart functions. It achieves this by providing the following features:
+Dart functions. It achives this by providing the following features:
 
-- automatic argument deserialization to primitives, enums, and user-defined
-  types
+- automatic argument deserialization to primitives, collections, enums, and
+  custom Dart types
+- support for positional parameters
 - `--help` text inference from function declarations, doc comments, and default
   values
-- proper error handling (without printing stack traces to the console),
-  automatic `--version` command generation, positional parameter support, and
-  various other enhancements
+- other various improvements, such as proper error handling without printing
+  stack traces to the console
 
 `cli-gen` was designed to make writing CLI applications as intuitive as writing
 any other Dart functions.
@@ -92,11 +85,11 @@ environment:
   sdk: ^3.0.0
 
 dependencies:
-  cli_annotations: ^0.1.0-dev.4
+  cli_annotations: ^0.1.0
 
 dev_dependencies:
   build_runner: ^2.4.8
-  cli_gen: ^0.1.0-dev.4
+  cli_gen: ^0.1.0
 
 # define an executable name (optional)
 executables:
@@ -106,16 +99,15 @@ executables:
 You can optionally define an executable name and activate it using
 [pub global activate](https://dart.dev/tools/pub/cmd/pub-global#activating-a-package-on-your-local-machine).
 
-### Run Build Runner
-
-Once dependencies are installed, start the `build_runner` to begin code
-generation.
+Run the build runner to generate the code for your CLI application.
 
 ```bash
+$ dart run build_runner build
+# or to watch for changes
 $ dart run build_runner watch -d
 ```
 
-### Define the Command Runner
+### Define the root Command Runner
 
 Create a `CommandRunner` by annotating a class with `@cliRunner` and extending
 the generated superclass (using the usual `_$` prefix).
